@@ -274,7 +274,6 @@ no_loop = 1000
 
 slr_sim = function(n_in,sd=1,beta_1_in=-2){
   x_values = seq(0, 5, length = n_in)
-  set.seed(1234)
   epsilon = rnorm(n_in,mean = 0,sd = sd)
   y = beta_1_in * x_values + epsilon
   data.frame(predictor = x_values,response=y)
@@ -298,9 +297,9 @@ model_n_30_sigma_4 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_l
 model_sim = cbind(beta_1_sim_val=rep(0,length(beta_1)),n_10_sigma_1=rep(0,length(beta_1)),n_20_sigma_1=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)),n_10_sigma_2=rep(0,length(beta_1)),n_20_sigma_2=rep(0,length(beta_1)),n_30_sigma_2=rep(0,length(beta_1)),n_10_sigma_4=rep(0,length(beta_1)),n_20_sigma_4=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)))
 
 model_sim[,1] = seq(from=-2,to=2,by=0.1)
+extra_counter = 0
 
 for(s in 1:length(sigma)){ #sigma = c(1,2,4)
-  extra_counter = 0
   for (n_s in 1:length(n)){ #n = c(10,20,30)
     for (b in 1:length(beta_1)){ # beta_1 = seq(from=-2,to=2,by=0.1)
       tot_sum_signifincace_sim = 0
@@ -317,5 +316,31 @@ for(s in 1:length(sigma)){ #sigma = c(1,2,4)
   }
   extra_counter = extra_counter + 2
 }
+```
 
+```{r}
+plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1",xlab = "Sigma",ylab = "Power")
+points(model_sim[,1], model_sim[,3], col="red", pch=8,lty=2)
+lines(model_sim[,1], model_sim[,3], col="red",lty=2)
+points(model_sim[,1], model_sim[,4], col="darkorchid", pch=16,lty=3)
+lines(model_sim[,1], model_sim[,4], col="darkorchid",lty=3)
+legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
+```
+
+```{r}
+plot(model_sim[,1],model_sim[,5], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 4",xlab = "Sigma",ylab = "Power")
+points(model_sim[,1], model_sim[,6], col="red", pch=8,lty=2)
+lines(model_sim[,1], model_sim[,6], col="red",lty=2)
+points(model_sim[,1], model_sim[,7], col="darkorchid", pch=16,lty=3)
+lines(model_sim[,1], model_sim[,7], col="darkorchid",lty=3)
+legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
+```
+
+```{r}
+plot(model_sim[,1],model_sim[,8], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 2",xlab = "Sigma",ylab = "Power")
+points(model_sim[,1], model_sim[,9], col="red", pch=8,lty=2)
+lines(model_sim[,1], model_sim[,9], col="red",lty=2)
+points(model_sim[,1], model_sim[,10], col="darkorchid", pch=16,lty=3)
+lines(model_sim[,1], model_sim[,10], col="darkorchid",lty=3)
+legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
 ```
