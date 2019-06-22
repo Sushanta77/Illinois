@@ -279,21 +279,6 @@ slr_sim = function(n_in,sd=1,beta_1_in=-2){
   data.frame(predictor = x_values,response=y)
 }
 
-
-
-model_n_10_sigma_1 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
-model_n_10_sigma_2 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
-model_n_10_sigma_4 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
-  
-model_n_20_sigma_1 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
-model_n_20_sigma_2 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
-model_n_20_sigma_4 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
-  
-model_n_30_sigma_1 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
-model_n_30_sigma_2 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
-model_n_30_sigma_4 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
-  
-
 model_sim = cbind(beta_1_sim_val=rep(0,length(beta_1)),n_10_sigma_1=rep(0,length(beta_1)),n_20_sigma_1=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)),n_10_sigma_2=rep(0,length(beta_1)),n_20_sigma_2=rep(0,length(beta_1)),n_30_sigma_2=rep(0,length(beta_1)),n_10_sigma_4=rep(0,length(beta_1)),n_20_sigma_4=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)))
 
 model_sim[,1] = seq(from=-2,to=2,by=0.1)
@@ -319,7 +304,7 @@ for(s in 1:length(sigma)){ #sigma = c(1,2,4)
 ```
 
 ```{r}
-plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1",xlab = "Sigma",ylab = "Power")
+plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,3], col="red", pch=8,lty=2)
 lines(model_sim[,1], model_sim[,3], col="red",lty=2)
 points(model_sim[,1], model_sim[,4], col="darkorchid", pch=16,lty=3)
@@ -328,7 +313,7 @@ legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red"
 ```
 
 ```{r}
-plot(model_sim[,1],model_sim[,5], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 4",xlab = "Sigma",ylab = "Power")
+plot(model_sim[,1],model_sim[,5], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 4",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,6], col="red", pch=8,lty=2)
 lines(model_sim[,1], model_sim[,6], col="red",lty=2)
 points(model_sim[,1], model_sim[,7], col="darkorchid", pch=16,lty=3)
@@ -337,10 +322,86 @@ legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red"
 ```
 
 ```{r}
-plot(model_sim[,1],model_sim[,8], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 2",xlab = "Sigma",ylab = "Power")
+plot(model_sim[,1],model_sim[,8], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 2",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,9], col="red", pch=8,lty=2)
 lines(model_sim[,1], model_sim[,9], col="red",lty=2)
 points(model_sim[,1], model_sim[,10], col="darkorchid", pch=16,lty=3)
 lines(model_sim[,1], model_sim[,10], col="darkorchid",lty=3)
 legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
+```
+
+**Effect of sigma(1,2,4) on the Power **
+```{r}
+plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Effect of sigma (1,2,4) on the Power",xlab = "beta_1",ylab = "Power")
+points(model_sim[,1], model_sim[,3], col="dodgerblue", pch=1,lty=1)
+lines(model_sim[,1], model_sim[,3], col="dodgerblue",lty=1)
+points(model_sim[,1], model_sim[,4], col="dodgerblue", pch=1,lty=1)
+lines(model_sim[,1], model_sim[,4], col="dodgerblue",lty=1)
+
+points(model_sim[,1],model_sim[,5], type="o", col="green", pch=1, lty=2)
+lines(model_sim[,1],model_sim[,5], type="o", col="green", pch=1, lty=2)
+points(model_sim[,1], model_sim[,6], col="green", pch=1,lty=2)
+lines(model_sim[,1], model_sim[,6], col="green",lty=2)
+points(model_sim[,1], model_sim[,7], col="green", pch=1,lty=2)
+lines(model_sim[,1], model_sim[,7], col="green",lty=2)
+
+points(model_sim[,1],model_sim[,8], type="o", col="red", pch=1, lty=3)
+lines(model_sim[,1],model_sim[,8], type="o", col="red", pch=1, lty=3)
+points(model_sim[,1], model_sim[,9], col="red", pch=1,lty=3)
+lines(model_sim[,1], model_sim[,9], col="red",lty=3)
+points(model_sim[,1], model_sim[,10], col="red", pch=1,lty=3)
+lines(model_sim[,1], model_sim[,10], col="red",lty=3)
+legend("topright",legend=c("sigma=1,n=10,20,30","sigma=2,n=10,20,30","sigma=3,n=10,20,30"),col=c("dodgerblue","green","darkorchid","red"),pch=c(1,1,1),lty=c(1,2,3))
+```
+
+**Effect of n(10,20,30) on the Power **
+```{r}
+plot(model_sim[,1],model_sim[,2], type="o", col="deeppink", pch=1, lty=1,main="Effect of n (10,20,30) on the Power",xlab = "beta_1",ylab = "Power")
+points(model_sim[,1], model_sim[,3], col="darkolivegreen4", pch=1,lty=2)
+lines(model_sim[,1], model_sim[,3], col="darkolivegreen4",lty=2)
+points(model_sim[,1], model_sim[,4], col="blueviolet", pch=1,lty=3)
+lines(model_sim[,1], model_sim[,4], col="blueviolet",lty=3)
+
+points(model_sim[,1],model_sim[,5], type="o", col="deeppink", pch=1, lty=1)
+lines(model_sim[,1],model_sim[,5], type="o", col="deeppink", pch=1, lty=1)
+points(model_sim[,1], model_sim[,6], col="darkolivegreen4", pch=1,lty=2)
+lines(model_sim[,1], model_sim[,6], col="darkolivegreen4",lty=2)
+points(model_sim[,1], model_sim[,7], col="blueviolet", pch=1,lty=3)
+lines(model_sim[,1], model_sim[,7], col="blueviolet",lty=3)
+
+points(model_sim[,1],model_sim[,8], type="o", col="deeppink", pch=1, lty=1)
+lines(model_sim[,1],model_sim[,8], type="o", col="deeppink", pch=1, lty=1)
+points(model_sim[,1], model_sim[,9], col="darkolivegreen4", pch=1,lty=2)
+lines(model_sim[,1], model_sim[,9], col="darkolivegreen4",lty=2)
+points(model_sim[,1], model_sim[,10], col="blueviolet", pch=1,lty=3)
+lines(model_sim[,1], model_sim[,10], col="blueviolet",lty=3)
+legend("topright",legend=c("sigma=1,2,3,n=10","sigma=1,2,3,n=20","sigma=1,2,3,n=30"),col=c("deeppink","darkolivegreen4","blueviolet"),pch=c(1,1,1),lty=c(1,2,3))
+```
+
+
+```{r}
+plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1,2,4 & n = 10,20,30",xlab = "beta_1",ylab = "Power")
+points(model_sim[,1], model_sim[,3], col="red", pch=2,lty=2)
+lines(model_sim[,1], model_sim[,3], col="red",lty=2)
+points(model_sim[,1], model_sim[,4], col="tan1", pch=3,lty=3)
+lines(model_sim[,1], model_sim[,4], col="tan1",lty=3)
+
+points(model_sim[,1],model_sim[,5], type="o", col="yellow", pch=4, lty=4)
+lines(model_sim[,1],model_sim[,5], type="o", col="yellow", pch=4, lty=4)
+
+points(model_sim[,1], model_sim[,6], col="deeppink", pch=5,lty=5)
+lines(model_sim[,1], model_sim[,6], col="deeppink",lty=5)
+points(model_sim[,1], model_sim[,7], col="darkolivegreen4", pch=6,lty=6)
+lines(model_sim[,1], model_sim[,7], col="darkolivegreen4",lty=6)
+
+points(model_sim[,1],model_sim[,8], type="o", col="darkgreen", pch=7, lty=7)
+lines(model_sim[,1],model_sim[,8], type="o", col="darkgreen", pch=7, lty=7)
+
+points(model_sim[,1], model_sim[,9], col="darkblue", pch=8,lty=8)
+lines(model_sim[,1], model_sim[,9], col="darkblue",lty=8)
+points(model_sim[,1], model_sim[,10], col="blueviolet", pch=9,lty=9)
+lines(model_sim[,1], model_sim[,10], col="blueviolet",lty=9)
+
+legend("topright",legend=c("sigma=1,n=10","sigma=1,n=20","sigma=1,n=30","sigma=2,n=10","sigma=2,n=20","sigma=2,n=30","sigma=3,n=10","sigma=3,n=20","sigma=3,n=30"),col=c("dodgerblue","red","darkorchid","yellow","deeppink","darkolivegreen4","darkgreen","darkblue","blueviolet"),pch=c(1,2,3,4,5,6,7,8,9),lty=c(1,2,3,4,5,6,7,8,9))
+
 ```
