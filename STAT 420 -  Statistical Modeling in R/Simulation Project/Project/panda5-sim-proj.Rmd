@@ -61,7 +61,7 @@ for(s in 1:length(sigma)){
   model9_counter = 0 
   
   for(i in 1:no_loop){
-    epsilon = rnorm(n,mean = 0, sd = sigma[s])
+    #epsilon = rnorm(n,mean = 0, sd = sigma[s])
     mlr_data=mlr_sim(sig_data,sd=sigma[s])
     
     trn_idx = sample(1:nrow(mlr_data), 250)
@@ -264,3 +264,58 @@ The above plots shows the comparision of the average RMSE of all the 9 models fo
 
 
 ## Simulation Study 3, Power
+
+```{r}
+alpha = 0.05
+beta_1 = seq(from=-2,to=2,by=0.1)
+sigma = c(1,2,4)
+n = c(10,20,30)
+no_loop = 1000
+
+slr_sim = function(n_in,sd=1,beta_1_in=-2){
+  x_values = seq(0, 5, length = n_in)
+  set.seed(1234)
+  epsilon = rnorm(n_in,mean = 0,sd = sd)
+  y = beta_1_in * x_values + epsilon
+  data.frame(predictor = x_values,response=y)
+}
+
+
+
+model_n_10_sigma_1 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
+model_n_10_sigma_2 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
+model_n_10_sigma_4 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
+  
+model_n_20_sigma_1 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
+model_n_20_sigma_2 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
+model_n_20_sigma_4 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
+  
+model_n_30_sigma_1 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
+model_n_30_sigma_2 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
+model_n_30_sigma_4 = cbind(beta_minus_2=rep(0,no_loop),beta_minus_1.9=rep(0,no_loop),beta_minus_1.8=rep(0,no_loop),beta_minus_1.7=rep(0,no_loop),beta_minus_1.6=rep(0,no_loop),beta_minus_1.5=rep(0,no_loop),beta_minus_1.4=rep(0,no_loop),beta_minus_1.3=rep(0,no_loop),beta_minus_1.2=rep(0,no_loop),beta_minus_1.1=rep(0,no_loop),beta_minus_1=rep(0,no_loop),beta_minus_0.9=rep(0,no_loop),beta_minus_0.8=rep(0,no_loop),beta_minus_0.7=rep(0,no_loop),beta_minus_0.6=rep(0,no_loop),beta_minus_0.5=rep(0,no_loop),beta_minus_0.4=rep(0,no_loop),beta_minus_0.3=rep(0,no_loop),beta_minus_0.2=rep(0,no_loop),beta_minus_0.1=rep(0,no_loop),beta_0=rep(0,no_loop),beta_0.1=rep(0,no_loop),beta_0.2=rep(0,no_loop),beta_0.3=rep(0,no_loop),beta_0.4=rep(0,no_loop),beta_0.5=rep(0,no_loop),beta_0.6=rep(0,no_loop),beta_0.7=rep(0,no_loop),beta_0.8=rep(0,no_loop),beta_0.9=rep(0,no_loop),beta_1=rep(0,no_loop),beta_1.1=rep(0,no_loop),beta_1.2=rep(0,no_loop),beta_1.3=rep(0,no_loop),beta_1.4=rep(0,no_loop),beta_1.5=rep(0,no_loop),beta_1.6=rep(0,no_loop),beta_1.7=rep(0,no_loop),beta_1.8=rep(0,no_loop),beta_1.9=rep(0,no_loop),beta_2=rep(0,no_loop))
+  
+
+model_sim = cbind(beta_1_sim_val=rep(0,length(beta_1)),n_10_sigma_1=rep(0,length(beta_1)),n_20_sigma_1=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)),n_10_sigma_2=rep(0,length(beta_1)),n_20_sigma_2=rep(0,length(beta_1)),n_30_sigma_2=rep(0,length(beta_1)),n_10_sigma_4=rep(0,length(beta_1)),n_20_sigma_4=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)))
+
+model_sim[,1] = seq(from=-2,to=2,by=0.1)
+
+for(s in 1:length(sigma)){ #sigma = c(1,2,4)
+  extra_counter = 0
+  for (n_s in 1:length(n)){ #n = c(10,20,30)
+    for (b in 1:length(beta_1)){ # beta_1 = seq(from=-2,to=2,by=0.1)
+      tot_sum_signifincace_sim = 0
+      for(i in 1:no_loop){
+        slr_data = slr_sim(n_in = n[n_s], sd = sigma[s], beta_1_in = beta_1[b] )
+        model = lm(response~predictor, data = slr_data)
+        model_p_val = summary(model)$coefficient[2,4]
+        tot_sum_signifincace_sim = tot_sum_signifincace_sim + ifelse(model_p_val<alpha,1,0)
+      }
+      power_sim_beta = tot_sum_signifincace_sim / no_loop
+      model_sim[b,s+n_s+extra_counter] = power_sim_beta    
+      print (paste("Sigma:",sigma[s]," n:",n[n_s]," beta_1:",beta_1[b]," Signifiance_Sum:",tot_sum_signifincace_sim, " Power:",power_sim_beta))
+    }
+  }
+  extra_counter = extra_counter + 2
+}
+
+```
