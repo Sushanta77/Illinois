@@ -260,4 +260,7 @@ points(6, min(test_rmse_mat[,1]), col="chartreuse4",pch=16,cex=3) #This is to hi
 legend("topright",legend=c("sigma = 4","sigma = 2","simga = 1"),col=c("red","blue4","chartreuse4"),lty=c(1,2,3))
 ```
 
-The above plots shows the comparision of the average RMSE of all the 9 models for respective 3 sigma values (1, 2 and 4). The big filled circle points the lowest of the RMSE. From the comparision of the plot, it shows that **lowest RMSE** is from the **sigma =1**, also noted that **higher the value of sigma, higher will be the Test RMSE**. Hence to lower the RMSE for the test, we need to choose the lower value of noise (i.e. sigma)
+The above plots shows the comparision of the average RMSE of all the 9 models for respective 3 sigma values (1, 2 and 4). The big filled circle points the lowest of the RMSE. From the comparision of the plot, it shows that **lowest RMSE** is from the **sigma =1**, also noted that **higher the value of sigma, higher will be the Test RMSE**. Hence to lower the RMSE for the test, we need to choose the lower value of noise (i.e. sigma) 
+
+
+## Simulation Study 3, Power
