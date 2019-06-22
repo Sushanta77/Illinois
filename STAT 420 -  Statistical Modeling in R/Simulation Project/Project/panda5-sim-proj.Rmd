@@ -6,9 +6,60 @@ output: html_document
 ---
 ## Simulation Study 1: Significance of Regression
 
+Below is the simulation for the **Significance Model**
+```{r}
+birthday = 19770411
+set.seed(birthday)
+
+beta_0 = 3
+beta_1 = 1
+beta_2 = 1
+beta_3 = 1
+n = 25
+sigma = c(1,5,10)
+
+exer_data = read.csv("study_1.csv")
+
+for(s in 1:length(sigma)){
+  epsilon = rnorm(n,mean = 0,sd = sigma[s])
+  exer_data[,1] = beta_0 + beta_1 * exer_data[,2] + beta_2 * exer_data[,3] + beta_3 * exer_data[,4] + epsilon
+  null_model = lm(y~1,data=exer_data)
+  full_model = lm(y~x1+x2+x3,data=exer_data)
+  print (paste("Sigma:",sigma[s]," F Statistics:",anova(null_model,full_model)$F[2],"P Value:",anova(null_model,full_model)$'Pr(>F)'[2], "R Squared:",summary(full_model)$r.squared))
+}
+```
+
+Below is the simulation for the **Non Significance Model**
+```{r}
+birthday = 19770411
+set.seed(birthday)
+
+beta_0 = 3
+beta_1 = 0
+beta_2 = 0
+beta_3 = 0
+n = 25
+sigma = c(1,5,10)
+
+exer_data = read.csv("study_1.csv")
+
+for(s in 1:length(sigma)){
+  epsilon = rnorm(n,mean = 0,sd = sigma[s])
+  exer_data[,1] = beta_0 + beta_1 * exer_data[,2] + beta_2 * exer_data[,3] + beta_3 * exer_data[,4] + epsilon
+  null_model = lm(y~1,data=exer_data)
+  full_model = lm(y~x1+x2+x3,data=exer_data)
+  print (paste("Sigma:",sigma[s]," F Statistics:",anova(null_model,full_model)$F[2],"P Value:",anova(null_model,full_model)$'Pr(>F)'[2], "R Squared:",summary(full_model)$r.squared))
+}
+```
+
+
+
 
 ## Simulation Study 2: Significance of Regression
 ```{r}
+birthday = 19770411
+set.seed(birthday)
+
 beta_0 = 0
 beta_1 = 5
 beta_2 = -4
@@ -266,6 +317,9 @@ The above plots shows the comparision of the average RMSE of all the 9 models fo
 ## Simulation Study 3, Power
 
 ```{r}
+birthday = 19770411
+set.seed(birthday)
+
 alpha = 0.05
 beta_1 = seq(from=-2,to=2,by=0.1)
 sigma = c(1,2,4)
