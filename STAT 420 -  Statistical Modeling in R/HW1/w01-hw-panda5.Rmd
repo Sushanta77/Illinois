@@ -1,0 +1,203 @@
+---
+title: "w01-hw-panda5"
+author: "Sushanta Panda"
+date: "5/19/2019"
+output: 
+  html_document: 
+    theme: journal
+    toc: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Exercise 1 (Subsetting and Statistics)
+
+In this exercise we will use the **msleep** dataset from the ***ggplot** package
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+data = ggplot2::msleep
+```
+(a) Number of observation in the msleep dataset is: **`r nrow(data)`** , Number of variables in the msleep dataset is: **`r ncol(data)`**
+
+#### Below are few Observations on msleep Data Set
+
+ - **`r data[which.max(data$awake),]$name`** is the most awake mammals in the dataset with `r data[which.max(data$awake),]$awake` Hrs or **`r  (data[which.max(data$awake),]$awake/24)*100`** % time of awake
+ - **`r data[which.min(data$awake),]$name`** is the most sleepy mammals in the dataset with `r data[which.min(data$awake),]$sleep_total` Hrs or  **`r  (data[which.min(data$awake),]$sleep_total/24)*100`** % time of sleep
+ - **Insecti** seems to have higher sleep hours against carniverous, herbirous and omni, where the median total_sleep hours is **`r median(data[data$vore == "insecti",]$sleep_total,na.rm = TRUE)`**
+
+```{r}
+ boxplot (sleep_total~vore,
+          data=data,
+          xlab = "Vore",
+          main = "Sleep Hours against Vore",
+          col="#FFCC33",
+          border="#CC6666")
+```
+
+(b) mean hours of rem sleep of individuals: **`r mean(data$sleep_rem,na.rm = TRUE)`**
+(c) standard deviation (sd) of brain weight of individuals: **`r sd(data$brainwt,na.rm = TRUE)`**
+(d) observation gets most rem sleep of individuals: **`r data[which.max(ifelse(is.na(data$sleep_rem),0,data$sleep_rem)),]$name`**
+(e) average body weight of carnivores of individuals: **`r mean(data[data$vore == "carni",]$bodywt,na.rm = TRUE)`**
+
+### Exercise 2 (Plotting)
+In this exercise we will use the **birthwt** dataset from the ***ggplot** package
+```{r}
+library(MASS)
+data_birthwt = MASS::birthwt
+```
+(a) Number of observation in the msleep dataset is: **`r nrow(data_birthwt)`** , Number of variables in the msleep dataset is: **`r ncol(data_birthwt)`**
+
+#### Below are few Observations on msleep Data Set
+
+- **White Race** has **`r sum(as.numeric(data_birthwt[data_birthwt$race == '1',]$smoke))/nrow(data_birthwt[data_birthwt$race == '1',])*100`** %Smoker, **Black Race** has **`r sum(as.numeric(data_birthwt[data_birthwt$race == '2',]$smoke))/nrow(data_birthwt[data_birthwt$race == '2',])*100`** %Smoker, and **Others** has **`r sum(as.numeric(data_birthwt[data_birthwt$race == '3',]$smoke))/nrow(data_birthwt[data_birthwt$race == '3',])*100`** %Smoker
+- Black Woman seems to have mother-hood at very early age of min age **`r min(data_birthwt[data_birthwt$race == 2,]$age)`** and median of age **`r median(data_birthwt[data_birthwt$race == 2,]$age)`** 
+
+-It seems lower the mother's weight have increased chance of premature labours. Number of Previous premature labours of 3 have mother's weight **`r data_birthwt[data_birthwt$ptl == 3,]$lwt`**, where as number of previous premature labours of 2 have minimum age of **`r min(data_birthwt[data_birthwt$ptl == 2,]$lwt)`**, and medium age of **`r median(data_birthwt[data_birthwt$ptl == 2,]$lwt)`**. However though this is not so strong influencer for premature labour for 2 as compared to 1 or 0, however for premature labours of 3, it's a clear sign
+
+```{r}
+boxplot(lwt~ptl,
+        data = data_birthwt,
+        xlab = "Number of previous premature labours",
+        ylab = "Mother's Weight",
+        main="Previous Premature Labours Vs Mother's Weight",
+        col = "#CCCC00",
+        border = "#333300")
+```
+
+
+```{r}
+boxplot(age~race,
+        data=data_birthwt,
+        xlab="Race",
+        yalb="Mother's Age",
+        main="Mother's Race Against Mother's Age",
+        col="#999933",
+        border="#330000")
+```
+
+
+```{r}
+plot (bwt~lwt,
+      data=data_birthwt,
+      xlab="Mother's Weight",
+      ylab="Birth Weight",
+      main="Scater Plot of mother's weight Vs birth weight",
+      col="red",
+      pch=4,
+      cex=1)
+```
+It seems to have no relationship (no patterns) among mother's weight and baby's birth weight. Tthe mother's weight less than 200 ***(<200)** has baby's birth weight is in range between 1000 till 4000 (high range). Where as the mother's weight above 200 **(> 200)** has the baby's weight is in between 3000 till 4000 with very little range. 
+
+
+```{r}
+plot(bwt~age,
+     data=data_birthwt,
+     xlab="Mother's Age",
+     ylab="Birth Weight",
+     main="Scater Plot Mother's Age Vs birth weight",
+     col="blue",
+     pch=4,
+     cex=1)
+```
+It seems there is no relationship between Mother's Age and baby's weight. As the mother's age between 17 and 27, the baby's birth weight vary between 1500 and 4000. Where as after Mother's age 30, the baby's birth weight is vary between 2000 and 4000. There is no clear pattern observed between the two variable.
+
+```{r}
+boxplot(bwt~smoke,
+        data=data_birthwt,
+        xlab="Smoke",
+        ylab="Birth Weight",
+        main="Box Plot Birth Weight Against Smoke (Yes/No)",
+        col="orange",
+        border="red")
+```
+From the above Boxplot, it shows, the non-smoker (smoke = 0) have higher baby's birth weight than the mother's who smoke (smoke=1), as the median (red line) is bit higher for non-smoker (smoke = 0) than that of smoker (smoke = 1). Also the **IQR** seems high for the non-smoker (smoke = 0) which shows the box (Q3-Q1) is higher than that of smoker (smoke = 1), which depicts the baby's birth weight is higher and on higher range than for the mother's who smpoke (smoke = 1)
+
+
+### Exercise 3 (Importing Data, More Plotting)
+
+```{r message=FALSE, warning=FALSE}
+library(readr)
+nut <- read_csv("nutrition-2018.csv")
+```
+
+```{r}
+hist(nut$Calories,
+     xlab = "Amount of Calories",
+     main = "Calories Histogram",
+     col="lightgreen",
+     border="magenta",
+    )
+```
+Calories Histogram tells, most of the food items have low in calories, as the histogram is right skewed. There are very few items which have high in calories, can be seen in the right of the calories (where the count shows as **86**). Also, beyond **>800** calories, there are very little food items **means which ave high in calories**
+
+```{r}
+plot(Calories~Protein,
+     data=nut,
+     xlab = "Amount of Protein",
+     ylab = "Amount of Calories",
+     col="orange",
+     pch=4,
+     cex=1)
+```
+
+There is no relationship (pattern) observed among the amount of protein Vs amount of calories in a food item. As in the initial where the amount of proten is low **(<40)**, the amount of calories have a range between 20 and 600 (mostly), where the range gets reduced as increase the amount of protein level. After amount of protein level crosses 40 **(>40)**, the amount of calories level seems to be have within the range of 300 to 400 and also very few food items which have high protein (above 40), as most of the food items have protein level within 40.
+
+
+```{r}
+plot(nut$Calories~(I(4*nut$Protein+4*nut$Carbs+9*nut$Fat)),
+     xlab = "4 * Proten + 4 * Carbs + 9 * Fat",
+     ylab = "Calories",
+     col = "red",
+     pch = 4,
+     cex = 1)
+```
+The scatter plot is a straight line, which means the addition of (Protein+Carbs+Fats) in X Axis produces a linear reletationship with the amount of calories which is in the Y Axis.
+
+
+### Exercise 4 (Writing and Using Functions)
+
+```{r}
+a = 1:10
+b = 10:1
+c = rep(1, times = 10) 
+d = 2 ^ (1:10)
+```
+
+```{r}
+sum_of_squares = function(x){
+ sum(x^2)
+}
+```
+(a) Output of sum_of_squares(x = a) is: **`r sum_of_squares(x = a)`** AND Output of the value sum_of_squares(x = c(c, d)) is: **`r sum_of_squares(x = (c(c, d)))`** 
+(c) Value of the Function: **`r sqrt(sum_of_squares(x = (d-0))/length(d-0))`**
+(d) Value of the Function: **`r sqrt(sum_of_squares(x = (a-b))/length(a-b))`**
+
+### Exercise 5 (More Writing and Using Functions)
+
+```{r}
+set.seed(42)
+x = 1:100
+y = rnorm(1000)
+z = runif(150, min = 0, max = 1)
+```
+
+```{r}
+list_extreme_values = function(x,k=2){
+  output <- list(x[(x < (mean(x) - k*sd(x)))],  x[(x > (mean(x) + k*sd(x)))] )
+  output
+}
+
+list_extreme_values(x = x, k = 1) 
+list_extreme_values(x = y, k = 3) 
+list_extreme_values(x = y, k = 2) 
+list_extreme_values(x = z, k = 1.5)
+```
+
+
+The mean of observations that are greater than 1.5 standard deviation above the mean in the vector y **`r mean(list_extreme_values(x=y,k=1.5)[[2]])`**
+
+

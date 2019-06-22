@@ -1,0 +1,263 @@
+---
+title: "panda5-sim-proj"
+author: "Sushanta Panda"
+date: "6/21/2019"
+output: html_document
+---
+## Simulation Study 1: Significance of Regression
+
+
+## Simulation Study 2: Significance of Regression
+```{r}
+beta_0 = 0
+beta_1 = 5
+beta_2 = -4
+beta_3 = 1.6
+beta_4 = -1.1
+beta_5 = 0.7
+beta_6 = 0.3
+n = 500
+no_loop = 1000
+sigma = c(1,2,4)
+sig_data = read.csv("study_2.csv")
+
+
+mlr_sim = function(data,sd=1){
+  epsilon = rnorm(n,mean = 0,sd = sd)
+  data[,1] = beta_0 + beta_1 * data[,2] + beta_2 * data[,3] + beta_3 * data[,4] + beta_4 * data[,5] + beta_5 * data[,6] + beta_6 * data[,7] + epsilon
+  data
+}
+train_rmse_model1_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+train_rmse_model2_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+train_rmse_model3_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+train_rmse_model4_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+train_rmse_model5_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+train_rmse_model6_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+train_rmse_model7_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+train_rmse_model8_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+train_rmse_model9_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+
+test_rmse_model1_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+test_rmse_model2_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+test_rmse_model3_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+test_rmse_model4_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+test_rmse_model5_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+test_rmse_model6_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+test_rmse_model7_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+test_rmse_model8_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+test_rmse_model9_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
+train_rmse_mat = cbind(sigma_1=rep(0,9),sigma_2=rep(0,9),sigma_4=rep(0,9))
+test_rmse_mat = cbind(sigma_1=rep(0,9),sigma_2=rep(0,9),sigma_4=rep(0,9))
+
+for(s in 1:length(sigma)){
+  model1_counter = 0 
+  model2_counter = 0 
+  model3_counter = 0 
+  model4_counter = 0 
+  model5_counter = 0 
+  model6_counter = 0 
+  model7_counter = 0 
+  model8_counter = 0 
+  model9_counter = 0 
+  
+  for(i in 1:no_loop){
+    epsilon = rnorm(n,mean = 0, sd = sigma[s])
+    mlr_data=mlr_sim(sig_data,sd=sigma[s])
+    
+    trn_idx = sample(1:nrow(mlr_data), 250)
+    n_test = nrow(mlr_data) - length(trn_idx)
+    
+    model1 = lm(y~x1,data=mlr_data[trn_idx,])
+    model2 = lm(y~x1+x2,data=mlr_data[trn_idx,])
+    model3 = lm(y~x1+x2+x3,data=mlr_data[trn_idx,])
+    model4 = lm(y~x1+x2+x3+x4,data=mlr_data[trn_idx,])
+    model5 = lm(y~x1+x2+x3+x4+x5,data=mlr_data[trn_idx,])
+    model6 = lm(y~x1+x2+x3+x4+x5+x6,data=mlr_data[trn_idx,])
+    model7 = lm(y~x1+x2+x3+x4+x5+x6+x7,data=mlr_data[trn_idx,])
+    model8 = lm(y~x1+x2+x3+x4+x5+x6+x7+x8,data=mlr_data[trn_idx,])
+    model9 = lm(y~x1+x2+x3+x4+x5+x6+x7+x8+x9,data=mlr_data[trn_idx,])
+    
+    model1_counter = model1_counter + 1
+    model2_counter = model2_counter + 1
+    model3_counter = model3_counter + 1 
+    model4_counter = model4_counter + 1 
+    model5_counter = model5_counter + 1
+    model6_counter = model6_counter + 1 
+    model7_counter = model7_counter + 1
+    model8_counter = model8_counter + 1
+    model9_counter = model9_counter + 1
+    
+    newdata_model1 = subset(mlr_data[-trn_idx,],select=c("x1"))
+    newdata_model2 = subset(mlr_data[-trn_idx,],select=c("x1","x2"))
+    newdata_model3 = subset(mlr_data[-trn_idx,],select=c("x1","x2","x3"))
+    newdata_model4 = subset(mlr_data[-trn_idx,],select=c("x1","x2","x3","x4"))
+    newdata_model5 = subset(mlr_data[-trn_idx,],select=c("x1","x2","x3","x4","x5"))
+    newdata_model6 = subset(mlr_data[-trn_idx,],select=c("x1","x2","x3","x4","x5","x6"))
+    newdata_model7 = subset(mlr_data[-trn_idx,],select=c("x1","x2","x3","x4","x5","x6","x7"))
+    newdata_model8 = subset(mlr_data[-trn_idx,],select=c("x1","x2","x3","x4","x5","x6","x7","x8"))
+    newdata_model9 = subset(mlr_data[-trn_idx,],select=c("x1","x2","x3","x4","x5","x6","x7","x8","x9"))    
+    
+    train_rmse_model1 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model1))^2) / length(trn_idx))
+    train_rmse_model2 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model2))^2) / length(trn_idx))
+    train_rmse_model3 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model3))^2) / length(trn_idx))
+    train_rmse_model4 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model4))^2) / length(trn_idx))
+    train_rmse_model5 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model5))^2) / length(trn_idx))
+    train_rmse_model6 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model6))^2) / length(trn_idx))
+    train_rmse_model7 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model7))^2) / length(trn_idx))
+    train_rmse_model8 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model8))^2) / length(trn_idx))
+    train_rmse_model9 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model9))^2) / length(trn_idx))
+    train_rmse_model1_mat[i,s] = train_rmse_model1
+    train_rmse_model2_mat[i,s] = train_rmse_model2
+    train_rmse_model3_mat[i,s] = train_rmse_model3
+    train_rmse_model4_mat[i,s] = train_rmse_model4
+    train_rmse_model5_mat[i,s] = train_rmse_model5
+    train_rmse_model6_mat[i,s] = train_rmse_model6
+    train_rmse_model7_mat[i,s] = train_rmse_model7
+    train_rmse_model8_mat[i,s] = train_rmse_model8
+    train_rmse_model9_mat[i,s] = train_rmse_model9    
+    
+    test_rmse_model1 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model1,newdata=newdata_model1))^2) / n_test)
+    test_rmse_model2 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model2,newdata=newdata_model2))^2) / n_test)
+    test_rmse_model3 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model3,newdata=newdata_model3))^2) / n_test)
+    test_rmse_model4 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model4,newdata=newdata_model4))^2) / n_test)
+    test_rmse_model5 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model5,newdata=newdata_model5))^2) / n_test)
+    test_rmse_model6 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model6,newdata=newdata_model6))^2) / n_test)
+    test_rmse_model7 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model7,newdata=newdata_model7))^2) / n_test)
+    test_rmse_model8 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model8,newdata=newdata_model8))^2) / n_test)
+    test_rmse_model9 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model9,newdata=newdata_model9))^2) / n_test)
+    test_rmse_model1_mat[i,s] = test_rmse_model1
+    test_rmse_model2_mat[i,s] = test_rmse_model2
+    test_rmse_model3_mat[i,s] = test_rmse_model3
+    test_rmse_model4_mat[i,s] = test_rmse_model4
+    test_rmse_model5_mat[i,s] = test_rmse_model5
+    test_rmse_model6_mat[i,s] = test_rmse_model6
+    test_rmse_model7_mat[i,s] = test_rmse_model7
+    test_rmse_model8_mat[i,s] = test_rmse_model8
+    test_rmse_model9_mat[i,s] = test_rmse_model9
+  }
+  
+  print (paste("Number of times the model : 1 trained for alpha:",sigma[s]," is: ",model1_counter))
+  print (paste("Number of times the model : 2 trained for alpha:",sigma[s]," is: ",model2_counter))
+  print (paste("Number of times the model : 3 trained for alpha:",sigma[s]," is: ",model3_counter))
+  print (paste("Number of times the model : 4 trained for alpha:",sigma[s]," is: ",model4_counter))
+  print (paste("Number of times the model : 5 trained for alpha:",sigma[s]," is: ",model5_counter))
+  print (paste("Number of times the model : 6 trained for alpha:",sigma[s]," is: ",model6_counter))  
+  print (paste("Number of times the model : 7 trained for alpha:",sigma[s]," is: ",model7_counter))  
+  print (paste("Number of times the model : 8 trained for alpha:",sigma[s]," is: ",model8_counter))  
+  print (paste("Number of times the model : 9 trained for alpha:",sigma[s]," is: ",model9_counter))  
+
+}
+for(s in 1:length(sigma)){
+  train_rmse_mat[1,s] = mean(train_rmse_model1_mat[,s])
+  train_rmse_mat[2,s] = mean(train_rmse_model2_mat[,s])
+  train_rmse_mat[3,s] = mean(train_rmse_model3_mat[,s])
+  train_rmse_mat[4,s] = mean(train_rmse_model4_mat[,s])
+  train_rmse_mat[5,s] = mean(train_rmse_model5_mat[,s])
+  train_rmse_mat[6,s] = mean(train_rmse_model6_mat[,s])
+  train_rmse_mat[7,s] = mean(train_rmse_model7_mat[,s])
+  train_rmse_mat[8,s] = mean(train_rmse_model8_mat[,s])
+  train_rmse_mat[9,s] = mean(train_rmse_model9_mat[,s])  
+  
+  test_rmse_mat[1,s] = mean(test_rmse_model1_mat[,s])
+  test_rmse_mat[2,s] = mean(test_rmse_model2_mat[,s])
+  test_rmse_mat[3,s] = mean(test_rmse_model3_mat[,s])
+  test_rmse_mat[4,s] = mean(test_rmse_model4_mat[,s])
+  test_rmse_mat[5,s] = mean(test_rmse_model5_mat[,s])
+  test_rmse_mat[6,s] = mean(test_rmse_model6_mat[,s])
+  test_rmse_mat[7,s] = mean(test_rmse_model7_mat[,s])
+  test_rmse_mat[8,s] = mean(test_rmse_model8_mat[,s])
+  test_rmse_mat[9,s] = mean(test_rmse_model9_mat[,s])
+}
+```
+
+```{r}
+plot(seq(1,9), train_rmse_mat[,1], type="o", col="blue", pch="o", lty=1,main="Sigma = 1",xlab = "MODEL SIZE",ylab = "RMSE")
+points(seq(1,9), test_rmse_mat[,1], col="red", pch=8)
+lines(seq(1,9), test_rmse_mat[,1], col="red",lty=2)
+legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
+```
+
+```{r}
+plot(seq(1,9), train_rmse_mat[,2], type="o", col="blue", pch="o", lty=1,main="Sigma = 2",xlab = "MODEL SIZE",ylab = "RMSE")
+points(seq(1,9), test_rmse_mat[,2], col="red", pch=8)
+lines(seq(1,9), test_rmse_mat[,2], col="red",lty=2)
+legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
+```
+
+```{r}
+plot(seq(1,9), train_rmse_mat[,3], type="o", col="blue", pch="o", lty=1,main="Sigma = 4",xlab = "MODEL SIZE",ylab = "RMSE")
+points(seq(1,9), test_rmse_mat[,3], col="red", pch=8)
+lines(seq(1,9), test_rmse_mat[,3], col="red",lty=2)
+legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
+```
+
+
+```{r}
+plot(test_rmse_model1_mat[,1],col="dodgerblue",ylim=(c(0.8,3)),pch=1,lty=1,)
+points(test_rmse_model2_mat[,1], col="orangered",ylim=(c(0.8,3)),pch=1,lty=2)
+points(test_rmse_model3_mat[,1], col="blue4",ylim=(c(0.8,3)),pch=1,lty=3)
+points(test_rmse_model4_mat[,1], col="limegreen",ylim=(c(0.8,3)),pch=1,lty=3)
+points(test_rmse_model5_mat[,1], col="orange",ylim=(c(0.8,3)),pch=1,lty=4)
+points(test_rmse_model6_mat[,1], col="darkorchid",ylim=(c(0.8,3)),pch=6,lty=5)
+points(test_rmse_model7_mat[,1], col="violetred",ylim=(c(0.8,3)),pch=1,lty=6)
+points(test_rmse_model8_mat[,1], col="tan3",ylim=(c(0.8,3)),pch=1,lty=7)
+points(test_rmse_model9_mat[,1], col="deeppink",ylim=(c(0.8,3)),pch=1,lty=8)
+legend("topright",legend=c("Model1","Model2","Model3","Model4","Model5","Model6","Model7","Model8","Model9"),col=c("dodgerblue","orangered","blue4","limegreen","orange","darkorchid","violetred","tan3","deeppink"),lty=c(1,2,3,4,5,6,7,8,9))
+```
+
+** The above model plots the RMSE of all model created from the simulation for the Sigma = 1 **
+The correct model should be the one which should have the **lowest RMSE**. From the above plots (which plots against all the 1000 RMSE of simulation) it shows that the Model 1 and Model 2 have higher RMSE and distinctly far from the other model (Model 3/4/5/6/7/8/9), hence its obious to ignore the Model 1 and Model 2. Let's explore the other models as below 
+
+
+
+```{r}
+plot(test_rmse_model3_mat[,1], col="dodgerblue",ylim=(c(0.9,1.3)),pch=1,lty=3)
+points(test_rmse_model4_mat[,1], col="limegreen",ylim=(c(0.9,1.3)),pch=1,lty=3)
+points(test_rmse_model5_mat[,1], col="orange",ylim=(c(0.9,1.3)),pch=1,lty=4)
+points(test_rmse_model6_mat[,1], col="darkorchid",ylim=(c(0.9,1.3)),pch=8,lty=5)
+points(test_rmse_model7_mat[,1], col="violetred",ylim=(c(0.9,1.3)),pch=1,lty=6)
+points(test_rmse_model8_mat[,1], col="tan3",ylim=(c(0.9,1.3)),pch=1,lty=7)
+points(test_rmse_model9_mat[,1], col="deeppink",ylim=(c(0.9,1.3)),pch=1,lty=8)
+legend("topright",legend=c("Model3","Model4","Model5","Model6","Model7","Model8","Model9"),col=c("blue4","limegreen","orange","darkorchid","violetred","tan3","deeppink"),pch=c(1,1,1,8,1,1),lty=c(3,4,5,6,7,8,9))
+```
+
+** The above model plots the RMSE of models (3/4/5/6/7/8/9) created from the simulation for the Sigma = 1 **
+
+From the above plot, its clear that the **Model 6 not always** (marked in ** * **) selected as the **correct model**. There are many instances, where the ** Model 6 ** RMSE is higher than that of other models, also there are instances where the **Model 6** RMSE is the lowest among other models. Also other models also have in range with the **model 6**. Let's take a loot at the average plot of RMSE of all the models and plot
+
+
+```{r}
+plot(seq(1,9), test_rmse_mat[,1], type="o", col="chartreuse4", pch=8, lty=1,main="Sigma = 1",xlab = "MODEL SIZE",ylab = "RMSE")
+points(6, min(test_rmse_mat[,1]), col="chartreuse4",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 1
+```
+
+The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 1**, the **model 6** has the lowest RMSE which is around ``r min(test_rmse_mat[,1])``
+
+```{r}
+plot(seq(1,9), test_rmse_mat[,2], type="o", col="blue4", pch="*", lty=1,main="Sigma = 2",xlab = "MODEL SIZE",ylab = "RMSE")
+points(6, min(test_rmse_mat[,2]), col="blue4",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 2
+```
+The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 2**, the **model 6** has the lowest RMSE which is around ``r min(test_rmse_mat[,2])``
+
+
+```{r}
+plot(seq(1,9), test_rmse_mat[,3], type="o", col="red", pch="*", lty=1,main="Sigma = 4",xlab = "MODEL SIZE",ylab = "RMSE")
+points(6, min(test_rmse_mat[,3]), col="red",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 4
+```
+The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 4**, the **model 6** has the lowest RMSE which is around ``r min(test_rmse_mat[,3])``
+
+
+```{r}
+plot(seq(1,9), test_rmse_mat[,3], col="red",lty=1,ylim=c(0.5,5),xlab="MODEL SIZE",ylab="RMSE")
+lines(seq(1,9), test_rmse_mat[,3], col="red",lty=1)
+points(6, min(test_rmse_mat[,3]), col="red",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 4
+points(seq(1,9), test_rmse_mat[,2], col="blue4",lty=2)
+lines(seq(1,9), test_rmse_mat[,2], col="blue4",lty=2)
+points(6, min(test_rmse_mat[,2]), col="blue4",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 2
+points(seq(1,9), test_rmse_mat[,1], col="chartreuse4",lty=3)
+lines(seq(1,9), test_rmse_mat[,1], col="chartreuse4",lty=3)
+points(6, min(test_rmse_mat[,1]), col="chartreuse4",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 1
+legend("topright",legend=c("sigma = 4","sigma = 2","simga = 1"),col=c("red","blue4","chartreuse4"),lty=c(1,2,3))
+```
+
+The above plots shows the comparision of the average RMSE of all the 9 models for respective 3 sigma values (1, 2 and 4). The big filled circle points the lowest of the RMSE. From the comparision of the plot, it shows that **lowest RMSE** is from the **sigma =1**, also noted that **higher the value of sigma, higher will be the Test RMSE**. Hence to lower the RMSE for the test, we need to choose the lower value of noise (i.e. sigma)

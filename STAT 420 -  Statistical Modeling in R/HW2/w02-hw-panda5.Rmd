@@ -1,0 +1,279 @@
+---
+title: "w01-hw-panda5"
+author: "Sushanta Panda"
+date: "5/28/2019"
+output: 
+  html_document: 
+    theme: journal
+    toc: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+## Exercise 1 (Using lm)
+
+(a) Below print the **summary of the Linear fit model** of the cat's Heart Weight against the Cat's Brain's Weight
+```{r}
+library(MASS)
+data = MASS::cats
+cat_model = lm(Hwt~Bwt,data=cats)
+summary(cat_model)
+```
+
+(b) Below is to output the **estimated regression coefficient**
+
+```{r}
+beta_0_hat = coef(cat_model)[1]
+beta_1_hat = coef(cat_model)[2]
+c(beta_0_hat,beta_1_hat)
+```
+
+- **`r coef(cat_model)[2]`** is the estimated increase in mean cat's Heart Weight for an increase in cat's body weight of 1 Kg 
+- **`r coef(cat_model)[1]`** is the estimated cat's mean Heart Weight for Cat's body weight is 0 Kg
+
+
+(c) Predict the Cat's Heart Weight for the Cat's Body Weight **= 2.7 Kg**
+
+```{r}
+predict(cat_model,newdata=data.frame(Bwt=2.7))
+```
+
+The **SLR Model cat_model ** predicts the cat's hearth weight is:: **`r predict(cat_model,newdata=data.frame(Bwt=2.7))`** for the brain's weight as 2.7 kg. I feel **confident** about the prediction is because of the fact that, the given Cat's Brain Weight 2.7 Kg is with-in the range (Interpolation) of cat's Brain Weight **(i.e. `r min(cats$Bwt) < 2.7 & max(cats$Bwt) > 2.7`)**, where the minimum Cat's Brain Weight which is `r min(cats$Bwt)` and maximum weight is `r max(cats$Bwt)`
+
+(d) Predict the Cat's Heart Weight for the Cat's Body Weight **= 4.4 Kg**
+
+```{r}
+predict(cat_model,newdata=data.frame(Bwt=4.4))
+```
+
+The **SLR Model cat_model ** predicts the cat's hearth weight is **`r predict(cat_model,newdata=data.frame(Bwt=4.4))`** for the brain's weight as 4.4 kg. This doesn't feel confident about the prediction is because of the fact that, the given Cat's Brain Weight 4.4 Kg is outside the range (Extrapolation) of cat's Brain Weight **(i.e. `r min(cats$Bwt) < 4.4 & max(cats$Bwt) > 4.4`)**, where the minimum Cat's Brain Weight which is `r range(cats$Bwt)[1]` and maximum weight is `r range(cats$Bwt)[2]`
+
+(e) Scatter Plot of the Data, along with the fitted regression line
+
+```{r}
+plot(Hwt~Bwt,
+     data = cats,
+     xlab = "Cat's Brain Weight (In Kg)",
+     ylab = "Cat's Heart Weight (In gram)",
+     main = "Cat's Heart's Weight Vs Brain's Weight",
+     pch = 1,
+     cex = 1,
+     col = "red"
+     )
+abline(cat_model,lwd = 1, col = "green")
+```
+
+(f) The **R2** value for the cat's model
+
+```{r}
+SSTot = sum((cats$Hwt - mean(cats$Hwt))^2)
+SSReg = sum((fitted(cat_model) - mean(cats$Hwt))^2)
+R2 =  SSReg / SSTot
+```
+
+The R2 for the datamodel **cat_model** is calculated as **`r R2`**
+
+
+## Exercise 2 (Writing Function)
+
+(a) Create the function **get_sd_est**
+
+```{r}
+get_sd_est = function (fitted_vals,actual_vals,mle=FALSE){
+  if (mle){
+    sigma_2 = sum((actual_vals - fitted_vals)^2)
+    res_mean = sigma_2 / length(actual_vals)
+  }
+  else{
+    se_2 = sum((actual_vals - fitted_vals)^2)
+    res_mean = se_2 / (length(actual_vals) - 2)
+  }
+  sqrt(res_mean)
+}
+```
+
+(b) Output from the function **get_sd_est** with mle set to **FALSE** is :**`r get_sd_est(fitted(cat_model),cats$Hwt,FALSE)`**. This tells us that our estimates for cat's heart weight are "typically" off by **`r get_sd_est(fitted(cat_model),cats$Hwt,FALSE)`** gram.
+(c) Output from the function **get_sd_est** with mle set to **TRUE** is :**`r get_sd_est(fitted(cat_model),cats$Hwt,TRUE)`**. This tells us that our estimates for cat's heart weight are "typically" off by **`r get_sd_est(fitted(cat_model),cats$Hwt,TRUE)`** gram.
+(d) The **Sigma** which is **Residual Standard Error (RSE)** comes out from the **summary(cat_model)** which is **`r summary(cat_model)$sigma`** value is matching with the outcome from (b) where the value is : **`r get_sd_est(fitted(cat_model),cats$Hwt,FALSE)`** where MLE is **False**
+
+
+## Exercise 3 (Simulating SLR)
+
+(a) Below to to generate n= 25 Observations for the model
+```{r}
+birthday = 19770411 
+set.seed(birthday)
+
+num_obs = 25
+beta_0 = 5
+beta_1 = -3
+
+sim_slr=function(x, beta_0 = 5, beta_1 = -3, sigma){
+  n = length(x)
+  epsilon = rnorm(n, mean = 0, sd = sigma)
+  y = beta_0 + beta_1 * x + epsilon
+  data.frame (predictor = x, response = y)
+}
+
+x_vals = seq(from = 0, to = 25, length.out = num_obs)
+sim_data = sim_slr(x=x_vals, beta_0 = 5, beta_1 = -3, sigma = sqrt(10.24))
+sim_data
+```
+
+```{r}
+x = runif(n = 25, 0, 10)
+```
+
+(b) Fit the model to the simulated data
+
+```{r}
+sim_data_x = sim_slr(x=x, beta_0 = 5, beta_1 = -3, sigma = sqrt(10.24))
+sim_fit_x = lm(response~predictor,data = sim_data_x)
+sim_fit_x
+```
+The estimated coefficient is **beta_hat_0**: **`r coef(sim_fit_x)[1]`** and **beta_hat_1** is **`r coef(sim_fit_x)[2]`**
+
+The predicted response though close, however not identical matching with the simulation data. If we consider the difference between the true value (simulation) versus the prediction value with square the value is comings as `r sum((sim_data_x$response - fitted(sim_fit_x))^2)`, which seems to be not identical match
+
+(c) **Scatter plot** of the data, including the True Line Vs Estimated Line
+```{r}
+plot(response~predictor,
+     data=sim_data,
+     xlab = "Simulated Predicted Variable",
+     ylab = "Simulated Response Variable",
+     pch = 1,
+     cex = 1,
+     col = "brown",
+     ylim = c(-60,10))
+
+abline(beta_0,beta_1,lty=2,lwd=1,col="red")
+abline(sim_fit_x,lty=1,lwd=1,col="purple")
+
+legend("topright",c("Truth","Estimate"),lty=c(2,1),lwd=2,col=c("red","purple"))
+```
+
+
+(d) Looping to get the **1500** beta_hat_1 after the model fitting
+```{r}
+beta_hat_1 = rep(0,1500)
+for (k in 1:1500){
+  temp_sim_data = sim_slr(x=x, beta_0 = 5, beta_1 = -3, sigma = sqrt(10.24))
+  temp_sim_slr_fit = lm(response~predictor,data=temp_sim_data)
+  beta_hat_1[k] = coef(temp_sim_slr_fit)[2]
+}
+```
+
+(e) Mean and standard deviation of the beta_hat_1
+```{r}
+mean(beta_hat_1)
+sd(beta_hat_1)
+```
+Mean is: **`r mean(beta_hat_1)`** and Standard Deviation (SD) is: **`r sd(beta_hat_1)`**
+
+The mean which is **`r mean(beta_hat_1)`** seems to be somehow closing to the **beta_hat_1** which is calculated from the **point (b)** where the value of the **beta_hat_1** is **`r coef(sim_fit_x)[2]`**
+
+(f) Histogram of the **beta_hat_1**
+
+```{r}
+hist(beta_hat_1,
+     xlab = "beta_hat_1 values",
+     main = "beta_hat_1 Histogram",
+     col = "#CCCC00",
+     border = "#333300"
+)
+```
+
+The histogram is normal distributed, where the mean of the distribution is **`r mean(beta_hat_1)`** and standard deviation (SD): **`r sd(beta_hat_1)`** after simulating the data over 1500 times, with everytime it generates different response value. 
+
+## Exercise 4 (Be a Skeptic)
+
+(a) Simulate for **n = 75 observations**, where the model needs to be repeated **2500 times**.
+```{r}
+birthday = 19770411
+set.seed(birthday)
+
+x = runif(n = 75, 0, 10)
+
+num_obs = 75
+beta_0 = 3
+beta_1 = 0
+sigma = sqrt(4)
+
+beta_hat_1 = rep(0,2500)
+for (k in 1:2500){
+  temp_sim_data = sim_slr(x=x, beta_0 = beta_0, beta_1 = beta_1, sigma = sigma)
+  temp_sim_slr_fit = lm(response~predictor,data=temp_sim_data)
+  beta_hat_1[k] = coef(temp_sim_slr_fit)[2]
+}
+```
+
+(b) Create the Histogram
+```{r}
+hist(beta_hat_1,
+     xlab = "beta_hat_1 values",
+     main = "beta_hat_1 Histogram",
+     col = "orange",
+     border = "#333300"
+)
+```
+The histogram is normal distributed, where the mean of the distribution is **`r mean(beta_hat_1)`** after simulating the data over 1500 times, with everytime it generates different response value. 
+
+(c) Import the skeptic data and calculate the coefficient for beta_1
+```{r}
+library(readr)
+skeptic = read_csv("skeptic.csv")
+skeptic_fit = lm(response~predictor,data=skeptic)
+skeptic_fit
+```
+The fitted Coeficient for beta_1 is: **`r coef(skeptic_fit)[2]`**
+
+(d) Re-Plot the Histogram from b and plot the abline 
+```{r}
+hist(beta_hat_1,
+     xlab = "beta_hat_1 values",
+     main = "beta_hat_1 Histogram",
+     col = "orange",
+     border = "#333300"
+)
+abline(v=coef(skeptic_fit)[2],col="red",lwd=4)
+```
+
+(e) The **beta_1_hat** value from **(c)** is  **`r coef(skeptic_fit)[2]`** which is **negative**. 
+  
+    The proportion of beta_hat_1 values is smaller than **`r coef(skeptic_fit)[2]`** is :**`r pnorm(coef(skeptic_fit)[2],mean = mean(beta_hat_1), sd = sd(beta_hat_1))`**. After multiply with 2 the value is coming as : :**`r 2*pnorm(coef(skeptic_fit)[2],mean = mean(beta_hat_1), sd = sd(beta_hat_1))`**
+
+(f) Based on the data, it seems the **skeptic.csv** data cann't be generated from the given model in **Exercise 4**. As the estimated **beta_1** after the fitted linear regression from the skeptic data which is:**`r coef(skeptic_fit)[2]`** is far away from the mean of the beta_hat_1 histogram, where the mean is **`r mean(beta_hat_1)`** which is nearly **zero**. Though the estimated intercept which is :**`r coef(skeptic_fit)[1]`** is closer to the **beta_0** of the model which is **3**
+
+
+## Exercise 5 (Comparing Model)
+
+```{r}
+library(knitr)
+data(Ozone, package = "mlbench")
+Ozone = Ozone[, c(4, 6, 7, 8)]
+colnames(Ozone) = c("ozone", "wind", "humidity", "temp") 
+Ozone = Ozone[complete.cases(Ozone), ]
+
+ozone_model1 = lm(ozone~wind,data=Ozone)
+ozone_model2 = lm(ozone~humidity,data=Ozone)
+ozone_model3 = lm(ozone~temp,data=Ozone)
+
+ozone_model1_rmse = sqrt((sum((Ozone$ozone - predict(ozone_model1))^2))/length(Ozone$ozone))
+ozone_model2_rmse = sqrt((sum((Ozone$ozone - predict(ozone_model2))^2))/length(Ozone$ozone))
+ozone_model3_rmse = sqrt((sum((Ozone$ozone - predict(ozone_model3))^2))/length(Ozone$ozone))
+
+
+ozone_model1_r2 = (summary(ozone_model1))$r.squared
+ozone_model2_r2 = (summary(ozone_model2))$r.squared
+ozone_model3_r2 = (summary(ozone_model3))$r.squared
+
+model_compare = data.frame(
+  x = c("Model 1","Model 2","Model 3"),
+  rmse = c(ozone_model1_rmse,ozone_model2_rmse,ozone_model3_rmse),
+  r2 = c(ozone_model1_r2,ozone_model2_r2,ozone_model3_r2)
+)
+
+kable(model_compare, format = "pandoc",padding = 2,caption = "Model Comparision Table Between Model 1 Vs Model 2 Vs Model 3")
+```
+
+Based on the above Table againist the 3 models, the **Model 3** seems to be most helpful. The reason to choose the **Model 3** is because the RMSE (Error between the True Vs the Predicted) is small among all the 3 models and **R squared value (Coefficient of determination)** (which is the propotion of the observed variation for the response) is highest among the 3 models.
