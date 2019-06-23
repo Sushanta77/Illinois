@@ -2,7 +2,11 @@
 title: "panda5-sim-proj"
 author: "Sushanta Panda"
 date: "6/21/2019"
-output: html_document
+output: 
+  html_document: 
+    toc: yes
+editor_options: 
+  chunk_output_type: console
 ---
 ## Simulation Study 1: Significance of Regression
 
@@ -10,12 +14,9 @@ Below is the simulation for the **Significance Model**
 ```{r}
 birthday = 19770411
 set.seed(birthday)
-
 n = 25
 sigma = c(1,5,10)
 no_loop = 2500
-
-
 mlr_sim = function(n_in,sd=1,signifincance_ind=1){
   exer_data = read.csv("study_1.csv")
   
@@ -36,28 +37,18 @@ mlr_sim = function(n_in,sd=1,signifincance_ind=1){
   }
   exer_data
 }
-
-for(s in 1:length(sigma)){
-  mlr_data = mlr_sim(n,sigma[s],signifincance_ind = 1)
-  null_model = lm(y~1,data = mlr_data)
-  full_model = lm(y~x1+x2+x3,data = mlr_data)
-  print (paste("Sigma:",sigma[s]," F Statistics:",anova(null_model,full_model)$F[2],"P Value:",anova(null_model,full_model)$'Pr(>F)'[2], "R Squared:",summary(full_model)$r.squared))
-}
-
-for(s in 1:length(sigma)){
-  mlr_data = mlr_sim(n,sigma[s],signifincance_ind = 0)
-  null_model = lm(y~1,data = mlr_data)
-  full_model = lm(y~x1+x2+x3,data = mlr_data)
-  print (paste("Sigma:",sigma[s]," F Statistics:",anova(null_model,full_model)$F[2],"P Value:",anova(null_model,full_model)$'Pr(>F)'[2], "R Squared:",summary(full_model)$r.squared))
-}
-
 ```
 
-Below is the simulation for 2500 simulations
+###Below is the simulation for 2500 simulations (Significance Model)
 ```{r}
-model_significance = cbind(sigma_1_P=rep(0,no_loop),sigma_1_F=rep(0,no_loop),sigma_1_R_SQUARED=rep(0,no_loop),
-                           sigma_5_P=rep(0,no_loop),sigma_5_F=rep(0,no_loop),sigma_5_R_SQUARED=rep(0,no_loop),
-                           sigma_10_P=rep(0,no_loop),sigma_10_F=rep(0,no_loop),sigma_10_R_SQUARED=rep(0,no_loop))
+birthday = 19770411
+set.seed(birthday)
+#---------------------------------------------------------------------------------------------------------------
+# Below code is to simulate the Significance Model 
+#---------------------------------------------------------------------------------------------------------------
+model_significance = cbind(sigma_1_F=rep(0,no_loop),sigma_1_P=rep(0,no_loop),sigma_1_R_SQUARED=rep(0,no_loop),
+                           sigma_5_F=rep(0,no_loop),sigma_5_P=rep(0,no_loop),sigma_5_R_SQUARED=rep(0,no_loop),
+                           sigma_10_F=rep(0,no_loop),sigma_10_P=rep(0,no_loop),sigma_10_R_SQUARED=rep(0,no_loop))
 extra_counter = 0
 
 for(s in 1:length(sigma)){
@@ -73,7 +64,335 @@ for(s in 1:length(sigma)){
   extra_counter = extra_counter + 2
 }
 
+head(model_significance,10)
+#---------------------------------------------------------------------------------------------------------------
+# Below code is to simulate the Non Significance Model 
+#---------------------------------------------------------------------------------------------------------------
+model_nonsignificance = cbind(sigma_1_F=rep(0,no_loop),sigma_1_P=rep(0,no_loop),sigma_1_R_SQUARED=rep(0,no_loop),
+                           sigma_5_F=rep(0,no_loop),sigma_5_P=rep(0,no_loop),sigma_5_R_SQUARED=rep(0,no_loop),
+                           sigma_10_F=rep(0,no_loop),sigma_10_P=rep(0,no_loop),sigma_10_R_SQUARED=rep(0,no_loop))
+extra_counter = 0
+for(s in 1:length(sigma)){
+  print(paste("Sigma:",sigma[s]," extra_counter",extra_counter))
+  for (i in 1:no_loop){
+     mlr_data = mlr_sim(n,sigma[s],signifincance_ind = 0)
+     null_model = lm(y~1,data = mlr_data)
+     full_model = lm(y~x1+x2+x3,data = mlr_data)
+     model_nonsignificance[i,s+extra_counter] = anova(null_model,full_model)$F[2]
+     model_nonsignificance[i,s+extra_counter+1] = anova(null_model,full_model)$'Pr(>F)'[2]
+     model_nonsignificance[i,s+extra_counter+2] = summary(full_model)$r.squared
+  }
+  extra_counter = extra_counter + 2
+}
+
+head(model_nonsignificance,10)
+
 ```
+
+###Below is the Empirical distibution for 2500 simulations (Significance Model)
+```{r}
+hist(model_significance[,1],
+     main = "Empirical Distribution of F (Sigma = 1) [Significance Model]",
+     xlab = "Simulated values of F",
+     col = "darkolivegreen",
+     border = "white"
+     )
+
+hist(model_significance[,2],
+     main = "Empirical Distribution of P (Sigma = 1) [Significance Model]",
+     xlab = "Simulated values of P",
+     col = "darkgreen",
+     border = "white"
+     )
+
+hist(model_significance[,3],
+     main = "Empirical Distribution of R Squared (Sigma = 1) [Significance Model]",
+     xlab = "Simulated values of R Squared",
+     col = "darkcyan",
+     border = "white"
+     )
+
+hist(model_significance[,4],
+     main = "Empirical Distribution of F (Sigma = 5) [Significance Model]",
+     xlab = "Simulated values of F",
+     col = "darkolivegreen",
+     border = "white"
+     )
+
+hist(model_significance[,5],
+     main = "Empirical Distribution of P (Sigma = 5) [Significance Model]",
+     xlab = "Simulated values of P",
+     col = "darkgreen",
+     border = "white"
+     )
+
+hist(model_significance[,6],
+     main = "Empirical Distribution of R Squared (Sigma = 5) [Significance Model]",
+     xlab = "Simulated values of R Squared",
+     col = "darkcyan",
+     border = "white"
+     )
+
+hist(model_significance[,7],
+     main = "Empirical Distribution of F (Sigma = 10) [Significance Model]",
+     xlab = "Simulated values of F",
+     col = "darkolivegreen",
+     border = "white"
+     )
+
+hist(model_significance[,8],
+     main = "Empirical Distribution of P (Sigma = 10) [Significance Model]",
+     xlab = "Simulated values of P",
+     col = "darkgreen",
+     border = "white"
+     )
+
+hist(model_significance[,9],
+     main = "Empirical Distribution of R Squared (Sigma = 10) [Significance Model]",
+     xlab = "Simulated values of R Squared",
+     col = "darkcyan",
+     border = "white"
+     )
+
+```
+
+###Below is the Empirical distibution for 2500 simulations (Non-Significance Model)
+```{r}
+hist(model_nonsignificance[,1],
+     main = "Empirical Distribution of F (Sigma = 1) [Non Significance Model]",
+     xlab = "Simulated values of F",
+     col = "darkolivegreen",
+     border = "white",
+     probability = TRUE
+     )
+
+hist(model_nonsignificance[,2],
+     main = "Empirical Distribution of P (Sigma = 1) [Non Significance Model]",
+     xlab = "Simulated values of P",
+     col = "darkgreen",
+     border = "white"
+     )
+
+hist(model_nonsignificance[,3],
+     main = "Empirical Distribution of R Squared (Sigma = 1) [Non Significance Model]",
+     xlab = "Simulated values of R Squared",
+     col = "darkcyan",
+     border = "white"
+     )
+
+hist(model_nonsignificance[,4],
+     main = "Empirical Distribution of F (Sigma = 5) [Non Significance Model]",
+     xlab = "Simulated values of F",
+     col = "darkolivegreen",
+     border = "white"
+     )
+
+hist(model_nonsignificance[,5],
+     main = "Empirical Distribution of P (Sigma = 5) [Non Significance Model]",
+     xlab = "Simulated values of P",
+     col = "darkgreen",
+     border = "white"
+     )
+
+hist(model_nonsignificance[,6],
+     main = "Empirical Distribution of R Squared (Sigma = 5) [Non Significance Model]",
+     xlab = "Simulated values of R Squared",
+     col = "darkcyan",
+     border = "white"
+     )
+
+hist(model_nonsignificance[,7],
+     main = "Empirical Distribution of F (Sigma = 10) [Non Significance Model]",
+     xlab = "Simulated values of F",
+     col = "darkolivegreen",
+     border = "white"
+     )
+
+hist(model_nonsignificance[,8],
+     main = "Empirical Distribution of P (Sigma = 10) [Non Significance Model]",
+     xlab = "Simulated values of P",
+     col = "darkgreen",
+     border = "white"
+     )
+
+hist(model_nonsignificance[,9],
+     main = "Empirical Distribution of R Squared (Sigma = 10) [Non Significance Model]",
+     xlab = "Simulated values of R Squared",
+     col = "darkcyan",
+     border = "white"
+     )
+
+```
+
+##True Distribution 
+The true distribution will be only available for the **Non Significance Model**
+
+###True Distribution of F Tests
+```{r}
+curve(df(x, df1=3, df2=21),
+      xlab = "Probability",
+      ylab = "Frequency",
+      lwd=3,
+      col = "darkgreen")
+```
+The True distribution of the F Tests shows as a right skewed distribution, where in the initial values is inflated
+
+###True Distribution of P value
+```{r}
+curve(1-pf(df(x, df1=3, df2=21),df1 = 3,df2 = 21),
+      xlab = "Probability",
+      ylab = "Frequency",
+      lwd = 3,
+      col = "royalblue4")
+```
+The True distribution of the P value shows touching 
+
+###True Distribution of R Squared Value
+```{r}
+curve(dbeta(x, (4-1)/2, (25-4)/2),
+      xlab = "Probability",
+      ylab = "Frequency",
+      lwd = 3,
+      col = "palevioletred4")
+```
+The True distribution of R Squared is a beta distribution, right skewed distribution, where the shape 1 and shape 2 parameter is of value (k-1)/2 and (n-k)/2, where k = number of esimator in the True model(which is 4,i.e $\beta_{0} \beta_{1} \beta_{2} \beta_{3}) and n = number of elements in the data (which is 25)
+
+##How do the empirical distributions from the simulations compare to the true distributions?
+### Empirical distributions of F Test related to the True Distibution of F Test
+```{r}
+hist(model_nonsignificance[,1],
+     main = "Empirical Distribution of F (Sigma = 1) [Non Significance Model]",
+     xlab = "Simulated values of F",
+     col = "darkolivegreen1",
+     border = "white",
+     probability = TRUE
+     )
+curve(df(x, df1=3, df2=21),
+      lwd=3,
+      col = "darkgreen",
+      add = TRUE)
+
+hist(model_nonsignificance[,4],
+     main = "Empirical Distribution of F (Sigma = 5) [Non Significance Model]",
+     xlab = "Simulated values of F",
+     col = "darkolivegreen1",
+     border = "white",
+     probability = TRUE
+     )
+curve(df(x, df1=3, df2=21),
+      lwd=3,
+      col = "darkgreen",
+      add = TRUE)
+
+hist(model_nonsignificance[,7],
+     main = "Empirical Distribution of F (Sigma = 10) [Non Significance Model]",
+     xlab = "Simulated values of F",
+     col = "darkolivegreen1",
+     border = "white",
+     probability = TRUE
+     )
+curve(df(x, df1=3, df2=21),
+      lwd=3,
+      col = "darkgreen",
+      add = TRUE)
+```
+
+It seems the True distribution of the F test statistics is **matching** with the empirical distribution of the of the F Test for all the three (3) sigma values (1,5 and 10). The dark green color shows the true distribution of the F test statistics, where as the histogram in light green color is the empirical distribution of the F test statistics obtained from the simulated values.
+
+
+### Empirical distributions of P value related to the True Distibution of P (Non Siginificance)
+```{r}
+hist(model_nonsignificance[,2],
+     main = "Empirical Distribution of P (Sigma = 1) [Non Significance Model]",
+     xlab = "Simulated values of P",
+     col = "deepskyblue1",
+     border = "white",
+     probability = TRUE
+     )
+curve(1-pf(df(x, df1=3, df2=21),df1 = 3,df2 = 21),
+      lwd = 3,
+      col = "royalblue4",
+      add = TRUE)
+
+hist(model_nonsignificance[,5],
+     main = "Empirical Distribution of P (Sigma = 5) [Non Significance Model]",
+     xlab = "Simulated values of P",
+     col = "deepskyblue1",
+     border = "white",
+     probability = TRUE
+     )
+curve(1-pf(df(x, df1=3, df2=21),df1 = 3,df2 = 21),
+      lwd = 3,
+      col = "royalblue4",
+      add = TRUE)
+
+hist(model_nonsignificance[,8],
+     main = "Empirical Distribution of P (Sigma = 10) [Non Significance Model]",
+     xlab = "Simulated values of P",
+     col = "deepskyblue1",
+     border = "white",
+     probability = TRUE
+     )
+curve(1-pf(df(x, df1=3, df2=21),df1 = 3,df2 = 21),
+      lwd = 3,
+      col = "royalblue4",
+      add = TRUE)
+
+```
+
+From the above plots for all the empirical distrubution of the P values for the three (3) sigma values (1,5 and 10), it seems the empirical distribution is an uniform distibution, where as the true distribution is slightly lower in the initial, however being flat after it. Even though we can say, the true distribution is being flat after 0.2 of P value, before < 0.2 it's somehow shows curvature
+
+
+### Empirical distributions of R squared related to the True Distibution of R Squared (Non Siginificance Model)
+```{r}
+hist(model_nonsignificance[,3],
+     main = "Empirical Distribution of R Squared (Sigma = 1) [Non Significance Model]",
+     xlab = "Simulated values of R Squared",
+     col = "palevioletred1",
+     border = "white",
+     probability = TRUE
+     )
+curve(dbeta(x, (4-1)/2, (25-4)/2),
+      lwd = 3,
+      col = "palevioletred4",
+      add = TRUE)
+
+hist(model_nonsignificance[,6],
+     main = "Empirical Distribution of R Squared (Sigma = 5) [Non Significance Model]",
+     xlab = "Simulated values of R Squared",
+     col = "palevioletred1",
+     border = "white",
+     probability = TRUE
+     )
+curve(dbeta(x, (4-1)/2, (25-4)/2),
+      lwd = 3,
+      col = "palevioletred4",
+      add = TRUE)
+
+hist(model_nonsignificance[,9],
+     main = "Empirical Distribution of R Squared (Sigma = 10) [Non Significance Model]",
+     xlab = "Simulated values of R Squared",
+     col = "palevioletred1",
+     border = "white",
+     probability = TRUE
+     )
+curve(dbeta(x, (4-1)/2, (25-4)/2),
+      lwd = 3,
+      col = "palevioletred4",
+      add = TRUE)
+```
+The empirical distribution is **matching** with the True distribution of the R Squared which is the **right skewed**, which follows **beta distribution**
+
+##How are R2 and sigma are related
+```{r}
+plot(model_significance[,3],col="dodgerblue",ylim=c(0,1),lty=1,xlab="R Squared Simulation Index",ylab="R Squared Value",main = "R Squared ~ Sigma")
+points(model_significance[,6],col="green",lty=2)
+points(model_significance[,9],col="red",lty=3)
+legend("topright",legend=c("sigma=1","sigma=5","sigma=10"),col=c("dodgerblue","green","red"),lty=c(1,2,3))
+```
+
+**Description of how R2 and sigma
+From the above plot, it seems **R square and sigma are related**. **Higher the value of the sigma, lower the value of the R squared**. It seems prominent in case of sigma =1 (blue circles) for which the R squared value is bit higher as compared to the Sigma = 5 (green circles) and Sigma = 10 (red circles). Red circles (Sigma = 10) have in the bottom with lowest R Squared value, where as green circles (Sigma = 5) have higher R squared values. Though there are few green circles (Sigma = 5) have lower R Squared same as of red circles (Sigma = 10) 
 
 
 ## Simulation Study 2: Significance of Regression
