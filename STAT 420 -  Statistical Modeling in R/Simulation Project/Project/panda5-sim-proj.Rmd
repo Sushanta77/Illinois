@@ -52,7 +52,7 @@ model_significance = cbind(sigma_1_F=rep(0,no_loop),sigma_1_P=rep(0,no_loop),sig
 extra_counter = 0
 
 for(s in 1:length(sigma)){
-  print(paste("Sigma:",sigma[s]," extra_counter",extra_counter))
+  #print(paste("Sigma:",sigma[s]," extra_counter",extra_counter))
   for (i in 1:no_loop){
      mlr_data = mlr_sim(n,sigma[s],signifincance_ind = 1)
      null_model = lm(y~1,data = mlr_data)
@@ -64,7 +64,6 @@ for(s in 1:length(sigma)){
   extra_counter = extra_counter + 2
 }
 
-head(model_significance,10)
 #---------------------------------------------------------------------------------------------------------------
 # Below code is to simulate the Non Significance Model 
 #---------------------------------------------------------------------------------------------------------------
@@ -85,56 +84,125 @@ for(s in 1:length(sigma)){
   extra_counter = extra_counter + 2
 }
 
-head(model_nonsignificance,10)
-
 ```
 
-###Below is the Empirical distibution for 2500 simulations (Significance Model)
+###Below is the Empirical distibution for 2500 simulations (Sigma = 1)
 ```{r}
+par(mfrow=c(2, 2))
+
 hist(model_significance[,1],
-     main = "Empirical Distribution of F (Sigma = 1) [Significance Model]",
+     main = "Empirical Distribution of F [Significance]",
      xlab = "Simulated values of F",
      col = "darkolivegreen",
      border = "white"
      )
 
+hist(model_nonsignificance[,1],
+     main = "Empirical Distribution of F [Non Significance]",
+     xlab = "Simulated values of F",
+     col = "plum4",
+     border = "white",
+     probability = TRUE
+     )
+
 hist(model_significance[,2],
-     main = "Empirical Distribution of P (Sigma = 1) [Significance Model]",
+     main = "Empirical Distribution of P [Significance]",
      xlab = "Simulated values of P",
-     col = "darkgreen",
+     col = "sienna2",
+     border = "white"
+     )
+
+hist(model_nonsignificance[,2],
+     main = "Empirical Distribution of P [Non Significance]",
+     xlab = "Simulated values of P",
+     col = "slateblue1",
      border = "white"
      )
 
 hist(model_significance[,3],
-     main = "Empirical Distribution of R Squared (Sigma = 1) [Significance Model]",
+     main = "Empirical Distribution of R Squared [Significance]",
      xlab = "Simulated values of R Squared",
-     col = "darkcyan",
+     col = "yellow",
      border = "white"
      )
 
+hist(model_nonsignificance[,3],
+     main = "Empirical Distribution of R Squared [Non Significance]",
+     xlab = "Simulated values of R Squared",
+     col = "tan",
+     border = "white"
+     )
+
+```
+
+###Below is the Empirical distibution for 2500 simulations (Sigma = 5)
+```{r}
+par(mfrow=c(2, 2))
+
 hist(model_significance[,4],
-     main = "Empirical Distribution of F (Sigma = 5) [Significance Model]",
+     main = "Empirical Distribution of F [Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of F",
      col = "darkolivegreen",
      border = "white"
      )
 
+hist(model_nonsignificance[,4],
+     main = "Empirical Distribution of F [Non Significance]",
+     cex.main = 1,
+     xlab = "Simulated values of F",
+     col = "plum4",
+     border = "white"
+     )
+
 hist(model_significance[,5],
-     main = "Empirical Distribution of P (Sigma = 5) [Significance Model]",
+     main = "Empirical Distribution of P [Significance]",
+     cex.main = 1,
      xlab = "Simulated values of P",
-     col = "darkgreen",
+     col = "sienna2",
+     border = "white"
+     )
+
+hist(model_nonsignificance[,5],
+     main = "Empirical Distribution of P [Non Significance]",
+     cex.main = 1,
+     xlab = "Simulated values of P",
+     col = "slateblue1",
      border = "white"
      )
 
 hist(model_significance[,6],
-     main = "Empirical Distribution of R Squared (Sigma = 5) [Significance Model]",
+     main = "Empirical Distribution of R Squared [Significance]",
+     cex.main = 1,
      xlab = "Simulated values of R Squared",
-     col = "darkcyan",
+     col = "yellow",
      border = "white"
      )
 
+hist(model_nonsignificance[,6],
+     main = "Empirical Distribution of R Squared [Non Significance]",
+     xlab = "Simulated values of R Squared",
+     col = "tan",
+     border = "white"
+     )
+```
+
+###Below is the Empirical distibution for 2500 simulations (Sigma = 10)
+```{r}
+par(mfrow=c(2, 2))
+
 hist(model_significance[,7],
      main = "Empirical Distribution of F (Sigma = 10) [Significance Model]",
+     cex.main = 1,
+     xlab = "Simulated values of F",
+     col = "darkolivegreen",
+     border = "white"
+     )
+
+
+hist(model_nonsignificance[,7],
+     main = "Empirical Distribution of F (Sigma = 10) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of F",
      col = "darkolivegreen",
      border = "white"
@@ -142,6 +210,15 @@ hist(model_significance[,7],
 
 hist(model_significance[,8],
      main = "Empirical Distribution of P (Sigma = 10) [Significance Model]",
+     cex.main = 1,
+     xlab = "Simulated values of P",
+     col = "darkgreen",
+     border = "white"
+     )
+
+hist(model_nonsignificance[,8],
+     main = "Empirical Distribution of P (Sigma = 10) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of P",
      col = "darkgreen",
      border = "white"
@@ -149,74 +226,15 @@ hist(model_significance[,8],
 
 hist(model_significance[,9],
      main = "Empirical Distribution of R Squared (Sigma = 10) [Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of R Squared",
      col = "darkcyan",
-     border = "white"
-     )
-
-```
-
-###Below is the Empirical distibution for 2500 simulations (Non-Significance Model)
-```{r}
-hist(model_nonsignificance[,1],
-     main = "Empirical Distribution of F (Sigma = 1) [Non Significance Model]",
-     xlab = "Simulated values of F",
-     col = "darkolivegreen",
-     border = "white",
-     probability = TRUE
-     )
-
-hist(model_nonsignificance[,2],
-     main = "Empirical Distribution of P (Sigma = 1) [Non Significance Model]",
-     xlab = "Simulated values of P",
-     col = "darkgreen",
-     border = "white"
-     )
-
-hist(model_nonsignificance[,3],
-     main = "Empirical Distribution of R Squared (Sigma = 1) [Non Significance Model]",
-     xlab = "Simulated values of R Squared",
-     col = "darkcyan",
-     border = "white"
-     )
-
-hist(model_nonsignificance[,4],
-     main = "Empirical Distribution of F (Sigma = 5) [Non Significance Model]",
-     xlab = "Simulated values of F",
-     col = "darkolivegreen",
-     border = "white"
-     )
-
-hist(model_nonsignificance[,5],
-     main = "Empirical Distribution of P (Sigma = 5) [Non Significance Model]",
-     xlab = "Simulated values of P",
-     col = "darkgreen",
-     border = "white"
-     )
-
-hist(model_nonsignificance[,6],
-     main = "Empirical Distribution of R Squared (Sigma = 5) [Non Significance Model]",
-     xlab = "Simulated values of R Squared",
-     col = "darkcyan",
-     border = "white"
-     )
-
-hist(model_nonsignificance[,7],
-     main = "Empirical Distribution of F (Sigma = 10) [Non Significance Model]",
-     xlab = "Simulated values of F",
-     col = "darkolivegreen",
-     border = "white"
-     )
-
-hist(model_nonsignificance[,8],
-     main = "Empirical Distribution of P (Sigma = 10) [Non Significance Model]",
-     xlab = "Simulated values of P",
-     col = "darkgreen",
      border = "white"
      )
 
 hist(model_nonsignificance[,9],
      main = "Empirical Distribution of R Squared (Sigma = 10) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of R Squared",
      col = "darkcyan",
      border = "white"
@@ -227,7 +245,7 @@ hist(model_nonsignificance[,9],
 ##True Distribution 
 The true distribution will be only available for the **Non Significance Model**
 
-###True Distribution of F Tests
+###True Distribution of F Statistics
 ```{r}
 curve(df(x, df1=3, df2=21),
       xlab = "Probability",
@@ -239,13 +257,32 @@ The True distribution of the F Tests shows as a right skewed distribution, where
 
 ###True Distribution of P value
 ```{r}
-curve(1-pf(df(x, df1=3, df2=21),df1 = 3,df2 = 21),
+par(mfrow=c(2, 2))
+curve(pnorm(rnorm(x,mean = 3, sd = 1),mean=3,sd=1),
+      main = "True Distribution of P Value, Sigma = 1",
+      cex.main = 1,
       xlab = "Probability",
       ylab = "Frequency",
       lwd = 3,
-      col = "royalblue4")
+      col = "orange")
+
+curve(pnorm(rnorm(x,mean = 3, sd = 5),mean = 3,sd = 5),
+      main = "True Distribution of P Value, Sigma = 5",
+      cex.main = 1,
+      xlab = "Probability",
+      ylab = "Frequency",
+      lwd = 3,
+      col = "orange")
+
+curve(pnorm(rnorm(x,mean = 3, sd = 5),mean = 3,sd = 10),
+      main = "True Distribution of P Value, Sigma = 10",
+      cex.main = 1,
+      xlab = "Probability",
+      ylab = "Frequency",
+      lwd = 3,
+      col = "orange")
 ```
-The True distribution of the P value shows touching 
+The True distribution of the P seems to have an uniform distribution for 
 
 ###True Distribution of R Squared Value
 ```{r}
@@ -260,8 +297,12 @@ The True distribution of R Squared is a beta distribution, right skewed distribu
 ##How do the empirical distributions from the simulations compare to the true distributions?
 ### Empirical distributions of F Test related to the True Distibution of F Test
 ```{r}
+
+par(mfrow=c(2, 2))
+
 hist(model_nonsignificance[,1],
      main = "Empirical Distribution of F (Sigma = 1) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of F",
      col = "darkolivegreen1",
      border = "white",
@@ -274,6 +315,7 @@ curve(df(x, df1=3, df2=21),
 
 hist(model_nonsignificance[,4],
      main = "Empirical Distribution of F (Sigma = 5) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of F",
      col = "darkolivegreen1",
      border = "white",
@@ -286,6 +328,7 @@ curve(df(x, df1=3, df2=21),
 
 hist(model_nonsignificance[,7],
      main = "Empirical Distribution of F (Sigma = 10) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of F",
      col = "darkolivegreen1",
      border = "white",
@@ -299,54 +342,72 @@ curve(df(x, df1=3, df2=21),
 
 It seems the True distribution of the F test statistics is **matching** with the empirical distribution of the of the F Test for all the three (3) sigma values (1,5 and 10). The dark green color shows the true distribution of the F test statistics, where as the histogram in light green color is the empirical distribution of the F test statistics obtained from the simulated values.
 
-
+  
 ### Empirical distributions of P value related to the True Distibution of P (Non Siginificance)
 ```{r}
+par(mfrow=c(2, 2))
+
 hist(model_nonsignificance[,2],
      main = "Empirical Distribution of P (Sigma = 1) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of P",
      col = "deepskyblue1",
      border = "white",
      probability = TRUE
      )
-curve(1-pf(df(x, df1=3, df2=21),df1 = 3,df2 = 21),
+curve(pnorm(rnorm(x,mean = 3, sd = 1),mean=3,sd=1),
+      main = "True Distribution of P Value - Sigma = 1",
+      cex.main = 1,
+      xlab = "Probability",
+      ylab = "Frequency",
       lwd = 3,
-      col = "royalblue4",
+      col = "darkblue",
       add = TRUE)
 
 hist(model_nonsignificance[,5],
      main = "Empirical Distribution of P (Sigma = 5) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of P",
      col = "deepskyblue1",
      border = "white",
      probability = TRUE
      )
-curve(1-pf(df(x, df1=3, df2=21),df1 = 3,df2 = 21),
+curve(pnorm(rnorm(x,mean = 3, sd = 1),mean=3,sd=1),
+      main = "True Distribution of P Value - Sigma = 1",   
+      cex.main = 1,
+      xlab = "Probability",
+      ylab = "Frequency",
       lwd = 3,
-      col = "royalblue4",
+      col = "darkblue",
       add = TRUE)
 
 hist(model_nonsignificance[,8],
      main = "Empirical Distribution of P (Sigma = 10) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of P",
      col = "deepskyblue1",
      border = "white",
      probability = TRUE
      )
-curve(1-pf(df(x, df1=3, df2=21),df1 = 3,df2 = 21),
+curve(pnorm(rnorm(x,mean = 3, sd = 1),mean=3,sd=1),
+      main = "True Distribution of P Value - Sigma = 1",
+      cex.main = 1,
+      xlab = "Probability",
+      ylab = "Frequency",
       lwd = 3,
-      col = "royalblue4",
+      col = "darkblue",
       add = TRUE)
 
 ```
-
-From the above plots for all the empirical distrubution of the P values for the three (3) sigma values (1,5 and 10), it seems the empirical distribution is an uniform distibution, where as the true distribution is slightly lower in the initial, however being flat after it. Even though we can say, the true distribution is being flat after 0.2 of P value, before < 0.2 it's somehow shows curvature
-
+From the above plots the empirical distrubution of the P values for the three (3) sigma values (1,5 and 10) are **matching** with the true distribution of the P values, which is uniform distribution.
 
 ### Empirical distributions of R squared related to the True Distibution of R Squared (Non Siginificance Model)
 ```{r}
+par(mfrow=c(2, 2))
+
 hist(model_nonsignificance[,3],
      main = "Empirical Distribution of R Squared (Sigma = 1) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of R Squared",
      col = "palevioletred1",
      border = "white",
@@ -359,6 +420,7 @@ curve(dbeta(x, (4-1)/2, (25-4)/2),
 
 hist(model_nonsignificance[,6],
      main = "Empirical Distribution of R Squared (Sigma = 5) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of R Squared",
      col = "palevioletred1",
      border = "white",
@@ -371,6 +433,7 @@ curve(dbeta(x, (4-1)/2, (25-4)/2),
 
 hist(model_nonsignificance[,9],
      main = "Empirical Distribution of R Squared (Sigma = 10) [Non Significance Model]",
+     cex.main = 1,
      xlab = "Simulated values of R Squared",
      col = "palevioletred1",
      border = "white",
@@ -441,17 +504,17 @@ test_rmse_model9_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma
 train_rmse_mat = cbind(sigma_1=rep(0,9),sigma_2=rep(0,9),sigma_4=rep(0,9))
 test_rmse_mat = cbind(sigma_1=rep(0,9),sigma_2=rep(0,9),sigma_4=rep(0,9))
 
-for(s in 1:length(sigma)){
-  model1_counter = 0 
-  model2_counter = 0 
-  model3_counter = 0 
-  model4_counter = 0 
-  model5_counter = 0 
-  model6_counter = 0 
-  model7_counter = 0 
-  model8_counter = 0 
-  model9_counter = 0 
+model1_counter_all_sigma = 0 
+model2_counter_all_sigma = 0 
+model3_counter_all_sigma = 0 
+model4_counter_all_sigma = 0 
+model5_counter_all_sigma = 0 
+model6_counter_all_sigma = 0 
+model7_counter_all_sigma = 0 
+model8_counter_all_sigma = 0 
+model9_counter_all_sigma = 0 
   
+for(s in 1:length(sigma)){
   for(i in 1:no_loop){
     #epsilon = rnorm(n,mean = 0, sd = sigma[s])
     mlr_data=mlr_sim(sig_data,sd=sigma[s])
@@ -469,15 +532,7 @@ for(s in 1:length(sigma)){
     model8 = lm(y~x1+x2+x3+x4+x5+x6+x7+x8,data=mlr_data[trn_idx,])
     model9 = lm(y~x1+x2+x3+x4+x5+x6+x7+x8+x9,data=mlr_data[trn_idx,])
     
-    model1_counter = model1_counter + 1
-    model2_counter = model2_counter + 1
-    model3_counter = model3_counter + 1 
-    model4_counter = model4_counter + 1 
-    model5_counter = model5_counter + 1
-    model6_counter = model6_counter + 1 
-    model7_counter = model7_counter + 1
-    model8_counter = model8_counter + 1
-    model9_counter = model9_counter + 1
+
     
     newdata_model1 = subset(mlr_data[-trn_idx,],select=c("x1"))
     newdata_model2 = subset(mlr_data[-trn_idx,],select=c("x1","x2"))
@@ -526,19 +581,29 @@ for(s in 1:length(sigma)){
     test_rmse_model7_mat[i,s] = test_rmse_model7
     test_rmse_model8_mat[i,s] = test_rmse_model8
     test_rmse_model9_mat[i,s] = test_rmse_model9
-  }
-  
-  print (paste("Number of times the model : 1 trained for alpha:",sigma[s]," is: ",model1_counter))
-  print (paste("Number of times the model : 2 trained for alpha:",sigma[s]," is: ",model2_counter))
-  print (paste("Number of times the model : 3 trained for alpha:",sigma[s]," is: ",model3_counter))
-  print (paste("Number of times the model : 4 trained for alpha:",sigma[s]," is: ",model4_counter))
-  print (paste("Number of times the model : 5 trained for alpha:",sigma[s]," is: ",model5_counter))
-  print (paste("Number of times the model : 6 trained for alpha:",sigma[s]," is: ",model6_counter))  
-  print (paste("Number of times the model : 7 trained for alpha:",sigma[s]," is: ",model7_counter))  
-  print (paste("Number of times the model : 8 trained for alpha:",sigma[s]," is: ",model8_counter))  
-  print (paste("Number of times the model : 9 trained for alpha:",sigma[s]," is: ",model9_counter))  
 
+    model1_counter_all_sigma = model1_counter_all_sigma + 1
+    model2_counter_all_sigma = model2_counter_all_sigma + 1
+    model3_counter_all_sigma = model3_counter_all_sigma + 1 
+    model4_counter_all_sigma = model4_counter_all_sigma + 1 
+    model5_counter_all_sigma = model5_counter_all_sigma + 1
+    model6_counter_all_sigma = model6_counter_all_sigma + 1 
+    model7_counter_all_sigma = model7_counter_all_sigma + 1
+    model8_counter_all_sigma = model8_counter_all_sigma + 1
+    model9_counter_all_sigma = model9_counter_all_sigma + 1
+  }
 }
+
+print (paste("Number of times the model : 1 trained for alpha:",sigma[s]," is: ",model1_counter_all_sigma))
+print (paste("Number of times the model : 2 trained for alpha:",sigma[s]," is: ",model2_counter_all_sigma))
+print (paste("Number of times the model : 3 trained for alpha:",sigma[s]," is: ",model3_counter_all_sigma))
+print (paste("Number of times the model : 4 trained for alpha:",sigma[s]," is: ",model4_counter_all_sigma))
+print (paste("Number of times the model : 5 trained for alpha:",sigma[s]," is: ",model5_counter_all_sigma))
+print (paste("Number of times the model : 6 trained for alpha:",sigma[s]," is: ",model6_counter_all_sigma))  
+print (paste("Number of times the model : 7 trained for alpha:",sigma[s]," is: ",model7_counter_all_sigma))  
+print (paste("Number of times the model : 8 trained for alpha:",sigma[s]," is: ",model8_counter_all_sigma))  
+print (paste("Number of times the model : 9 trained for alpha:",sigma[s]," is: ",model9_counter_all_sigma))  
+  
 for(s in 1:length(sigma)){
   train_rmse_mat[1,s] = mean(train_rmse_model1_mat[,s])
   train_rmse_mat[2,s] = mean(train_rmse_model2_mat[,s])
@@ -567,16 +632,12 @@ plot(seq(1,9), train_rmse_mat[,1], type="o", col="blue", pch="o", lty=1,main="Si
 points(seq(1,9), test_rmse_mat[,1], col="red", pch=8)
 lines(seq(1,9), test_rmse_mat[,1], col="red",lty=2)
 legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
-```
 
-```{r}
 plot(seq(1,9), train_rmse_mat[,2], type="o", col="blue", pch="o", lty=1,main="Sigma = 2",xlab = "MODEL SIZE",ylab = "RMSE")
 points(seq(1,9), test_rmse_mat[,2], col="red", pch=8)
 lines(seq(1,9), test_rmse_mat[,2], col="red",lty=2)
 legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
-```
 
-```{r}
 plot(seq(1,9), train_rmse_mat[,3], type="o", col="blue", pch="o", lty=1,main="Sigma = 4",xlab = "MODEL SIZE",ylab = "RMSE")
 points(seq(1,9), test_rmse_mat[,3], col="red", pch=8)
 lines(seq(1,9), test_rmse_mat[,3], col="red",lty=2)
@@ -584,8 +645,9 @@ legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c(
 ```
 
 
+
 ```{r}
-plot(test_rmse_model1_mat[,1],col="dodgerblue",ylim=(c(0.8,3)),pch=1,lty=1,)
+plot(test_rmse_model1_mat[,1],col="dodgerblue",ylim=(c(0.8,3)),pch=1,lty=1,xlab = "Index", ylab = "RMSE")
 points(test_rmse_model2_mat[,1], col="orangered",ylim=(c(0.8,3)),pch=1,lty=2)
 points(test_rmse_model3_mat[,1], col="blue4",ylim=(c(0.8,3)),pch=1,lty=3)
 points(test_rmse_model4_mat[,1], col="limegreen",ylim=(c(0.8,3)),pch=1,lty=3)
@@ -603,7 +665,7 @@ The correct model should be the one which should have the **lowest RMSE**. From 
 
 
 ```{r}
-plot(test_rmse_model3_mat[,1], col="dodgerblue",ylim=(c(0.9,1.3)),pch=1,lty=3)
+plot(test_rmse_model3_mat[,1], col="dodgerblue",ylim=(c(0.9,1.3)),pch=1,lty=3,xlab="Indx",ylab="RMSE")
 points(test_rmse_model4_mat[,1], col="limegreen",ylim=(c(0.9,1.3)),pch=1,lty=3)
 points(test_rmse_model5_mat[,1], col="orange",ylim=(c(0.9,1.3)),pch=1,lty=4)
 points(test_rmse_model6_mat[,1], col="darkorchid",ylim=(c(0.9,1.3)),pch=8,lty=5)
@@ -705,18 +767,14 @@ lines(model_sim[,1], model_sim[,3], col="red",lty=2)
 points(model_sim[,1], model_sim[,4], col="darkorchid", pch=16,lty=3)
 lines(model_sim[,1], model_sim[,4], col="darkorchid",lty=3)
 legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
-```
 
-```{r}
 plot(model_sim[,1],model_sim[,5], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 4",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,6], col="red", pch=8,lty=2)
 lines(model_sim[,1], model_sim[,6], col="red",lty=2)
 points(model_sim[,1], model_sim[,7], col="darkorchid", pch=16,lty=3)
 lines(model_sim[,1], model_sim[,7], col="darkorchid",lty=3)
 legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
-```
 
-```{r}
 plot(model_sim[,1],model_sim[,8], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 2",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,9], col="red", pch=8,lty=2)
 lines(model_sim[,1], model_sim[,9], col="red",lty=2)
