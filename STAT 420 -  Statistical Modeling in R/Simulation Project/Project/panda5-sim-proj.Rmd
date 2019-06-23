@@ -11,48 +11,69 @@ Below is the simulation for the **Significance Model**
 birthday = 19770411
 set.seed(birthday)
 
-beta_0 = 3
-beta_1 = 1
-beta_2 = 1
-beta_3 = 1
 n = 25
 sigma = c(1,5,10)
+no_loop = 2500
 
-exer_data = read.csv("study_1.csv")
+
+mlr_sim = function(n_in,sd=1,signifincance_ind=1){
+  exer_data = read.csv("study_1.csv")
+  
+  epsilon = rnorm(n_in,mean = 0,sd = sd)
+  if (signifincance_ind){
+    beta_0 = 3
+    beta_1 = 1
+    beta_2 = 1
+    beta_3 = 1 
+    exer_data[,1] = beta_0 + beta_1 * exer_data[,2] + beta_2 * exer_data[,3] + beta_3 * exer_data[,4] + epsilon
+  }
+  else {
+    beta_0 = 3
+    beta_1 = 0
+    beta_2 = 0
+    beta_3 = 0 
+    exer_data[,1] = beta_0 + beta_1 * exer_data[,2] + beta_2 * exer_data[,3] + beta_3 * exer_data[,4] + epsilon
+  }
+  exer_data
+}
 
 for(s in 1:length(sigma)){
-  epsilon = rnorm(n,mean = 0,sd = sigma[s])
-  exer_data[,1] = beta_0 + beta_1 * exer_data[,2] + beta_2 * exer_data[,3] + beta_3 * exer_data[,4] + epsilon
-  null_model = lm(y~1,data=exer_data)
-  full_model = lm(y~x1+x2+x3,data=exer_data)
+  mlr_data = mlr_sim(n,sigma[s],signifincance_ind = 1)
+  null_model = lm(y~1,data = mlr_data)
+  full_model = lm(y~x1+x2+x3,data = mlr_data)
   print (paste("Sigma:",sigma[s]," F Statistics:",anova(null_model,full_model)$F[2],"P Value:",anova(null_model,full_model)$'Pr(>F)'[2], "R Squared:",summary(full_model)$r.squared))
 }
+
+for(s in 1:length(sigma)){
+  mlr_data = mlr_sim(n,sigma[s],signifincance_ind = 0)
+  null_model = lm(y~1,data = mlr_data)
+  full_model = lm(y~x1+x2+x3,data = mlr_data)
+  print (paste("Sigma:",sigma[s]," F Statistics:",anova(null_model,full_model)$F[2],"P Value:",anova(null_model,full_model)$'Pr(>F)'[2], "R Squared:",summary(full_model)$r.squared))
+}
+
 ```
 
-Below is the simulation for the **Non Significance Model**
+Below is the simulation for 2500 simulations
 ```{r}
-birthday = 19770411
-set.seed(birthday)
-
-beta_0 = 3
-beta_1 = 0
-beta_2 = 0
-beta_3 = 0
-n = 25
-sigma = c(1,5,10)
-
-exer_data = read.csv("study_1.csv")
+model_significance = cbind(sigma_1_P=rep(0,no_loop),sigma_1_F=rep(0,no_loop),sigma_1_R_SQUARED=rep(0,no_loop),
+                           sigma_5_P=rep(0,no_loop),sigma_5_F=rep(0,no_loop),sigma_5_R_SQUARED=rep(0,no_loop),
+                           sigma_10_P=rep(0,no_loop),sigma_10_F=rep(0,no_loop),sigma_10_R_SQUARED=rep(0,no_loop))
+extra_counter = 0
 
 for(s in 1:length(sigma)){
-  epsilon = rnorm(n,mean = 0,sd = sigma[s])
-  exer_data[,1] = beta_0 + beta_1 * exer_data[,2] + beta_2 * exer_data[,3] + beta_3 * exer_data[,4] + epsilon
-  null_model = lm(y~1,data=exer_data)
-  full_model = lm(y~x1+x2+x3,data=exer_data)
-  print (paste("Sigma:",sigma[s]," F Statistics:",anova(null_model,full_model)$F[2],"P Value:",anova(null_model,full_model)$'Pr(>F)'[2], "R Squared:",summary(full_model)$r.squared))
+  print(paste("Sigma:",sigma[s]," extra_counter",extra_counter))
+  for (i in 1:no_loop){
+     mlr_data = mlr_sim(n,sigma[s],signifincance_ind = 1)
+     null_model = lm(y~1,data = mlr_data)
+     full_model = lm(y~x1+x2+x3,data = mlr_data)
+     model_significance[i,s+extra_counter] = anova(null_model,full_model)$F[2]
+     model_significance[i,s+extra_counter+1] = anova(null_model,full_model)$'Pr(>F)'[2]
+     model_significance[i,s+extra_counter+2] = summary(full_model)$r.squared
+  }
+  extra_counter = extra_counter + 2
 }
+
 ```
-
-
 
 
 ## Simulation Study 2: Significance of Regression
@@ -78,6 +99,7 @@ mlr_sim = function(data,sd=1){
   data[,1] = beta_0 + beta_1 * data[,2] + beta_2 * data[,3] + beta_3 * data[,4] + beta_4 * data[,5] + beta_5 * data[,6] + beta_6 * data[,7] + epsilon
   data
 }
+
 train_rmse_model1_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
 train_rmse_model2_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
 train_rmse_model3_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
