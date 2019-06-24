@@ -10,13 +10,72 @@ editor_options:
 ---
 ## Simulation Study 1: Significance of Regression
 
+###Introduction
+In this simulation we will investigate the significance of the regression test. We will simulate 2 different model
+
+Below is the **1st model**, which is the **Signifianct model**
+\[ Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i3} + \epsilon_i.\]
+
+where $\epsilon_i$ follows a Normal distribution of mean = 0 and Varience = $\sigma$ = 
+
+We have provided the value of the parameters as
+ - β0 = 3
+ - β1 = 1
+ - β2 = 1
+ - β3 = 1
+
+
+Below is the **2nd model**, which is a **Non-Signifianct model**
+\[ Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i3} + \epsilon_i.\]
+
+where $\epsilon_i$ follows a Normal distribution of mean = 0 and Varience = $\sigma$ = 
+
+We have provided the value of the parameters as
+ - β0 = 3
+ - β1 = 0
+ - β2 = 0
+ - β3 = 0
+ 
+ - σ ∈ (1,5,10), **three distinct values of sigma**
+ - n = 25
+ 
+We need to simulate 2500 simulations for both the models for each value of sigma, so around 2500 X 3 = 7500 times for each model, so TOTAL 2 X 7500 = 15,000 times for both the model
+
+We need to show there are around 15000 times the model is being trained as part of the simulations
+
+####Goal
+
+As part of this exercise, the following are the Goals to achieve
+ - Simulate the MLR models (2 models) for 2500 times for a given value of σ
+ - Plot the empirical distribution of the for the following 3 parameters 
+   - F statistics
+   - p-value
+   - R square
+  - Discuss on the following points in the **Disucssion** section
+   - Do we know the true distribution of the following ?
+     - F statistics
+     - p-value
+     - R square
+   - How do the empirical distributions compare with the true distribution ?
+   - How R2 is related to the sigma
+
+ In order to achieve these goals, we have various methods (especially R codes and R markdown) on how we achieve these goals
+ 
+###Methods
+Below is the code which will runs the 2500 simulations against each sigma (σ)
+ - Will Create 2 matrix one for each model (significance and non-significance) which will store the F statistics, p-value and R2 for each sigma value (1, 5 and 10)
+ - Once the 2 matrix are populated, will be used to plot the empirical distribution, as well as to compare with the true distribution
+ 
+####Code for Simulations
 Below is the simulation for the **Significance Model**
 ```{r}
 birthday = 19770411
 set.seed(birthday)
+#Variable declaration
 n = 25
 sigma = c(1,5,10)
 no_loop = 2500
+#function to generate samples for both significance and non-significance model
 mlr_sim = function(n_in,sd=1,signifincance_ind=1){
   exer_data = read.csv("study_1.csv")
   
@@ -39,18 +98,17 @@ mlr_sim = function(n_in,sd=1,signifincance_ind=1){
 }
 ```
 
-###Below is the simulation for 2500 simulations (Significance Model)
+#####Below is the simulation for 2500 simulations (Significance Model)
 ```{r}
 birthday = 19770411
 set.seed(birthday)
-#---------------------------------------------------------------------------------------------------------------
 # Below code is to simulate the Significance Model 
-#---------------------------------------------------------------------------------------------------------------
 model_significance = cbind(sigma_1_F=rep(0,no_loop),sigma_1_P=rep(0,no_loop),sigma_1_R_SQUARED=rep(0,no_loop),
                            sigma_5_F=rep(0,no_loop),sigma_5_P=rep(0,no_loop),sigma_5_R_SQUARED=rep(0,no_loop),
                            sigma_10_F=rep(0,no_loop),sigma_10_P=rep(0,no_loop),sigma_10_R_SQUARED=rep(0,no_loop))
 extra_counter = 0
 
+#Loop against each sigma to generate the anova for each simulation and populate the model_nsignificance
 for(s in 1:length(sigma)){
   #print(paste("Sigma:",sigma[s]," extra_counter",extra_counter))
   for (i in 1:no_loop){
@@ -63,14 +121,12 @@ for(s in 1:length(sigma)){
   }
   extra_counter = extra_counter + 2
 }
-
-#---------------------------------------------------------------------------------------------------------------
 # Below code is to simulate the Non Significance Model 
-#---------------------------------------------------------------------------------------------------------------
 model_nonsignificance = cbind(sigma_1_F=rep(0,no_loop),sigma_1_P=rep(0,no_loop),sigma_1_R_SQUARED=rep(0,no_loop),
                            sigma_5_F=rep(0,no_loop),sigma_5_P=rep(0,no_loop),sigma_5_R_SQUARED=rep(0,no_loop),
                            sigma_10_F=rep(0,no_loop),sigma_10_P=rep(0,no_loop),sigma_10_R_SQUARED=rep(0,no_loop))
 extra_counter = 0
+#Loop against each sigma to generate the anova for each simulation and populate the model_nonsignificance
 for(s in 1:length(sigma)){
   print(paste("Sigma:",sigma[s]," extra_counter",extra_counter))
   for (i in 1:no_loop){
@@ -83,15 +139,23 @@ for(s in 1:length(sigma)){
   }
   extra_counter = extra_counter + 2
 }
-
 ```
 
-###Below is the Empirical distibution for 2500 simulations (Sigma = 1)
+###results
+As part of the results we will draw out the following
+ - Simulate the MLR models (2 models) for 2500 times for a given value of σ
+ - Plot the empirical distribution of the for the following 3 parameters 
+   - F statistics
+   - p-value
+   - R square
+
+
 ```{r}
 par(mfrow=c(2, 2))
 
 hist(model_significance[,1],
      main = "Empirical Distribution of F [Significance]",
+     cex.main = 0.8,
      xlab = "Simulated values of F",
      col = "darkolivegreen",
      border = "white"
@@ -99,6 +163,7 @@ hist(model_significance[,1],
 
 hist(model_nonsignificance[,1],
      main = "Empirical Distribution of F [Non Significance]",
+     cex.main = 0.8,     
      xlab = "Simulated values of F",
      col = "plum4",
      border = "white",
@@ -107,6 +172,7 @@ hist(model_nonsignificance[,1],
 
 hist(model_significance[,2],
      main = "Empirical Distribution of P [Significance]",
+     cex.main = 0.8,     
      xlab = "Simulated values of P",
      col = "sienna2",
      border = "white"
@@ -114,6 +180,7 @@ hist(model_significance[,2],
 
 hist(model_nonsignificance[,2],
      main = "Empirical Distribution of P [Non Significance]",
+     cex.main = 0.8,     
      xlab = "Simulated values of P",
      col = "slateblue1",
      border = "white"
@@ -121,6 +188,7 @@ hist(model_nonsignificance[,2],
 
 hist(model_significance[,3],
      main = "Empirical Distribution of R Squared [Significance]",
+     cex.main = 0.8,     
      xlab = "Simulated values of R Squared",
      col = "yellow",
      border = "white"
@@ -128,14 +196,14 @@ hist(model_significance[,3],
 
 hist(model_nonsignificance[,3],
      main = "Empirical Distribution of R Squared [Non Significance]",
+     cex.main = 0.8,     
      xlab = "Simulated values of R Squared",
      col = "tan",
      border = "white"
      )
-
 ```
 
-###Below is the Empirical distibution for 2500 simulations (Sigma = 5)
+#####Below is the Empirical distibution for 2500 simulations (Sigma = 5)
 ```{r}
 par(mfrow=c(2, 2))
 
@@ -187,7 +255,7 @@ hist(model_nonsignificance[,6],
      )
 ```
 
-###Below is the Empirical distibution for 2500 simulations (Sigma = 10)
+#####Below is the Empirical distibution for 2500 simulations (Sigma = 10)
 ```{r}
 par(mfrow=c(2, 2))
 
@@ -239,13 +307,19 @@ hist(model_nonsignificance[,9],
      col = "darkcyan",
      border = "white"
      )
-
 ```
 
-##True Distribution 
-The true distribution will be only available for the **Non Significance Model**
+###Discussion
+As part of the introduction, we have the following discussion agenda
+   - Do we know the true distribution of the following ?
+     - F statistics
+     - p-value
+     - R square
+   - How do the empirical distributions compare with the true distribution ?
+   - How R2 is related to the sigma
 
-###True Distribution of F Statistics
+#####Do we know the true distribution
+######True distribution of the F Test
 ```{r}
 curve(df(x, df1=3, df2=21),
       xlab = "Probability",
@@ -255,12 +329,12 @@ curve(df(x, df1=3, df2=21),
 ```
 The True distribution of the F Tests shows as a right skewed distribution, where in the initial values is inflated
 
-###True Distribution of P value
+######True distribution of the P value
 ```{r}
 par(mfrow=c(2, 2))
 curve(pnorm(rnorm(x,mean = 3, sd = 1),mean=3,sd=1),
       main = "True Distribution of P Value, Sigma = 1",
-      cex.main = 1,
+      cex.main = 0.8,
       xlab = "Probability",
       ylab = "Frequency",
       lwd = 3,
@@ -268,7 +342,7 @@ curve(pnorm(rnorm(x,mean = 3, sd = 1),mean=3,sd=1),
 
 curve(pnorm(rnorm(x,mean = 3, sd = 5),mean = 3,sd = 5),
       main = "True Distribution of P Value, Sigma = 5",
-      cex.main = 1,
+      cex.main = 0.8,
       xlab = "Probability",
       ylab = "Frequency",
       lwd = 3,
@@ -276,7 +350,7 @@ curve(pnorm(rnorm(x,mean = 3, sd = 5),mean = 3,sd = 5),
 
 curve(pnorm(rnorm(x,mean = 3, sd = 5),mean = 3,sd = 10),
       main = "True Distribution of P Value, Sigma = 10",
-      cex.main = 1,
+      cex.main = 0.8,
       xlab = "Probability",
       ylab = "Frequency",
       lwd = 3,
@@ -284,7 +358,7 @@ curve(pnorm(rnorm(x,mean = 3, sd = 5),mean = 3,sd = 10),
 ```
 The True distribution of the P seems to have an uniform distribution for 
 
-###True Distribution of R Squared Value
+######True distribution of the R squared
 ```{r}
 curve(dbeta(x, (4-1)/2, (25-4)/2),
       xlab = "Probability",
@@ -294,8 +368,8 @@ curve(dbeta(x, (4-1)/2, (25-4)/2),
 ```
 The True distribution of R Squared is a beta distribution, right skewed distribution, where the shape 1 and shape 2 parameter is of value (k-1)/2 and (n-k)/2, where k = number of esimator in the True model(which is 4,i.e $\beta_{0} \beta_{1} \beta_{2} \beta_{3}) and n = number of elements in the data (which is 25)
 
-##How do the empirical distributions from the simulations compare to the true distributions?
-### Empirical distributions of F Test related to the True Distibution of F Test
+#####How do the empirical distributions from the simulations compare to the true distributions?
+######Empirical distributions of F Test related to the True Distibution of F Test
 ```{r}
 
 par(mfrow=c(2, 2))
@@ -342,8 +416,7 @@ curve(df(x, df1=3, df2=21),
 
 It seems the True distribution of the F test statistics is **matching** with the empirical distribution of the of the F Test for all the three (3) sigma values (1,5 and 10). The dark green color shows the true distribution of the F test statistics, where as the histogram in light green color is the empirical distribution of the F test statistics obtained from the simulated values.
 
-  
-### Empirical distributions of P value related to the True Distibution of P (Non Siginificance)
+######Empirical distributions of P value related to the True Distibution of P (Non Siginificance)
 ```{r}
 par(mfrow=c(2, 2))
 
@@ -401,7 +474,7 @@ curve(pnorm(rnorm(x,mean = 3, sd = 1),mean=3,sd=1),
 ```
 From the above plots the empirical distrubution of the P values for the three (3) sigma values (1,5 and 10) are **matching** with the true distribution of the P values, which is uniform distribution.
 
-### Empirical distributions of R squared related to the True Distibution of R Squared (Non Siginificance Model)
+######Empirical distributions of R squared related to the True Distibution of R Squared (Non Siginificance Model)
 ```{r}
 par(mfrow=c(2, 2))
 
@@ -446,7 +519,7 @@ curve(dbeta(x, (4-1)/2, (25-4)/2),
 ```
 The empirical distribution is **matching** with the True distribution of the R Squared which is the **right skewed**, which follows **beta distribution**
 
-##How are R2 and sigma are related
+######How are R2 and sigma are related
 ```{r}
 plot(model_significance[,3],col="dodgerblue",ylim=c(0,1),lty=1,xlab="R Squared Simulation Index",ylab="R Squared Value",main = "R Squared ~ Sigma")
 points(model_significance[,6],col="green",lty=2)
@@ -458,11 +531,68 @@ legend("topright",legend=c("sigma=1","sigma=5","sigma=10"),col=c("dodgerblue","g
 From the above plot, it seems **R square and sigma are related**. **Higher the value of the sigma, lower the value of the R squared**. It seems prominent in case of sigma =1 (blue circles) for which the R squared value is bit higher as compared to the Sigma = 5 (green circles) and Sigma = 10 (red circles). Red circles (Sigma = 10) have in the bottom with lowest R Squared value, where as green circles (Sigma = 5) have higher R squared values. Though there are few green circles (Sigma = 5) have lower R Squared same as of red circles (Sigma = 10) 
 
 
-## Simulation Study 2: Significance of Regression
+## Simulation Study 2: Using RMSE for Selection?
+
+###Introduction
+In this simulation project we will investigate the **procedure** for choosing the best model via test/train RMSE by simulating the following multiple regression model (**MLR**) 
+
+\[ Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i3} + \beta_4 x_{i4} + \beta_5 x_{i5} + \beta_6 x_{i6} + \epsilon_i.\]
+
+
+where $\epsilon_i$ follows a Normal distribution of mean = 0 and Varience = $\sigma$ = 
+
+We have provided the value of the parameters as
+ - β0 = 0
+ - β1 = 5
+ - β2 = -4
+ - β3 = 1.6
+ - β4 = -1.1  
+ - β5 = 0.7  
+ - β6 = 0.3
+
+ - σ ∈ (1,2,4), **three distinct values of sigma**
+ - n = 500
+ 
+We need to evaluate 9 models (below), where for each model we will calculate the RMSE for train data set (250 random observation) and test data set (250 random observation). We will simulate this for 1000 iteration for each value of σ, so there would be of 3000 simulation for each model, 27000 for around 9 models
+ - (Model -1 ) y ~ x1
+ - (Model -2 ) y ~ x1 + x2
+ - (Model -3 ) y ~ x1 + x2 + x3
+ - (Model -4 ) y ~ x1 + x2 + x3 + x4
+ - (Model -5 ) y ~ x1 + x2 + x3 + x4 + x5
+ - (Model -6 ) y ~ x1 + x2 + x3 + x4 + x5 + x6, the correct form of the model
+ - (Model -7 ) y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7
+ - (Model -8 ) y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8
+ - (Model -9 ) y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9
+
+As per the above model, the correct model is the **Model -6 **, we need to see whether this procedure is correct enough to get the correct model
+
+####Goal:
+
+As part of this exercise, the following are the Goals to achieve
+ - Simulate the MLR models for 1000 times for a given value of σ
+ - Plot 3 curves, each plot is against each sigma, shows what the Train RMSE and Test RMSE against the Model Size (Model1,2,3,4,5,6).
+ - From the 3 Plots, figure out whether the simulation helped to identify the best Model, i.e. ** Model 6**
+ - Discuss on the following points in the **Disucssion** section
+   - Does the simulation method always select the correct model (i.e. **model 6**), or sometimes it select the other models
+   - If we do the average of the Test RMSE, whether the simulation methor selects the correct model (i.e. **Model 6**)
+   - How does the level of noise (σ = 1,2 and 4) affects the Model selection.
+
+ In order to achieve these goals, we have various methods (especially R codes and R markdown) on how we achieve these goals
+ 
+###Methods
+Below is the code which will runs the 1000 simulations against each sigma (σ)
+ - Will Create 9 matrix for Train Set which will stored the Train RMSE, where each columns holds the Train RMSE for each value of σ = 1,2 and 4
+ - Will Create 9 matrix for Test Set which will stored the Test RMSE, where each columns holds the Train RMSE for each value of σ = 1,2 and 4
+ 
+ - Will Create 9 matrix which stored the average Train Set RMSE from the Train Set RMESE
+ - Will Create 9 matrix which stored the average Test Set RMSE from the Test Set RMSE
+
+####Code for Simulations
 ```{r}
 birthday = 19770411
 set.seed(birthday)
 
+#Declaration
 beta_0 = 0
 beta_1 = 5
 beta_2 = -4
@@ -475,13 +605,14 @@ no_loop = 1000
 sigma = c(1,2,4)
 sig_data = read.csv("study_2.csv")
 
-
+#Function to generate the sample data
 mlr_sim = function(data,sd=1){
   epsilon = rnorm(n,mean = 0,sd = sd)
   data[,1] = beta_0 + beta_1 * data[,2] + beta_2 * data[,3] + beta_3 * data[,4] + beta_4 * data[,5] + beta_5 * data[,6] + beta_6 * data[,7] + epsilon
   data
 }
 
+#Defining the Train Matrix to stored the TRAIN RMSE
 train_rmse_model1_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
 train_rmse_model2_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
 train_rmse_model3_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
@@ -492,6 +623,7 @@ train_rmse_model7_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigm
 train_rmse_model8_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
 train_rmse_model9_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
 
+#Defining the Test Matrix to stored the TESE RMSE
 test_rmse_model1_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
 test_rmse_model2_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
 test_rmse_model3_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma_4=rep(0,no_loop))
@@ -504,6 +636,7 @@ test_rmse_model9_mat = cbind(sigma_1=rep(0,no_loop),sigma_2=rep(0,no_loop),sigma
 train_rmse_mat = cbind(sigma_1=rep(0,9),sigma_2=rep(0,9),sigma_4=rep(0,9))
 test_rmse_mat = cbind(sigma_1=rep(0,9),sigma_2=rep(0,9),sigma_4=rep(0,9))
 
+#model counter variable to increase the index of the column in the matrix
 model1_counter_all_sigma = 0 
 model2_counter_all_sigma = 0 
 model3_counter_all_sigma = 0 
@@ -514,14 +647,17 @@ model7_counter_all_sigma = 0
 model8_counter_all_sigma = 0 
 model9_counter_all_sigma = 0 
   
+#Looping through the each sigma to simulate for each 9 models
 for(s in 1:length(sigma)){
   for(i in 1:no_loop){
     #epsilon = rnorm(n,mean = 0, sd = sigma[s])
     mlr_data=mlr_sim(sig_data,sd=sigma[s])
     
+    #Split the Data into Train Data (Random)
     trn_idx = sample(1:nrow(mlr_data), 250)
     n_test = nrow(mlr_data) - length(trn_idx)
-    
+
+    #Model Creation    
     model1 = lm(y~x1,data=mlr_data[trn_idx,])
     model2 = lm(y~x1+x2,data=mlr_data[trn_idx,])
     model3 = lm(y~x1+x2+x3,data=mlr_data[trn_idx,])
@@ -532,8 +668,7 @@ for(s in 1:length(sigma)){
     model8 = lm(y~x1+x2+x3+x4+x5+x6+x7+x8,data=mlr_data[trn_idx,])
     model9 = lm(y~x1+x2+x3+x4+x5+x6+x7+x8+x9,data=mlr_data[trn_idx,])
     
-
-    
+    #Predict the Test Data for th 9 model
     newdata_model1 = subset(mlr_data[-trn_idx,],select=c("x1"))
     newdata_model2 = subset(mlr_data[-trn_idx,],select=c("x1","x2"))
     newdata_model3 = subset(mlr_data[-trn_idx,],select=c("x1","x2","x3"))
@@ -544,6 +679,7 @@ for(s in 1:length(sigma)){
     newdata_model8 = subset(mlr_data[-trn_idx,],select=c("x1","x2","x3","x4","x5","x6","x7","x8"))
     newdata_model9 = subset(mlr_data[-trn_idx,],select=c("x1","x2","x3","x4","x5","x6","x7","x8","x9"))    
     
+    #Train RMSE
     train_rmse_model1 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model1))^2) / length(trn_idx))
     train_rmse_model2 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model2))^2) / length(trn_idx))
     train_rmse_model3 = sqrt(sum((mlr_data[trn_idx,]$y - predict(model3))^2) / length(trn_idx))
@@ -563,6 +699,7 @@ for(s in 1:length(sigma)){
     train_rmse_model8_mat[i,s] = train_rmse_model8
     train_rmse_model9_mat[i,s] = train_rmse_model9    
     
+    #Test RMSE    
     test_rmse_model1 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model1,newdata=newdata_model1))^2) / n_test)
     test_rmse_model2 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model2,newdata=newdata_model2))^2) / n_test)
     test_rmse_model3 = sqrt(sum((mlr_data[-trn_idx,]$y - predict(model3,newdata=newdata_model3))^2) / n_test)
@@ -582,6 +719,7 @@ for(s in 1:length(sigma)){
     test_rmse_model8_mat[i,s] = test_rmse_model8
     test_rmse_model9_mat[i,s] = test_rmse_model9
 
+    #Increase the Model Counter
     model1_counter_all_sigma = model1_counter_all_sigma + 1
     model2_counter_all_sigma = model2_counter_all_sigma + 1
     model3_counter_all_sigma = model3_counter_all_sigma + 1 
@@ -594,6 +732,7 @@ for(s in 1:length(sigma)){
   }
 }
 
+#Print the message of Number of times the each model (1/2/3/4/5/6/7/8/9) is being trained for each value of sigma
 print (paste("Number of times the model : 1 trained for alpha:",sigma[s]," is: ",model1_counter_all_sigma))
 print (paste("Number of times the model : 2 trained for alpha:",sigma[s]," is: ",model2_counter_all_sigma))
 print (paste("Number of times the model : 3 trained for alpha:",sigma[s]," is: ",model3_counter_all_sigma))
@@ -604,6 +743,7 @@ print (paste("Number of times the model : 7 trained for alpha:",sigma[s]," is: "
 print (paste("Number of times the model : 8 trained for alpha:",sigma[s]," is: ",model8_counter_all_sigma))  
 print (paste("Number of times the model : 9 trained for alpha:",sigma[s]," is: ",model9_counter_all_sigma))  
   
+#Average out the Train RMSE / Test RMSE for each value of sigma
 for(s in 1:length(sigma)){
   train_rmse_mat[1,s] = mean(train_rmse_model1_mat[,s])
   train_rmse_mat[2,s] = mean(train_rmse_model2_mat[,s])
@@ -626,26 +766,47 @@ for(s in 1:length(sigma)){
   test_rmse_mat[9,s] = mean(test_rmse_model9_mat[,s])
 }
 ```
+###Results
+As we have discussed in the Introduction on the aspect of **Goal**, we have to producded plots to support these Goals
 
+ - Simulate the MLR models for 1000 times for a given value of σ
+ - Plot 3 curves, each plot is against each sigma, shows what the Train RMSE and Test RMSE against the Model Size (Model1,2,3,4,5,6).
+ 
+####Below are the 3 curves we have plotted which shows how Train RMSE and Test RMSE is performed against each model (1/2/3.../7/8/9)
 ```{r}
 plot(seq(1,9), train_rmse_mat[,1], type="o", col="blue", pch="o", lty=1,main="Sigma = 1",xlab = "MODEL SIZE",ylab = "RMSE")
 points(seq(1,9), test_rmse_mat[,1], col="red", pch=8)
 lines(seq(1,9), test_rmse_mat[,1], col="red",lty=2)
 legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
+```
 
+The above plot shows the Train RMSE and Test RMSE for sigma = 1, is being very close to each other. As the model grow, both the Train / Test RMSE falls, however the tipping point is the ** Model 6**
+
+```{r}
 plot(seq(1,9), train_rmse_mat[,2], type="o", col="blue", pch="o", lty=1,main="Sigma = 2",xlab = "MODEL SIZE",ylab = "RMSE")
 points(seq(1,9), test_rmse_mat[,2], col="red", pch=8)
 lines(seq(1,9), test_rmse_mat[,2], col="red",lty=2)
 legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
+```
 
+The above plot shows the Train RMSE and Test RMSE for sigma = 2, is being very close to each other till model 6, after model 6 they are ditant apart to each other. Also As the model grow, both the Train / Test RMSE falls, however the tipping point is the ** Model 6**, the Train/Test RMSE increases after it
+
+```{r}
 plot(seq(1,9), train_rmse_mat[,3], type="o", col="blue", pch="o", lty=1,main="Sigma = 4",xlab = "MODEL SIZE",ylab = "RMSE")
 points(seq(1,9), test_rmse_mat[,3], col="red", pch=8)
 lines(seq(1,9), test_rmse_mat[,3], col="red",lty=2)
 legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
 ```
 
+The above plot shows the Train RMSE and Test RMSE for sigma = 4, is being very close to each other till model 2, after model 2 they are ditant apart to each other and distance between them increase as the model grows. Also As the model grow, both the Train / Test RMSE falls, however the tipping point is the ** Model 6**, the Train/Test RMSE increases after it
 
+###Discussion
+We will discuss on the following points
+   - Does the simulation method always select the correct model (i.e. **model 6**), or sometimes it select the other models
+   - If we do the average of the Test RMSE, whether the simulation methor selects the correct model (i.e. **Model 6**)
+   - How does the level of noise (σ = 1,2 and 4) affects the Model selection.
 
+####Does the simulation method always select the correct model
 ```{r}
 plot(test_rmse_model1_mat[,1],col="dodgerblue",ylim=(c(0.8,3)),pch=1,lty=1,xlab = "Index", ylab = "RMSE")
 points(test_rmse_model2_mat[,1], col="orangered",ylim=(c(0.8,3)),pch=1,lty=2)
@@ -659,10 +820,8 @@ points(test_rmse_model9_mat[,1], col="deeppink",ylim=(c(0.8,3)),pch=1,lty=8)
 legend("topright",legend=c("Model1","Model2","Model3","Model4","Model5","Model6","Model7","Model8","Model9"),col=c("dodgerblue","orangered","blue4","limegreen","orange","darkorchid","violetred","tan3","deeppink"),lty=c(1,2,3,4,5,6,7,8,9))
 ```
 
-** The above model plots the RMSE of all model created from the simulation for the Sigma = 1 **
+#####The above model plots the RMSE of all model created from the simulation for the Sigma = 1 **
 The correct model should be the one which should have the **lowest RMSE**. From the above plots (which plots against all the 1000 RMSE of simulation) it shows that the Model 1 and Model 2 have higher RMSE and distinctly far from the other model (Model 3/4/5/6/7/8/9), hence its obious to ignore the Model 1 and Model 2. Let's explore the other models as below 
-
-
 
 ```{r}
 plot(test_rmse_model3_mat[,1], col="dodgerblue",ylim=(c(0.9,1.3)),pch=1,lty=3,xlab="Indx",ylab="RMSE")
@@ -675,11 +834,11 @@ points(test_rmse_model9_mat[,1], col="deeppink",ylim=(c(0.9,1.3)),pch=1,lty=8)
 legend("topright",legend=c("Model3","Model4","Model5","Model6","Model7","Model8","Model9"),col=c("blue4","limegreen","orange","darkorchid","violetred","tan3","deeppink"),pch=c(1,1,1,8,1,1),lty=c(3,4,5,6,7,8,9))
 ```
 
-** The above model plots the RMSE of models (3/4/5/6/7/8/9) created from the simulation for the Sigma = 1 **
-
+#####The above model plots the RMSE of models (3/4/5/6/7/8/9) created from the simulation for the Sigma = 1 **
 From the above plot, its clear that the **Model 6 not always** (marked in ** * **) selected as the **correct model**. There are many instances, where the ** Model 6 ** RMSE is higher than that of other models, also there are instances where the **Model 6** RMSE is the lowest among other models. Also other models also have in range with the **model 6**. Let's take a loot at the average plot of RMSE of all the models and plot
 
 
+####If we do the average of the Test RMSE, whether the simulation methor selects the correct model (i.e. **Model 6**)
 ```{r}
 plot(seq(1,9), test_rmse_mat[,1], type="o", col="chartreuse4", pch=8, lty=1,main="Sigma = 1",xlab = "MODEL SIZE",ylab = "RMSE")
 points(6, min(test_rmse_mat[,1]), col="chartreuse4",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 1
@@ -740,7 +899,7 @@ For each possible combination of $\beta_{1}$ and $\alpha$, we will simulate 1000
 
 $\hat{Power}$ = $\hat{P}$[Reject $H_0$, $H_1$ True] = $\dfrac{\#Test Rejected}{\#Simulations}$
 
-**Goal:**
+####Goal
 
 As part of this exercise, the following are the Goals to achieve
  - Simulate the SLR models for 1000 times for a given value of σ, n , β1 and stored the Power you get
@@ -753,7 +912,7 @@ As part of this exercise, the following are the Goals to achieve
 
  In order to achieve these goals, we have various methods (especially R codes and R markdown) on how we achieve these goals
  
-###Methods (Simulation Study 3)
+###Methods
 Below is the code which will runs the 1000 simulations against β1, σ and n. After each simulations,
  - The power value is being agregated and stored in the matrix model_sim
  - The 1st column of the row of the matix is the β1 value
@@ -763,7 +922,7 @@ Below is the code which will runs the 1000 simulations against β1, σ and n. Af
  
 Once the matrix model_sim is populated and completed, we will be using to plot different plots to address different discussion
 
-#### Code for Simulations
+####Code for Simulations
 ```{r}
 birthday = 19770411
 set.seed(birthday)
@@ -789,10 +948,12 @@ model_sim[,1] = seq(from=-2,to=2,by=0.1)
 extra_counter = 0
 
 #Loop to iterate over Sigma, number of samples, beta_1 values and 1000 simulations to extract and store the Power values
+run_counter = 0
 for(s in 1:length(sigma)){ #sigma = c(1,2,4)
   for (n_s in 1:length(n)){ #n = c(10,20,30)
     for (b in 1:length(beta_1)){ # beta_1 = seq(from=-2,to=2,by=0.1)
       tot_sum_signifincace_sim = 0
+      run_counter = run_counter + 1      
       for(i in 1:no_loop){
         slr_data = slr_sim(n_in = n[n_s], sd = sigma[s], beta_1_in = beta_1[b] )
         model = lm(response~predictor, data = slr_data)
@@ -801,7 +962,7 @@ for(s in 1:length(sigma)){ #sigma = c(1,2,4)
       }
       power_sim_beta = tot_sum_signifincace_sim / no_loop
       model_sim[b,s+n_s+extra_counter] = power_sim_beta    
-      print (paste("Sigma:",sigma[s]," n:",n[n_s]," beta_1:",beta_1[b]," Signifiance_Sum:",tot_sum_signifincace_sim, " Power:",power_sim_beta))
+      print (paste(run_counter," Sigma:",sigma[s]," n:",n[n_s]," beta_1:",beta_1[b]," Signifiance_Sum:",tot_sum_signifincace_sim, " Power:",power_sim_beta))
     }
   }
   extra_counter = extra_counter + 2
@@ -831,7 +992,7 @@ The above plot depicts the following for the noise of sigma = 1
  - Dropping of power nearly or after -1 depends on the sample size, more the sample size (30 > 20 > 10) power becomes constant to 1 (i.e. # reject hypothesis is higher) 
 
 
-#Below code plot the effect of Signal (β1) against the Power for noise of sigma = 2 against all sample size (10,20 and 30)
+#####Below code plot the effect of Signal (β1) against the Power for noise of sigma = 2 against all sample size (10,20 and 30)
 ```{r}
 plot(model_sim[,1],model_sim[,5], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 2",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,6], col="red", pch=8,lty=2)
@@ -848,7 +1009,7 @@ The above plot depicts the following for the noise of sigma = 2
  - The distance between the power increase/decrease for different sample size (n=10/20 and 30) is wider for higher noise level (sigma = 2) than that of sigma =1, means rejected of hypothesis is higher for higher simga and even higher for lower sample size
 
 
-#Below code plot the effect of Signal (β1) against the Power for noise of sigma = 4 against all sample size (10,20 and 30)
+#####Below code plot the effect of Signal (β1) against the Power for noise of sigma = 4 against all sample size (10,20 and 30)
 ```{r}
 plot(model_sim[,1],model_sim[,8], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 4",xlab = "beta_1",ylab = "Power",ylim=c(0,1))
 points(model_sim[,1], model_sim[,9], col="red", pch=8,lty=2)
@@ -867,7 +1028,7 @@ The above plot depicts the following for the noise of sigma = 4
 ###Discussion
 Now as part of the **goal**, let's discuss the what's the impact of β1, n and σ with respect to power. We will be plotting different plots to conclude the summary of the impact
 
-**Effect of sigma(1,2,4) on the Power **
+####Effect of sigma(1,2,4) on the Power **
 ```{r}
 plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Effect of sigma (1,2,4) on the Power",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,3], col="dodgerblue", pch=1,lty=1)
@@ -896,7 +1057,7 @@ legend("topright",legend=c("sigma=1,n=10,20,30","sigma=2,n=10,20,30","sigma=3,n=
  - It clearly visible that all the blue line (sigma=1) have higher power than that of green line (sigma = 2) & red line (sigma = 4) for any particular value of β1 and sample size. That means higher the value of the sigma (σ) = number of rejected hypothesis will be lower and lower the value of sigma (σ) = number of rejected hypothesis becomes higher.
 
 
-**Effect of n(10,20,30) on the Power **
+#####Effect of n(10,20,30) on the Power **
 ```{r}
 par(mfrow=c(2, 2))
 
@@ -926,11 +1087,10 @@ lines(model_sim[,1], model_sim[,10], col="blueviolet",lty=3)
 legend("topright",legend=c("n=10","n=20","n=30"),col=c("deeppink","darkolivegreen4","blueviolet"),pch=c(1,1,1),lty=c(1,2,3))
 ```
 
-Below are the observations on the effect of sample size (n = 10,20 and 30) on the beta_1
+**Below are the observations on the effect of sample size (n = 10,20 and 30) on the beta_1**
  - From the abobe 3 plots, for different value of sigma (σ), Higher the sample size (n=30),higher is the power. It clearly visible that for all the 3 plots (against 3 different sigma (σ)), the blueviolet (n = 30) lines have higher than that of the rest 2 lines (green,n = 20 and deep pink, n= 10). That is higher the sample size, reject the hypothesis becomes higher
 
-**Effect of n(10,20,30) on the Power **
-
+#####Effect of n(10,20,30) on the Power **
 ```{r}
 plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1,2,4 & n = 10,20,30",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,3], col="red", pch=2,lty=2)
@@ -961,4 +1121,157 @@ If we combine all the plots for all the sample size beta(β1), sample size(n) an
  - Power decreased as β1 increased from -2 till 0 for any given sigma(σ) and sample size(n), means as β1 increases, reject hypothesis decreases
  - Power increased as β1 increased from 0 till 2  for any given sigma(σ) and sample size(n), means as β1 increases, reject hypothesis increases
 
+ 
+####Are 1000 simulations sufficient
+
+```{r eval=FALSE, include=FALSE}
+birthday = 19770411
+set.seed(birthday)
+no_loop = 3000
+
+#Matrix to store the Power of the simulated models
+model_sim_3000 = cbind(beta_1_sim_val=rep(0,length(beta_1)),n_10_sigma_1=rep(0,length(beta_1)),n_20_sigma_1=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)),n_10_sigma_2=rep(0,length(beta_1)),n_20_sigma_2=rep(0,length(beta_1)),n_30_sigma_2=rep(0,length(beta_1)),n_10_sigma_4=rep(0,length(beta_1)),n_20_sigma_4=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)))
+
+model_sim_3000[,1] = seq(from=-2,to=2,by=0.1)
+extra_counter = 0
+
+#Loop to iterate over Sigma, number of samples, beta_1 values and 1000 simulations to extract and store the Power values
+run_counter = 0
+for(s in 1:length(sigma)){ #sigma = c(1,2,4)
+  for (n_s in 1:length(n)){ #n = c(10,20,30)
+    for (b in 1:length(beta_1)){ # beta_1 = seq(from=-2,to=2,by=0.1)
+      tot_sum_signifincace_sim = 0
+      run_counter = run_counter + 1      
+      for(i in 1:no_loop){
+        slr_data = slr_sim(n_in = n[n_s], sd = sigma[s], beta_1_in = beta_1[b] )
+        model = lm(response~predictor, data = slr_data)
+        model_p_val = summary(model)$coefficient[2,4]
+        tot_sum_signifincace_sim = tot_sum_signifincace_sim + ifelse(model_p_val<alpha,1,0)
+      }
+      power_sim_beta = tot_sum_signifincace_sim / no_loop
+      model_sim_3000[b,s+n_s+extra_counter] = power_sim_beta    
+      print (paste(run_counter," Sigma:",sigma[s]," n:",n[n_s]," beta_1:",beta_1[b]," Signifiance_Sum:",tot_sum_signifincace_sim, " Power:",power_sim_beta))
+    }
+  }
+  extra_counter = extra_counter + 2
+}
+```
+
+
+```{r eval=FALSE, include=FALSE}
+birthday = 19770411
+set.seed(birthday)
+no_loop = 5000
+
+#Matrix to store the Power of the simulated models
+model_sim_5000 = cbind(beta_1_sim_val=rep(0,length(beta_1)),n_10_sigma_1=rep(0,length(beta_1)),n_20_sigma_1=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)),n_10_sigma_2=rep(0,length(beta_1)),n_20_sigma_2=rep(0,length(beta_1)),n_30_sigma_2=rep(0,length(beta_1)),n_10_sigma_4=rep(0,length(beta_1)),n_20_sigma_4=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)))
+
+model_sim_5000[,1] = seq(from=-2,to=2,by=0.1)
+extra_counter = 0
+
+#Loop to iterate over Sigma, number of samples, beta_1 values and 5000 simulations to extract and store the Power values
+run_counter = 0
+for(s in 1:length(sigma)){ #sigma = c(1,2,4)
+  for (n_s in 1:length(n)){ #n = c(10,20,30)
+    for (b in 1:length(beta_1)){ # beta_1 = seq(from=-2,to=2,by=0.1)
+      tot_sum_signifincace_sim = 0
+      run_counter = run_counter + 1      
+      for(i in 1:no_loop){
+        slr_data = slr_sim(n_in = n[n_s], sd = sigma[s], beta_1_in = beta_1[b] )
+        model = lm(response~predictor, data = slr_data)
+        model_p_val = summary(model)$coefficient[2,4]
+        tot_sum_signifincace_sim = tot_sum_signifincace_sim + ifelse(model_p_val<alpha,1,0)
+      }
+      power_sim_beta = tot_sum_signifincace_sim / no_loop
+      model_sim_5000[b,s+n_s+extra_counter] = power_sim_beta    
+      print (paste(run_counter," Sigma:",sigma[s]," n:",n[n_s]," beta_1:",beta_1[b]," Signifiance_Sum:",tot_sum_signifincace_sim, " Power:",power_sim_beta))
+    }
+  }
+  extra_counter = extra_counter + 2
+}
+```
+
+
+
+```{r eval=FALSE, include=FALSE}
+par(mfrow=c(2, 2))
+plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1,2,4 & n = 10,20,30",xlab = "beta_1",ylab = "Power")
+points(model_sim[,1], model_sim[,3], col="red", pch=2,lty=2)
+lines(model_sim[,1], model_sim[,3], col="red",lty=2)
+points(model_sim[,1], model_sim[,4], col="tan1", pch=3,lty=3)
+lines(model_sim[,1], model_sim[,4], col="tan1",lty=3)
+
+points(model_sim[,1],model_sim[,5], type="o", col="yellow", pch=4, lty=4)
+lines(model_sim[,1],model_sim[,5], type="o", col="yellow", pch=4, lty=4)
+
+points(model_sim[,1], model_sim[,6], col="deeppink", pch=5,lty=5)
+lines(model_sim[,1], model_sim[,6], col="deeppink",lty=5)
+points(model_sim[,1], model_sim[,7], col="darkolivegreen4", pch=6,lty=6)
+lines(model_sim[,1], model_sim[,7], col="darkolivegreen4",lty=6)
+
+points(model_sim[,1],model_sim[,8], type="o", col="darkgreen", pch=7, lty=7)
+lines(model_sim[,1],model_sim[,8], type="o", col="darkgreen", pch=7, lty=7)
+
+points(model_sim[,1], model_sim[,9], col="darkblue", pch=8,lty=8)
+lines(model_sim[,1], model_sim[,9], col="darkblue",lty=8)
+points(model_sim[,1], model_sim[,10], col="blueviolet", pch=9,lty=9)
+lines(model_sim[,1], model_sim[,10], col="blueviolet",lty=9)
+
+legend("topright",legend=c("sigma=1,n=10","sigma=1,n=20","sigma=1,n=30","sigma=2,n=10","sigma=2,n=20","sigma=2,n=30","sigma=3,n=10","sigma=3,n=20","sigma=3,n=30"),col=c("dodgerblue","red","darkorchid","yellow","deeppink","darkolivegreen4","darkgreen","darkblue","blueviolet"),pch=c(1,2,3,4,5,6,7,8,9),lty=c(1,2,3,4,5,6,7,8,9))
+
+#Below code is to plot the simulated beta_1 for 3000 simulations. This plot will helps us to understands, whether there is anything changes because of increase the simulation
+#from 1000 iteration to 3000 iteration
+plot(model_sim_3000[,1],model_sim_3000[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1,2,4 & n = 10,20,30",xlab = "beta_1",ylab = "Power")
+points(model_sim_3000[,1], model_sim_3000[,3], col="red", pch=2,lty=2)
+lines(model_sim_3000[,1], model_sim_3000[,3], col="red",lty=2)
+points(model_sim_3000[,1], model_sim_3000[,4], col="tan1", pch=3,lty=3)
+lines(model_sim_3000[,1], model_sim_3000[,4], col="tan1",lty=3)
+
+points(model_sim_3000[,1],model_sim_3000[,5], type="o", col="yellow", pch=4, lty=4)
+lines(model_sim_3000[,1],model_sim_3000[,5], type="o", col="yellow", pch=4, lty=4)
+
+points(model_sim_3000[,1], model_sim_3000[,6], col="deeppink", pch=5,lty=5)
+lines(model_sim_3000[,1], model_sim_3000[,6], col="deeppink",lty=5)
+points(model_sim_3000[,1], model_sim_3000[,7], col="darkolivegreen4", pch=6,lty=6)
+lines(model_sim_3000[,1], model_sim_3000[,7], col="darkolivegreen4",lty=6)
+
+points(model_sim_3000[,1],model_sim_3000[,8], type="o", col="darkgreen", pch=7, lty=7)
+lines(model_sim_3000[,1],model_sim_3000[,8], type="o", col="darkgreen", pch=7, lty=7)
+
+points(model_sim_3000[,1], model_sim_3000[,9], col="darkblue", pch=8,lty=8)
+lines(model_sim_3000[,1], model_sim_3000[,9], col="darkblue",lty=8)
+points(model_sim_3000[,1], model_sim_3000[,10], col="blueviolet", pch=9,lty=9)
+lines(model_sim_3000[,1], model_sim_3000[,10], col="blueviolet",lty=9)
+
+legend("topright",legend=c("sigma=1,n=10","sigma=1,n=20","sigma=1,n=30","sigma=2,n=10","sigma=2,n=20","sigma=2,n=30","sigma=3,n=10","sigma=3,n=20","sigma=3,n=30"),col=c("dodgerblue","red","darkorchid","yellow","deeppink","darkolivegreen4","darkgreen","darkblue","blueviolet"),pch=c(1,2,3,4,5,6,7,8,9),lty=c(1,2,3,4,5,6,7,8,9))
+
+#Below code is to plot the simulated beta_1 for 5000 simulations. This plot will helps us to understands, whether there is anything changes because of increase the simulation
+#from 3000 iteration to 5000 iteration
+plot(model_sim_5000[,1],model_sim_5000[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1,2,4 & n = 10,20,30",xlab = "beta_1",ylab = "Power")
+points(model_sim_5000[,1], model_sim_5000[,3], col="red", pch=2,lty=2)
+lines(model_sim_5000[,1], model_sim_5000[,3], col="red",lty=2)
+points(model_sim_5000[,1], model_sim_5000[,4], col="tan1", pch=3,lty=3)
+lines(model_sim_5000[,1], model_sim_5000[,4], col="tan1",lty=3)
+
+points(model_sim_5000[,1],model_sim_5000[,5], type="o", col="yellow", pch=4, lty=4)
+lines(model_sim_5000[,1],model_sim_5000[,5], type="o", col="yellow", pch=4, lty=4)
+
+points(model_sim_5000[,1], model_sim_5000[,6], col="deeppink", pch=5,lty=5)
+lines(model_sim_5000[,1], model_sim_5000[,6], col="deeppink",lty=5)
+points(model_sim_5000[,1], model_sim_5000[,7], col="darkolivegreen4", pch=6,lty=6)
+lines(model_sim_5000[,1], model_sim_5000[,7], col="darkolivegreen4",lty=6)
+
+points(model_sim_5000[,1],model_sim_5000[,8], type="o", col="darkgreen", pch=7, lty=7)
+lines(model_sim_5000[,1],model_sim_5000[,8], type="o", col="darkgreen", pch=7, lty=7)
+
+points(model_sim_5000[,1], model_sim_5000[,9], col="darkblue", pch=8,lty=8)
+lines(model_sim_5000[,1], model_sim_5000[,9], col="darkblue",lty=8)
+points(model_sim_5000[,1], model_sim_5000[,10], col="blueviolet", pch=9,lty=9)
+lines(model_sim_5000[,1], model_sim_5000[,10], col="blueviolet",lty=9)
+
+legend("topright",legend=c("sigma=1,n=10","sigma=1,n=20","sigma=1,n=30","sigma=2,n=10","sigma=2,n=20","sigma=2,n=30","sigma=3,n=10","sigma=3,n=20","sigma=3,n=30"),col=c("dodgerblue","red","darkorchid","yellow","deeppink","darkolivegreen4","darkgreen","darkblue","blueviolet"),pch=c(1,2,3,4,5,6,7,8,9),lty=c(1,2,3,4,5,6,7,8,9))
+```
+
+ 
+ 
  
