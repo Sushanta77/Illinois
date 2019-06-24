@@ -719,6 +719,51 @@ The above plots shows the comparision of the average RMSE of all the 9 models fo
 
 ## Simulation Study 3, Power
 
+###Introduction
+In this simulation project we will investigate the **power** of the signifincance of the regression test for the simple linear regression (**SLR**) model
+
+$H_0 : \beta_{0} = 0 Vs H_1: \beta_{1} \neq 0$
+
+where, Power is the probability of rejecting the null hypothesis when the null is not true, that is, the alternative is true and $\beta_{1}$ is non-zero.
+
+We will do the simulation of the Simple linear regression of the model \[ Y_i = \beta_0 + \beta_1 x_{i1} + \epsilon_i.\]. 
+
+For the simplicity we will make $\beta_0$ = 0, thus $\beta_1$ is essentially controlling the amount of signal. We will be considering the following for the different signals , noises and sample sizes
+
+ - β1 ∈ (−2,−1.9,−1.8,…,−0.1,0,0.1,0.2,0.3,…1.9,2) , **which is 41 values**
+ - σ ∈ (1,2,4), **three distinct values of sigma**
+ - n ∈(10,20,30), **three distinct values of n (sample size)**
+ 
+We will hold the value if the $\alpha$ as **0.05**, while validing the hypothesis. For the generation of the sample data, will be using the seq(0, 5, length = n) for different values of the sample size (i.e., n)
+
+For each possible combination of $\beta_{1}$ and $\alpha$, we will simulate 1000 times to perform the significance of linear regression (**SLR**) and following formula will be using to measure the Power
+
+$\hat{Power}$ = $\hat{P}$[Reject $H_0$, $H_1$ True] = $\dfrac{\#Test Rejected}{\#Simulations}$
+
+**Goal:**
+
+As part of this exercise, the following are the Goals to achieve
+ - Simulate the SLR models for 1000 times for a given value of σ, n , β1 and stored the Power you get
+ - Plot the Power Curve against the signal strength (β1) for different value of n, plot this kind of plot for each value of σ
+ - Discuss with relevant plots, what are the impact of σ, n , β1 on the Power, as following 
+   - What's the impact of σ on Power
+   - What's the impact of n on Power
+   - What's the impact of β1 on Power
+ - As we have simulated for the 1000 iterations, would it be suffice ? or more simulations have more important informations to revealed?
+
+ In order to achieve these goals, we have various methods (especially R codes and R markdown) on how we achieve these goals
+ 
+###Methods (Simulation Study 3)
+Below is the code which will runs the 1000 simulations against β1, σ and n. After each simulations,
+ - The power value is being agregated and stored in the matrix model_sim
+ - The 1st column of the row of the matix is the β1 value
+ - 2nd, 3rd and 4th column of matrix = model_sim, stores the power values for sigma = 1, for the sample size 10, 20 and 30 respectively
+ - 5th, 6th and 7th column of matrix = model_sim, stores the power values for sigma = 2, for the sample size of 10, 20 and 30 respectively
+ - 8th, 9th and 10th column of matrix = model_sim, stores the power values for sigma = 5, for the sample size of 10, 20 and 30 respectively
+ 
+Once the matrix model_sim is populated and completed, we will be using to plot different plots to address different discussion
+
+#### Code for Simulations
 ```{r}
 birthday = 19770411
 set.seed(birthday)
@@ -729,6 +774,7 @@ sigma = c(1,2,4)
 n = c(10,20,30)
 no_loop = 1000
 
+#simple linear regression(SLR) Function to create sample data
 slr_sim = function(n_in,sd=1,beta_1_in=-2){
   x_values = seq(0, 5, length = n_in)
   epsilon = rnorm(n_in,mean = 0,sd = sd)
@@ -736,11 +782,13 @@ slr_sim = function(n_in,sd=1,beta_1_in=-2){
   data.frame(predictor = x_values,response=y)
 }
 
+#Matrix to store the Power of the simulated models
 model_sim = cbind(beta_1_sim_val=rep(0,length(beta_1)),n_10_sigma_1=rep(0,length(beta_1)),n_20_sigma_1=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)),n_10_sigma_2=rep(0,length(beta_1)),n_20_sigma_2=rep(0,length(beta_1)),n_30_sigma_2=rep(0,length(beta_1)),n_10_sigma_4=rep(0,length(beta_1)),n_20_sigma_4=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)))
 
 model_sim[,1] = seq(from=-2,to=2,by=0.1)
 extra_counter = 0
 
+#Loop to iterate over Sigma, number of samples, beta_1 values and 1000 simulations to extract and store the Power values
 for(s in 1:length(sigma)){ #sigma = c(1,2,4)
   for (n_s in 1:length(n)){ #n = c(10,20,30)
     for (b in 1:length(beta_1)){ # beta_1 = seq(from=-2,to=2,by=0.1)
@@ -760,28 +808,64 @@ for(s in 1:length(sigma)){ #sigma = c(1,2,4)
 }
 ```
 
+###Results
+As we have discussed in the Introduction on the aspect of **Goal**, we have to producded plots to support these Goals
+
+ - Plot the Power Curve against the signal strength (β1) for different value of n, plot this kind of plot for each value of σ
+
+
 ```{r}
+#Below code plot the effect of Signal (β1) against the Power for noise of sigma = 1 against all sample size (10,20 and 30)
 plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,3], col="red", pch=8,lty=2)
 lines(model_sim[,1], model_sim[,3], col="red",lty=2)
 points(model_sim[,1], model_sim[,4], col="darkorchid", pch=16,lty=3)
 lines(model_sim[,1], model_sim[,4], col="darkorchid",lty=3)
 legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
+```
 
-plot(model_sim[,1],model_sim[,5], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 4",xlab = "beta_1",ylab = "Power")
+The above plot depicts the following for the noise of sigma = 1
+ - The power is constant i.e. 1 (# rejected hypothesis = # simulation) for beta_1 between -2 and -1 for all sample size (10,20 and 30)
+ - As beta_1 increases after -1 and before 0, power decreases rapidly towards 0, means number of rejected hypothesis becomes smaller (failed to reject hypothesis becomes larger) 
+ - Again as beta_1 increases after 0, the power increases, i.e. number of rejected hypothesis is larger.
+ - Dropping of power nearly or after -1 depends on the sample size, more the sample size (30 > 20 > 10) power becomes constant to 1 (i.e. # reject hypothesis is higher) 
+
+
+#Below code plot the effect of Signal (β1) against the Power for noise of sigma = 2 against all sample size (10,20 and 30)
+```{r}
+plot(model_sim[,1],model_sim[,5], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 2",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,6], col="red", pch=8,lty=2)
 lines(model_sim[,1], model_sim[,6], col="red",lty=2)
 points(model_sim[,1], model_sim[,7], col="darkorchid", pch=16,lty=3)
 lines(model_sim[,1], model_sim[,7], col="darkorchid",lty=3)
 legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
+```
 
-plot(model_sim[,1],model_sim[,8], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 2",xlab = "beta_1",ylab = "Power")
+The above plot depicts the following for the noise of sigma = 2
+ - The power is constant i.e. 1 (# rejected hypothesis = # simulation) for beta_1 between till -1.5 for sample size 20 and 30. However lower the sample size with higher noise, the power decreases rapidly (i.e., # of hypothesis rejectes is less)
+ - Once beta_1 increase after 0, power increases very rapidly for higher sample size, however slow for small sample size
+ - As noise level increases (Sigma =2), the rate at which the power increases/ decreases also lower. So if we compare the power rate increases / decreases between sigma = 1 versus sigma = 2, it founds that power rate increase/decreases is much faster rate in sigma = 1 than in sigma = 2
+ - The distance between the power increase/decrease for different sample size (n=10/20 and 30) is wider for higher noise level (sigma = 2) than that of sigma =1, means rejected of hypothesis is higher for higher simga and even higher for lower sample size
+
+
+#Below code plot the effect of Signal (β1) against the Power for noise of sigma = 4 against all sample size (10,20 and 30)
+```{r}
+plot(model_sim[,1],model_sim[,8], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 4",xlab = "beta_1",ylab = "Power",ylim=c(0,1))
 points(model_sim[,1], model_sim[,9], col="red", pch=8,lty=2)
 lines(model_sim[,1], model_sim[,9], col="red",lty=2)
 points(model_sim[,1], model_sim[,10], col="darkorchid", pch=16,lty=3)
 lines(model_sim[,1], model_sim[,10], col="darkorchid",lty=3)
 legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
 ```
+
+The above plot depicts the following for the noise of sigma = 4
+ - The power seems lower at the initial stage of beta_1 itself, for the lower sample size (10) and decrease very fast until 0. However though it decreases very fast for higher sample size(n=20, 30), however relatively slow as compared to lower sample size (n=10)
+ - The above point still valid for the case of increase of beta_1 beyond point 0, where power increases rapidly for higher sample size (30 and then 30) as compared to lower sample size
+ - The distance between the power increase/decrease for different sample size (n=10/20 and 30) is wider for higher noise level (sigma = 4) than that of sigma =1 & 2, means rejected of hypothesis is higher for higher simga and even higher for lower sample size
+
+
+###Discussion
+Now as part of the **goal**, let's discuss the what's the impact of β1, n and σ with respect to power. We will be plotting different plots to conclude the summary of the impact
 
 **Effect of sigma(1,2,4) on the Power **
 ```{r}
@@ -807,30 +891,45 @@ lines(model_sim[,1], model_sim[,10], col="red",lty=3)
 legend("topright",legend=c("sigma=1,n=10,20,30","sigma=2,n=10,20,30","sigma=3,n=10,20,30"),col=c("dodgerblue","green","darkorchid","red"),pch=c(1,1,1),lty=c(1,2,3))
 ```
 
+**Below are the observations on the effect of σ on power**
+ - Higher the sigma (σ),lower is the power. 
+ - It clearly visible that all the blue line (sigma=1) have higher power than that of green line (sigma = 2) & red line (sigma = 4) for any particular value of β1 and sample size. That means higher the value of the sigma (σ) = number of rejected hypothesis will be lower and lower the value of sigma (σ) = number of rejected hypothesis becomes higher.
+
+
 **Effect of n(10,20,30) on the Power **
 ```{r}
-plot(model_sim[,1],model_sim[,2], type="o", col="deeppink", pch=1, lty=1,main="Effect of n (10,20,30) on the Power",xlab = "beta_1",ylab = "Power")
+par(mfrow=c(2, 2))
+
+plot(model_sim[,1],model_sim[,2], type="o", col="deeppink", pch=1, lty=1,main="Sigma=1",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,3], col="darkolivegreen4", pch=1,lty=2)
 lines(model_sim[,1], model_sim[,3], col="darkolivegreen4",lty=2)
 points(model_sim[,1], model_sim[,4], col="blueviolet", pch=1,lty=3)
 lines(model_sim[,1], model_sim[,4], col="blueviolet",lty=3)
+legend("topright",legend=c("n=10","n=20","n=30"),col=c("deeppink","darkolivegreen4","blueviolet"),pch=c(1,1,1),lty=c(1,2,3))
 
-points(model_sim[,1],model_sim[,5], type="o", col="deeppink", pch=1, lty=1)
+plot(model_sim[,1],model_sim[,5], type="o", col="deeppink", pch=1, lty=1,main="Sigma=2",xlab = "beta_1",ylab = "Power")
+#points(model_sim[,1],model_sim[,5], type="o", col="deeppink", pch=1, lty=1)
 lines(model_sim[,1],model_sim[,5], type="o", col="deeppink", pch=1, lty=1)
 points(model_sim[,1], model_sim[,6], col="darkolivegreen4", pch=1,lty=2)
 lines(model_sim[,1], model_sim[,6], col="darkolivegreen4",lty=2)
 points(model_sim[,1], model_sim[,7], col="blueviolet", pch=1,lty=3)
 lines(model_sim[,1], model_sim[,7], col="blueviolet",lty=3)
+legend("topright",legend=c("n=10","n=20","n=30"),col=c("deeppink","darkolivegreen4","blueviolet"),pch=c(1,1,1),lty=c(1,2,3))
 
-points(model_sim[,1],model_sim[,8], type="o", col="deeppink", pch=1, lty=1)
+plot(model_sim[,1],model_sim[,8], type="o", col="deeppink", pch=1, lty=1,main="Sigma=4",xlab = "beta_1",ylab = "Power",ylim=c(0,1))
+#points(model_sim[,1],model_sim[,8], type="o", col="deeppink", pch=1, lty=1)
 lines(model_sim[,1],model_sim[,8], type="o", col="deeppink", pch=1, lty=1)
 points(model_sim[,1], model_sim[,9], col="darkolivegreen4", pch=1,lty=2)
 lines(model_sim[,1], model_sim[,9], col="darkolivegreen4",lty=2)
 points(model_sim[,1], model_sim[,10], col="blueviolet", pch=1,lty=3)
 lines(model_sim[,1], model_sim[,10], col="blueviolet",lty=3)
-legend("topright",legend=c("sigma=1,2,3,n=10","sigma=1,2,3,n=20","sigma=1,2,3,n=30"),col=c("deeppink","darkolivegreen4","blueviolet"),pch=c(1,1,1),lty=c(1,2,3))
+legend("topright",legend=c("n=10","n=20","n=30"),col=c("deeppink","darkolivegreen4","blueviolet"),pch=c(1,1,1),lty=c(1,2,3))
 ```
 
+Below are the observations on the effect of sample size (n = 10,20 and 30) on the beta_1
+ - From the abobe 3 plots, for different value of sigma (σ), Higher the sample size (n=30),higher is the power. It clearly visible that for all the 3 plots (against 3 different sigma (σ)), the blueviolet (n = 30) lines have higher than that of the rest 2 lines (green,n = 20 and deep pink, n= 10). That is higher the sample size, reject the hypothesis becomes higher
+
+**Effect of n(10,20,30) on the Power **
 
 ```{r}
 plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1,2,4 & n = 10,20,30",xlab = "beta_1",ylab = "Power")
@@ -856,5 +955,10 @@ points(model_sim[,1], model_sim[,10], col="blueviolet", pch=9,lty=9)
 lines(model_sim[,1], model_sim[,10], col="blueviolet",lty=9)
 
 legend("topright",legend=c("sigma=1,n=10","sigma=1,n=20","sigma=1,n=30","sigma=2,n=10","sigma=2,n=20","sigma=2,n=30","sigma=3,n=10","sigma=3,n=20","sigma=3,n=30"),col=c("dodgerblue","red","darkorchid","yellow","deeppink","darkolivegreen4","darkgreen","darkblue","blueviolet"),pch=c(1,2,3,4,5,6,7,8,9),lty=c(1,2,3,4,5,6,7,8,9))
-
 ```
+
+If we combine all the plots for all the sample size beta(β1), sample size(n) and sigma(σ), from the above figure, **below are the observations on the effect of β1 on power ***
+ - Power decreased as β1 increased from -2 till 0 for any given sigma(σ) and sample size(n), means as β1 increases, reject hypothesis decreases
+ - Power increased as β1 increased from 0 till 2  for any given sigma(σ) and sample size(n), means as β1 increases, reject hypothesis increases
+
+ 
