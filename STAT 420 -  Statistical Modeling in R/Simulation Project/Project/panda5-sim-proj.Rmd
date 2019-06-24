@@ -271,7 +271,7 @@ par(mfrow=c(1, 2))
 
 hist(model_significance[,6],
      main = "Empirical Distribution of R Squared [Significance]",
-     cex.main = 0.8,
+     cex.main = 0.6,
      xlab = "Simulated values of R Squared",
      col = "yellow",
      border = "white",
@@ -280,7 +280,7 @@ hist(model_significance[,6],
 
 hist(model_nonsignificance[,6],
      main = "Empirical Distribution of R Squared [Non Significance]",
-     cex.main = 0.8,     
+     cex.main = 0.6,     
      xlab = "Simulated values of R Squared",
      col = "tan",
      border = "white",
@@ -293,8 +293,8 @@ hist(model_nonsignificance[,6],
 par(mfrow=c(1, 2))
 
 hist(model_significance[,7],
-     main = "Empirical Distribution of F (Sigma = 10) [Significance Model]",
-     cex.main = 0.8,
+     main = "Empirical Distribution of F [Significance Model]",
+     cex.main = 0.6,
      xlab = "Simulated values of F",
      col = "darkolivegreen",
      border = "white"
@@ -302,8 +302,8 @@ hist(model_significance[,7],
 
 
 hist(model_nonsignificance[,7],
-     main = "Empirical Distribution of F (Sigma = 10) [Non Significance Model]",
-     cex.main = 0.8,
+     main = "Empirical Distribution of F [Non Significance Model]",
+     cex.main = 0.6,
      xlab = "Simulated values of F",
      col = "darkolivegreen",
      border = "white"
@@ -314,16 +314,16 @@ hist(model_nonsignificance[,7],
 par(mfrow=c(1, 2))
 
 hist(model_significance[,8],
-     main = "Empirical Distribution of P (Sigma = 10) [Significance Model]",
-     cex.main = 0.8,
+     main = "Empirical Distribution of P [Significance Model]",
+     cex.main = 0.6,
      xlab = "Simulated values of P",
      col = "darkgreen",
      border = "white"
      )
 
 hist(model_nonsignificance[,8],
-     main = "Empirical Distribution of P (Sigma = 10) [Non Significance Model]",
-     cex.main = 0.8,
+     main = "Empirical Distribution of P [Non Significance Model]",
+     cex.main = 0.6,
      xlab = "Simulated values of P",
      col = "darkgreen",
      border = "white"
@@ -334,16 +334,16 @@ hist(model_nonsignificance[,8],
 par(mfrow=c(1, 2))
 
 hist(model_significance[,9],
-     main = "Empirical Distribution of R Squared (Sigma = 10) [Significance Model]",
-     cex.main = 0.8,
+     main = "Empirical Distribution of R Squared [Significance Model]",
+     cex.main = 0.6,
      xlab = "Simulated values of R Squared",
      col = "darkcyan",
      border = "white"
      )
 
 hist(model_nonsignificance[,9],
-     main = "Empirical Distribution of R Squared (Sigma = 10) [Non Significance Model]",
-     cex.main = 0.8,
+     main = "Empirical Distribution of R Squared [Non Significance Model]",
+     cex.main = 0.6,
      xlab = "Simulated values of R Squared",
      col = "darkcyan",
      border = "white"
@@ -365,21 +365,23 @@ As part of the introduction, we have the following discussion agenda
 curve(df(x, df1=3, df2=21),
       xlab = "Probability",
       ylab = "Frequency",
+      main = "True Distribution of F Test(F Dstribution)",
       lwd=3,
       col = "darkgreen")
 ```
 
 The True distribution of the F Tests shows as a **right skewed distribution**
 
-######[1.4.1.2]True distribution of the P value
+######[1.4.1.2] True distribution of the P value
 ```{r}
-curve(pnorm(rnorm(x,mean = 3, sd = 1),mean=3,sd=1),
-      main = "True Distribution of P Value, Sigma = 1",
-      cex.main = 0.8,
-      xlab = "Probability",
-      ylab = "Frequency",
-      lwd = 3,
-      col = "orange")
+hist(pnorm(rnorm(25,mean = 3, sd = 1),mean=3,sd=1),
+     xlab = "Probability",
+     ylab = "Desnity",
+     main = "True Distribution of P val (Uniform Distribution)",     
+     breaks = 10,
+     col = "orange",
+     border = "white",
+     probability = TRUE)
 ```
 
 The True distribution of the P seems to have an **uniform distribution**
@@ -389,6 +391,7 @@ The True distribution of the P seems to have an **uniform distribution**
 curve(dbeta(x, (4-1)/2, (25-4)/2),
       xlab = "Probability",
       ylab = "Frequency",
+      main = "True Distribution of R Squared (Beta distribution)",      
       lwd = 3,
       col = "palevioletred4")
 ```
@@ -398,40 +401,9 @@ The True distribution of R Squared is a **beta distribution (right skewed distri
 #####[1.4.2] How do the empirical distributions from the simulations compare to the true distributions?
 ######[1.4.2.1] Empirical distributions of F Test related to the True Distibution of F Test
 ```{r}
-par(mfrow=c(1, 2))
 hist(model_nonsignificance[,1],
      main = "Empirical Distribution of F (Sigma = 1) [Non Significance Model]",
-     cex.main = 0.8,
-     xlab = "Simulated values of F",
-     col = "darkolivegreen1",
-     border = "white",
-     probability = TRUE
-     )
-curve(df(x, df1=3, df2=21),
-      lwd=3,
-      col = "darkgreen",
-      add = TRUE)
-
-hist(model_nonsignificance[,4],
-     main = "Empirical Distribution of F (Sigma = 5) [Non Significance Model]",
-     cex.main = 0.8,
-     xlab = "Simulated values of F",
-     col = "darkolivegreen1",
-     border = "white",
-     probability = TRUE
-     )
-curve(df(x, df1=3, df2=21),
-      lwd=3,
-      col = "darkgreen",
-      add = TRUE)
-```
-
-```{r}
-par(mfrow=c(1, 2))
-
-hist(model_nonsignificance[,7],
-     main = "Empirical Distribution of F (Sigma = 10) [Non Significance Model]",
-     cex.main = 0.8,
+     cex.main = 0.6,
      xlab = "Simulated values of F",
      col = "darkolivegreen1",
      border = "white",
@@ -450,97 +422,32 @@ It seems the True distribution of the F test statistics is **matching** with the
 par(mfrow=c(1, 2))
 
 hist(model_nonsignificance[,2],
-     main = "Empirical Distribution of P (Sigma = 1) [Non Significance Model]",
+     main = "Empirical Distribution of P [Non Significance Model]",
      cex.main = 0.8,
+     breaks = 10,     
      xlab = "Simulated values of P",
      col = "deepskyblue1",
      border = "white",
      probability = TRUE
      )
-curve(pnorm(rnorm(x,mean = 3, sd = 1),mean=3,sd=1),
-      main = "True Distribution of P Value - Sigma = 1",
-      cex.main = 0.8,
-      xlab = "Probability",
-      ylab = "Frequency",
-      lwd = 3,
-      col = "darkblue",
-      add = TRUE)
 
-hist(model_nonsignificance[,5],
-     main = "Empirical Distribution of P (Sigma = 5) [Non Significance Model]",
+hist(pnorm(rnorm(25,mean = 3, sd = 1),mean=3,sd=1),
+     xlab = "Probability",
+     ylab = "Density",
+     main = "True Distribution of P val (Uniform Distribution)",     
      cex.main = 0.8,
-     xlab = "Simulated values of P",
-     col = "deepskyblue1",
+     breaks = 10,
+     col = "orange",
      border = "white",
-     probability = TRUE
-     )
-curve(pnorm(rnorm(x,mean = 3, sd = 1),mean=3,sd=1),
-      main = "True Distribution of P Value - Sigma = 1",   
-      cex.main = 0.8,
-      xlab = "Probability",
-      ylab = "Frequency",
-      lwd = 3,
-      col = "darkblue",
-      add = TRUE)
+     probability = TRUE)
 ```
 
-```{r}
-hist(model_nonsignificance[,8],
-     main = "Empirical Distribution of P (Sigma = 10) [Non Significance Model]",
-     cex.main = 0.8,
-     xlab = "Simulated values of P",
-     col = "deepskyblue1",
-     border = "white",
-     probability = TRUE
-     )
-curve(pnorm(rnorm(x,mean = 3, sd = 1),mean=3,sd=1),
-      main = "True Distribution of P Value - Sigma = 1",
-      cex.main = 0.8,
-      xlab = "Probability",
-      ylab = "Frequency",
-      lwd = 3,
-      col = "darkblue",
-      add = TRUE)
-```
-
-From the above plots the empirical distrubution of the P values for the three (3) sigma values (1,5 and 10) are **matching** with the true distribution of the P values, which is uniform distribution.
+From the above plots the empirical distrubution of the P value (Left plot - Blue) is **matching** with the true distribution of the P value (right plot - orange), which is uniform distribution.
 
 ######[1.4.2.3]Empirical distributions of R squared related to the True Distibution of R Squared (Non Siginificance Model)
 ```{r}
-par(mfrow=c(1, 2))
-
 hist(model_nonsignificance[,3],
      main = "Empirical Distribution of R Squared (Sigma = 1) [Non Significance Model]",
-     cex.main = 0.8,
-     xlab = "Simulated values of R Squared",
-     col = "palevioletred1",
-     border = "white",
-     probability = TRUE
-     )
-curve(dbeta(x, (4-1)/2, (25-4)/2),
-      lwd = 3,
-      col = "palevioletred4",
-      add = TRUE)
-
-hist(model_nonsignificance[,6],
-     main = "Empirical Distribution of R Squared (Sigma = 5) [Non Significance Model]",
-     cex.main = 0.8,
-     xlab = "Simulated values of R Squared",
-     col = "palevioletred1",
-     border = "white",
-     probability = TRUE
-     )
-curve(dbeta(x, (4-1)/2, (25-4)/2),
-      lwd = 3,
-      col = "palevioletred4",
-      add = TRUE)
-```
-
-```{r}
-par(mfrow=c(1, 2))
-
-hist(model_nonsignificance[,9],
-     main = "Empirical Distribution of R Squared (Sigma = 10) [Non Significance Model]",
      cex.main = 0.8,
      xlab = "Simulated values of R Squared",
      col = "palevioletred1",
@@ -893,13 +800,13 @@ plot(seq(1,9), test_rmse_mat[,1], type="o", col="chartreuse4", pch=8, lty=1,main
 points(6, min(test_rmse_mat[,1]), col="chartreuse4",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 1
 ```
 
-#The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 1**, the **model 6** has the lowest RMSE which is around r min(test_rmse_mat[,1])`
+The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 1**, the **model 6** has the lowest RMSE which is around `r min(test_rmse_mat[,1])`
 
 ```{r}
 plot(seq(1,9), test_rmse_mat[,2], type="o", col="blue4", pch="*", lty=1,main="Sigma = 2",xlab = "MODEL SIZE",ylab = "RMSE")
 points(6, min(test_rmse_mat[,2]), col="blue4",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 2
 ```
-#The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 2**, the **model 6** has the lowest RMSE which is around r min(test_rmse_mat[,2])`
+The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 2**, the **model 6** has the lowest RMSE which is around `r min(test_rmse_mat[,2])`
 
 
 ```{r}
@@ -907,7 +814,7 @@ plot(seq(1,9), test_rmse_mat[,3], type="o", col="red", pch="*", lty=1,main="Sigm
 points(6, min(test_rmse_mat[,3]), col="red",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 4
 ```
 
-#The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 4**, the **model 6** has the lowest RMSE which is around r min(test_rmse_mat[,3])`
+The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 4**, the **model 6** has the lowest RMSE which is around `r min(test_rmse_mat[,3])`
 
 
 ```{r}
@@ -1182,7 +1089,8 @@ If we combine all the plots for all the sample size beta(β1), sample size(n) an
  
 ####[3.4.4] Are 1000 simulations sufficient
 
-```{r eval=FALSE, include=FALSE}
+Let's simulate the MLR for 3000 iteration and record the Train / Test RMSE to see what's the change
+```{r}
 birthday = 19770411
 set.seed(birthday)
 no_loop = 3000
@@ -1216,44 +1124,9 @@ for(s in 1:length(sigma)){ #sigma = c(1,2,4)
 ```
 
 
-```{r eval=FALSE, include=FALSE}
-birthday = 19770411
-set.seed(birthday)
-no_loop = 5000
-
-#Matrix to store the Power of the simulated models
-model_sim_5000 = cbind(beta_1_sim_val=rep(0,length(beta_1)),n_10_sigma_1=rep(0,length(beta_1)),n_20_sigma_1=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)),n_10_sigma_2=rep(0,length(beta_1)),n_20_sigma_2=rep(0,length(beta_1)),n_30_sigma_2=rep(0,length(beta_1)),n_10_sigma_4=rep(0,length(beta_1)),n_20_sigma_4=rep(0,length(beta_1)),n_30_sigma_1=rep(0,length(beta_1)))
-
-model_sim_5000[,1] = seq(from=-2,to=2,by=0.1)
-extra_counter = 0
-
-#Loop to iterate over Sigma, number of samples, beta_1 values and 5000 simulations to extract and store the Power values
-run_counter = 0
-for(s in 1:length(sigma)){ #sigma = c(1,2,4)
-  for (n_s in 1:length(n)){ #n = c(10,20,30)
-    for (b in 1:length(beta_1)){ # beta_1 = seq(from=-2,to=2,by=0.1)
-      tot_sum_signifincace_sim = 0
-      run_counter = run_counter + 1      
-      for(i in 1:no_loop){
-        slr_data = slr_sim(n_in = n[n_s], sd = sigma[s], beta_1_in = beta_1[b] )
-        model = lm(response~predictor, data = slr_data)
-        model_p_val = summary(model)$coefficient[2,4]
-        tot_sum_signifincace_sim = tot_sum_signifincace_sim + ifelse(model_p_val<alpha,1,0)
-      }
-      power_sim_beta = tot_sum_signifincace_sim / no_loop
-      model_sim_5000[b,s+n_s+extra_counter] = power_sim_beta    
-      print (paste(run_counter," Sigma:",sigma[s]," n:",n[n_s]," beta_1:",beta_1[b]," Signifiance_Sum:",tot_sum_signifincace_sim, " Power:",power_sim_beta))
-    }
-  }
-  extra_counter = extra_counter + 2
-}
-```
-
-
-
-```{r eval=FALSE, include=FALSE}
-par(mfrow=c(2, 2))
-plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1,2,4 & n = 10,20,30",xlab = "beta_1",ylab = "Power")
+```{r}
+par(mfrow=c(1, 2))
+plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="RMSE - 1000 Iterations",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,3], col="red", pch=2,lty=2)
 lines(model_sim[,1], model_sim[,3], col="red",lty=2)
 points(model_sim[,1], model_sim[,4], col="tan1", pch=3,lty=3)
@@ -1279,7 +1152,7 @@ legend("topright",legend=c("sigma=1,n=10","sigma=1,n=20","sigma=1,n=30","sigma=2
 
 #Below code is to plot the simulated beta_1 for 3000 simulations. This plot will helps us to understands, whether there is anything changes because of increase the simulation
 #from 1000 iteration to 3000 iteration
-plot(model_sim_3000[,1],model_sim_3000[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1,2,4 & n = 10,20,30",xlab = "beta_1",ylab = "Power")
+plot(model_sim_3000[,1],model_sim_3000[,2], type="o", col="dodgerblue", pch=1, lty=1,main="RMSE - 3000 Iterations",xlab = "beta_1",ylab = "Power")
 points(model_sim_3000[,1], model_sim_3000[,3], col="red", pch=2,lty=2)
 lines(model_sim_3000[,1], model_sim_3000[,3], col="red",lty=2)
 points(model_sim_3000[,1], model_sim_3000[,4], col="tan1", pch=3,lty=3)
@@ -1302,34 +1175,15 @@ points(model_sim_3000[,1], model_sim_3000[,10], col="blueviolet", pch=9,lty=9)
 lines(model_sim_3000[,1], model_sim_3000[,10], col="blueviolet",lty=9)
 
 legend("topright",legend=c("sigma=1,n=10","sigma=1,n=20","sigma=1,n=30","sigma=2,n=10","sigma=2,n=20","sigma=2,n=30","sigma=3,n=10","sigma=3,n=20","sigma=3,n=30"),col=c("dodgerblue","red","darkorchid","yellow","deeppink","darkolivegreen4","darkgreen","darkblue","blueviolet"),pch=c(1,2,3,4,5,6,7,8,9),lty=c(1,2,3,4,5,6,7,8,9))
-
-#Below code is to plot the simulated beta_1 for 5000 simulations. This plot will helps us to understands, whether there is anything changes because of increase the simulation
-#from 3000 iteration to 5000 iteration
-plot(model_sim_5000[,1],model_sim_5000[,2], type="o", col="dodgerblue", pch=1, lty=1,main="Sigma = 1,2,4 & n = 10,20,30",xlab = "beta_1",ylab = "Power")
-points(model_sim_5000[,1], model_sim_5000[,3], col="red", pch=2,lty=2)
-lines(model_sim_5000[,1], model_sim_5000[,3], col="red",lty=2)
-points(model_sim_5000[,1], model_sim_5000[,4], col="tan1", pch=3,lty=3)
-lines(model_sim_5000[,1], model_sim_5000[,4], col="tan1",lty=3)
-
-points(model_sim_5000[,1],model_sim_5000[,5], type="o", col="yellow", pch=4, lty=4)
-lines(model_sim_5000[,1],model_sim_5000[,5], type="o", col="yellow", pch=4, lty=4)
-
-points(model_sim_5000[,1], model_sim_5000[,6], col="deeppink", pch=5,lty=5)
-lines(model_sim_5000[,1], model_sim_5000[,6], col="deeppink",lty=5)
-points(model_sim_5000[,1], model_sim_5000[,7], col="darkolivegreen4", pch=6,lty=6)
-lines(model_sim_5000[,1], model_sim_5000[,7], col="darkolivegreen4",lty=6)
-
-points(model_sim_5000[,1],model_sim_5000[,8], type="o", col="darkgreen", pch=7, lty=7)
-lines(model_sim_5000[,1],model_sim_5000[,8], type="o", col="darkgreen", pch=7, lty=7)
-
-points(model_sim_5000[,1], model_sim_5000[,9], col="darkblue", pch=8,lty=8)
-lines(model_sim_5000[,1], model_sim_5000[,9], col="darkblue",lty=8)
-points(model_sim_5000[,1], model_sim_5000[,10], col="blueviolet", pch=9,lty=9)
-lines(model_sim_5000[,1], model_sim_5000[,10], col="blueviolet",lty=9)
-
-legend("topright",legend=c("sigma=1,n=10","sigma=1,n=20","sigma=1,n=30","sigma=2,n=10","sigma=2,n=20","sigma=2,n=30","sigma=3,n=10","sigma=3,n=20","sigma=3,n=30"),col=c("dodgerblue","red","darkorchid","yellow","deeppink","darkolivegreen4","darkgreen","darkblue","blueviolet"),pch=c(1,2,3,4,5,6,7,8,9),lty=c(1,2,3,4,5,6,7,8,9))
 ```
 
+From the above plots its clearly visible that the plots for the 3000 iterations have much smoother curve with respect to the Power value, as compared to the 1000 iterations (where the power value is ups-down). Let's take the range of the RMSE of a Train / TEST for the 1000 vs 3000 iterations for a given value of sigma (let's say , sigma = 1) and for a particular value of sample size ( n= 10).
+
+- Power for 1000 Iteration (sigma = 1, n = 10) is between `r range(model_sim[,2])[1]` and `r range(model_sim[,2])[2]`
+- Power for 3000 Iteration (sigma = 1, n = 10)is between `r range(model_sim_3000[,2])[1]` and `r range(model_sim_3000[,2])[2]`
+
+
+From the range prospective the 3000 iterative have slightly increased value as compared to 1000 iteration, however as part of the Goal to check the impact of beta(β1), sample size(n) and sigma(σ) on the Power, **1000 iteration is sufficient**
  
  
  
