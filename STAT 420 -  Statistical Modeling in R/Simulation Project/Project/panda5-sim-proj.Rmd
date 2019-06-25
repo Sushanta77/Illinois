@@ -11,7 +11,7 @@ editor_options:
 ## [1] Simulation Study 1: Significance of Regression
 
 ###[1.1] Introduction
-In this simulation we will investigate the significance of the regression test. We will simulate 2 different model
+In this simulation I will investigate the significance of the regression test. I will simulate 2 different model
 
 Below is the **1st model**, which is the **Signifianct model**
 \[ Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i3} + \epsilon_i.\]
@@ -19,6 +19,7 @@ Below is the **1st model**, which is the **Signifianct model**
 where $\epsilon_i$ follows a Normal distribution of mean = 0 and Varience = $\sigma^2$
 
 We have provided the value of the parameters as
+
  - β0 = 3
  - β1 = 1
  - β2 = 1
@@ -31,6 +32,7 @@ Below is the **2nd model**, which is a **Non-Signifianct model**
 where $\epsilon_i$ follows a Normal distribution of mean = 0 and Varience = $\sigma^2$
 
 We have provided the value of the parameters as
+
  - β0 = 3
  - β1 = 0
  - β2 = 0
@@ -39,9 +41,9 @@ We have provided the value of the parameters as
  - σ ∈ (1,5,10), **three distinct values of sigma**
  - n = 25
  
-We need to simulate 2500 simulations for both the models for each value of sigma, so around 2500 X 3 = 7500 times for each model, so TOTAL 2 X 7500 = 15,000 times for both the model
+I will simulate 2500 simulations for both the models for each value of sigma, so around 2500 X 3 = **7500** for each model, so TOTAL 2 X 7500 = **15,000** times for both the model
 
-We need to show there are around 15000 times the model is being trained as part of the simulations
+I need to show there are around 15000 times the model is being trained as part of the simulations
 
 ####[1.1.1] Goal
 
@@ -53,29 +55,32 @@ As part of this exercise, the following are the Goals to achieve
      - p-value
      - R square
   - Discuss on the following points in the **Disucssion** section
-  - Do we know the true distribution of the following ?
-       - F statistics
-       - p-value
-       - R square
-   - How do the empirical distributions compare with the true distribution ?
-   - How R2 is related to the sigma
+    - Do we know the true distribution of the following ?
+         - F statistics
+         - p-value
+         - R square
+     - How do the empirical distributions compare with the true distribution ?
+     - How R2 is related to the sigma
 
- In order to achieve these goals, we have various methods (especially R codes and R markdown) on how we achieve these goals
+ In order to achieve these goals, we have various methods in the form of R codes, markdown
  
 ###[1.2] Methods
 Below is the code which will runs the 2500 simulations against each sigma (σ)
+
  - Will Create 2 matrix one for each model (significance and non-significance) which will store the F statistics, p-value and R2 for each sigma value (1, 5 and 10)
  - Once the 2 matrix are populated, will be used to plot the empirical distribution, as well as to compare with the true distribution
  
-####[1.2.1] Below is the simulation function for the both signifiance and non-signifiance model
+####[1.2.1] Simulation function for the both signifiance and non-signifiance model
 
 ```{r}
 birthday = 19770411
 set.seed(birthday)
+
 #Variable declaration
 n = 25
 sigma = c(1,5,10)
 no_loop = 2500
+
 #function to generate samples for both significance and non-significance model
 mlr_sim = function(n_in,sd=1,signifincance_ind=1){
   exer_data = read.csv("study_1.csv")
@@ -100,11 +105,12 @@ mlr_sim = function(n_in,sd=1,signifincance_ind=1){
 ```
 
 
-#####[1.2.2] Below is the simulation for 2500 simulations (Significance & Non-Significance Model)
+#####[1.2.2] Simulation for 2500 iterations (Significance & Non-Significance Model)
 
 ```{r}
 birthday = 19770411
 set.seed(birthday)
+
 # Below code is to simulate the Significance Model 
 model_significance = cbind(sigma_1_F=rep(0,no_loop),sigma_1_P=rep(0,no_loop),sigma_1_R_SQUARED=rep(0,no_loop),
                            sigma_5_F=rep(0,no_loop),sigma_5_P=rep(0,no_loop),sigma_5_R_SQUARED=rep(0,no_loop),
@@ -146,13 +152,14 @@ for(s in 1:length(sigma)){
 
 ###[1.3] Results
 As part of the results we will draw out the following
+
  - Simulate the MLR models (2 models) for 2500 times for a given value of σ
  - Plot the empirical distribution of the for the following 3 parameters 
-   - F statistics
-   - p-value
-   - R2
+     - F statistics
+     - p-value
+     - R2
 
-#####[1.3.1] Below is the Empirical distibution for 2500 simulations (Sigma = 1)
+#####[1.3.1] Empirical distibution for 2500 simulations (Sigma = 1)
 
 ```{r}
 par(mfrow=c(1, 2))
@@ -220,7 +227,7 @@ hist(model_nonsignificance[,3],
      )
 ```
 
-#####[1.3.2] Below is the Empirical distibution for 2500 simulations (Sigma = 5)
+#####[1.3.2] Empirical distibution for 2500 simulations (Sigma = 5)
 
 ```{r}
 par(mfrow=c(1, 2))
@@ -230,8 +237,8 @@ hist(model_significance[,4],
      cex.main = 0.8,
      xlab = "Simulated values of F",
      col = "darkolivegreen",
-     border = "white"
-     #probability = TRUE
+     border = "white",
+     probability = TRUE
      )
 
 hist(model_nonsignificance[,4],
@@ -288,7 +295,7 @@ hist(model_nonsignificance[,6],
      )
 ```
 
-#####[1.3.3] Below is the Empirical distibution for 2500 simulations (Sigma = 10)
+#####[1.3.3] Empirical distibution for 2500 simulations (Sigma = 10)
 ```{r}
 par(mfrow=c(1, 2))
 
@@ -297,7 +304,8 @@ hist(model_significance[,7],
      cex.main = 0.6,
      xlab = "Simulated values of F",
      col = "darkolivegreen",
-     border = "white"
+     border = "white",
+     probability = TRUE     
      )
 
 
@@ -306,7 +314,8 @@ hist(model_nonsignificance[,7],
      cex.main = 0.6,
      xlab = "Simulated values of F",
      col = "darkolivegreen",
-     border = "white"
+     border = "white",
+     probability = TRUE     
      )
 ```
 
@@ -318,7 +327,8 @@ hist(model_significance[,8],
      cex.main = 0.6,
      xlab = "Simulated values of P",
      col = "darkgreen",
-     border = "white"
+     border = "white",
+     probability = TRUE     
      )
 
 hist(model_nonsignificance[,8],
@@ -326,7 +336,8 @@ hist(model_nonsignificance[,8],
      cex.main = 0.6,
      xlab = "Simulated values of P",
      col = "darkgreen",
-     border = "white"
+     border = "white",
+     probability = TRUE
      )
 ```
 
@@ -338,7 +349,8 @@ hist(model_significance[,9],
      cex.main = 0.6,
      xlab = "Simulated values of R Squared",
      col = "darkcyan",
-     border = "white"
+     border = "white",
+     probability = TRUE     
      )
 
 hist(model_nonsignificance[,9],
@@ -346,7 +358,8 @@ hist(model_nonsignificance[,9],
      cex.main = 0.6,
      xlab = "Simulated values of R Squared",
      col = "darkcyan",
-     border = "white"
+     border = "white",
+     probability = TRUE     
      )
 ```
 
@@ -370,7 +383,7 @@ curve(df(x, df1=3, df2=21),
       col = "darkgreen")
 ```
 
-The True distribution of the F Tests shows as a **right skewed distribution**
+The True distribution of the F Tests shows as a **F distribution, which is right skewed distribution**
 
 ######[1.4.1.2] True distribution of the P value
 ```{r}
@@ -415,7 +428,7 @@ curve(df(x, df1=3, df2=21),
       add = TRUE)
 ```
 
-It seems the True distribution of the F test statistics is **matching** with the empirical distribution of the of the F Test for all the three (3) sigma values (1,5 and 10). The dark green color shows the true distribution of the F test statistics, where as the histogram in light green color is the empirical distribution of the F test statistics obtained from the simulated values.
+It seems the True distribution of the F test statistics is **matching** with the empirical distribution of the of the F Test. The dark green color shows the true distribution of the F test statistics, where as the histogram in light green color is the empirical distribution of the F test statistics obtained from the simulated values.
 
 ######[1.4.2.2]Empirical distributions of P value related to the True Distibution of P (Non Siginificance)
 ```{r}
@@ -471,8 +484,13 @@ points(model_significance[,9],col="red",lty=3)
 legend("topright",legend=c("sigma=1","sigma=5","sigma=10"),col=c("dodgerblue","green","red"),lty=c(1,2,3))
 ```
 
-**Description of how R2 and sigma
-From the above plot, it seems **R square and sigma are related**. **Higher the value of the sigma, lower the value of the R squared**. It seems prominent in case of sigma =1 (blue circles) for which the R squared value is bit higher as compared to the Sigma = 5 (green circles) and Sigma = 10 (red circles). Red circles (Sigma = 10) have in the bottom with lowest R Squared value, where as green circles (Sigma = 5) have higher R squared values. Though there are few green circles (Sigma = 5) have lower R Squared same as of red circles (Sigma = 10) 
+**Description of how R2 and sigma are related**
+
+ - From the above plot, it seems **R square and sigma are related**. 
+ - **Higher the value of the sigma, lower the value of the R squared**. 
+ - It seems prominent in case of sigma =1 (blue circles) for which the R squared value is bit higher as compared to the Sigma = 5 (green circles) and Sigma = 10 (red circles). 
+ - The Red circles (Sigma = 10) have in the bottom with lowest R Squared value, where as green circles (Sigma = 5) have higher R squared values. 
+ - Though there are few green circles (Sigma = 5) have lower R Squared same as of red circles (Sigma = 10) 
 
 
 ## [2] Simulation Study 2: Using RMSE for Selection?
@@ -498,7 +516,7 @@ We have provided the value of the parameters as
  - σ ∈ (1,2,4), **three distinct values of sigma**
  - n = 500
  
-We need to evaluate 9 models (below), where for each model we will calculate the RMSE for train data set (250 random observation) and test data set (250 random observation). We will simulate this for 1000 iteration for each value of σ, so there would be of 3000 simulation for each model, 27000 for around 9 models
+We need to evaluate 9 models (below), where for each model, we will calculate the RMSE for train data set (250 random observation) and test data set (250 random observation). We will simulate this for 1000 iteration for each value of σ, so there would be of 3000 simulation for each model, which equals to 3 X 3 X 3000 = **27000** for around 9 models
 
  - (Model -1 ) y ~ x1
  - (Model -2 ) y ~ x1 + x2
@@ -517,30 +535,30 @@ The Train/Test RMSE for each model is as below
 
 RMSE(model, data) = $\sqrt{\dfrac{1}{n}\sum\limits_{t=1}^{n}(y_{i} - \hat{y}_i)^2}$
 
-As per the above model, the correct model is the **Model -6**, we need to see whether this procedure is correct enough to get the correct model
+As per the above model, the correct model is the **Model -6**, we need to see whether by this methods/approach, we will able to get the correct model
 
 ####[2.1.2] Goal:
 
 As part of this exercise, the following are the Goals to achieve
 
- - Simulate the MLR models for 1000 times for a given value of σ
- - Plot 3 curves, each plot is against each sigma, shows what the Train RMSE and Test RMSE against the Model Size (Model1,2,3,4,5,6).
- - From the 3 Plots, figure out whether the simulation helped to identify the best Model, i.e. ** Model 6**
+ - Simulate the MLR models for 1000 times for a given value of σ (1,2,4)
+ - Plot 3 curves, each plot is against each value of sigma, shows what the Train RMSE and Test RMSE against the Model Size (Model 1,2,3,4,5,6).
+ - From the 3 Plots, figure out whether the simulation helped to identify the best Model, i.e. **Model 6**
  - Discuss on the following points in the **Disucssion** section
  
      - Does the simulation method always select the correct model (i.e. **model 6**), or sometimes it select the other models
-     - If we do the average of the Test RMSE, whether the simulation methor selects the correct model (i.e. **Model 6**)
+     - If we do the average of the Test RMSE, whether the simulation method selects the correct model (i.e. **Model 6**)
      - How does the level of noise (σ = 1,2 and 4) affects the Model selection.
 
- In order to achieve these goals, we have various methods (especially R codes and R markdown) on how we achieve these goals
+ In order to achieve these goals, we have various methods in the form of R codes, markdown
  
 ###[2.2] Methods
 Below is the code which will runs the 1000 simulations against each sigma (σ)
 
  - Will Create 9 matrix for Train Set which will stored the Train RMSE, where each columns holds the Train RMSE for each value of σ = 1,2 & 4
  - Will Create 9 matrix for Test Set which will stored the Test RMSE, where each columns holds the Train RMSE for each value of σ = 1,2 & 4
- - Will Create 9 matrix which stored the average Train Set RMSE from the Train Set RMESE
- - Will Create 9 matrix which stored the average Test Set RMSE from the Test Set RMSE
+ - Will Create 9 matrix which stored the average Train Set RMSE from the Train Set RMESE, where each columns holds the Train RMSE for each value of σ = 1,2 & 4
+ - Will Create 9 matrix which stored the average Test Set RMSE from the Test Set RMSE, where each columns holds the Train RMSE for each value of σ = 1,2 & 4
 
 ####[2.2.1] Code for Simulations
 ```{r}
@@ -727,7 +745,7 @@ As we have discussed in the Introduction on the aspect of **Goal**, we have to p
  - Simulate the MLR models for 1000 times for a given value of σ
  - Plot 3 curves, each plot is against each sigma, shows what the Train RMSE and Test RMSE against the Model Size (Model1,2,3,4,5,6).
  
-####[2.3.1] Train/Test RMSE against 3 sigma, for each model (1/2/3.../7/8/9)
+####[2.3.1] Train/Test RMSE against 3 sigma values ((1,2,4), for each model (1/2/3.../7/8/9)
 ```{r}
 plot(seq(1,9), train_rmse_mat[,1], type="o", col="blue", pch="o", lty=1,main="Train, Test MSE for Sigma = 1",xlab = "MODEL SIZE",ylab = "RMSE")
 points(seq(1,9), test_rmse_mat[,1], col="red", pch=8)
@@ -735,7 +753,7 @@ lines(seq(1,9), test_rmse_mat[,1], col="red",lty=2)
 legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
 ```
 
-The above plot shows the Train RMSE and Test RMSE for sigma = 1, is being very close to each other. As the model grow, both the Train / Test RMSE falls, however the tipping point is the ** Model 6**
+The above plot shows the Train RMSE and Test RMSE for sigma = 1, is being very close to each other. As the model grow, both the Train / Test RMSE falls, however the tipping point is the **Model 6**, the test RMSE increases after the Model 6
 
 ```{r}
 plot(seq(1,9), train_rmse_mat[,2], type="o", col="blue", pch="o", lty=1,main="Train, Test MSE for Sigma = 2",xlab = "MODEL SIZE",ylab = "RMSE")
@@ -744,7 +762,7 @@ lines(seq(1,9), test_rmse_mat[,2], col="red",lty=2)
 legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
 ```
 
-The above plot shows the Train RMSE and Test RMSE for sigma = 2, is being **very close to each other till model 6**, after model 6 they are ditant apart to each other. Also As the model grow, both the Train / Test RMSE falls, however the tipping point is the **Model 6**, the Train/Test RMSE increases after it
+The above plot shows the Train RMSE and Test RMSE for sigma = 2, is being **very close to each other till model 6**, after model 6 they are ditant apart to each other. Also As the model grow, both the Train / Test RMSE falls, however the tipping point is the **Model 6**, after Model 6, the Test RMSE increases
 
 ```{r}
 plot(seq(1,9), train_rmse_mat[,3], type="o", col="blue", pch="o", lty=1,main="Train, Test MSE for Sigma = 4",xlab = "MODEL SIZE",ylab = "RMSE")
@@ -753,16 +771,16 @@ lines(seq(1,9), test_rmse_mat[,3], col="red",lty=2)
 legend("topright",legend=c("train rmse","test rmse"), col=c("blue","red"),pch=c("o","*"),lty=c(1,2), ncol=1)
 ```
 
-The above plot shows the Train RMSE and Test RMSE for sigma = 4, is being **very close to each other till model 2**, **after model 2** they are ditant apart to each other and distance between them **increase as the model grows**. Also As the model grow, both the Train / Test RMSE falls, however the tipping point is the **Model 6**, the Train/Test RMSE increases after it
+The above plot shows the Train RMSE and Test RMSE for sigma = 4, is being **very close to each other till model 2**, **after model 2** they are distant apart to each other and distance between them **increase as the model grows**. Also as the model grow, both the Train / Test RMSE falls, however the tipping point is the **Model 6**, after the Model 6, the Test RMSE value increases
 
 ###[2.4] Discussion
-We will discuss on the following points
+We will discuss on the following points, as we mentioned in the **Introduction** section
 
    - Does the simulation method always select the correct model (i.e. **model 6**), or sometimes it select the other models
-   - If we do the average of the Test RMSE, whether the simulation methor selects the correct model (i.e. **Model 6**)
+   - If we do the average of the Test RMSE, whether the simulation method selects the correct model (i.e. **Model 6**)
    - How does the level of noise (σ = 1,2 and 4) affects the Model selection.
 
-####[2.4.1] Does the simulation method always select the correct model
+####[2.4.1] Does the simulation method always select the correct model?
 ```{r}
 plot(test_rmse_model1_mat[,1],col="dodgerblue",ylim=(c(0.8,3)),pch=1,lty=1,xlab = "Index", ylab = "RMSE")
 points(test_rmse_model2_mat[,1], col="orangered",ylim=(c(0.8,3)),pch=1,lty=2)
@@ -776,8 +794,9 @@ points(test_rmse_model9_mat[,1], col="deeppink",ylim=(c(0.8,3)),pch=1,lty=8)
 legend("topright",legend=c("Model1","Model2","Model3","Model4","Model5","Model6","Model7","Model8","Model9"),col=c("dodgerblue","orangered","blue4","limegreen","orange","darkorchid","violetred","tan3","deeppink"),lty=c(1,2,3,4,5,6,7,8,9))
 ```
 
-**The above model plots the RMSE of all model created from the simulation for the Sigma = 1**
-The correct model should be the one which should have the **lowest RMSE**. From the above plots (which plots against all the 1000 RMSE of simulation) it shows that the Model 1 and Model 2 have higher RMSE and distinctly far from the other model (Model 3/4/5/6/7/8/9), hence its obious to ignore the Model 1 and Model 2. Let's explore the other models as below 
+**The above plots the RMSE of all model created from the simulation for the Sigma = 1**
+
+ The correct model should be the one which should have the **lowest RMSE**. From the above plots (which plots against all the 1000 RMSE of simulation) it shows that the Model 1(blue color) and Model 2(red color) have higher RMSE and distinctly far from the other model (Model 3/4/5/6/7/8/9), lets ignore the Model 1 and Model 2. Let's explore the other models as below 
 
 ```{r}
 plot(test_rmse_model3_mat[,1], col="dodgerblue",ylim=(c(0.9,1.3)),pch=1,lty=3,xlab="Indx",ylab="RMSE")
@@ -791,7 +810,8 @@ legend("topright",legend=c("Model3","Model4","Model5","Model6","Model7","Model8"
 ```
 
 **The above model plots the RMSE of models (3/4/5/6/7/8/9) created from the simulation for the Sigma = 1**
-From the above plot, its clear that the **Model 6 not always** (marked in ** * **) selected as the **correct model**. There are many instances, where the ** Model 6 ** RMSE is higher than that of other models, also there are instances where the **Model 6** RMSE is the lowest among other models. Also other models also have in range with the **model 6**. Let's take a loot at the average plot of RMSE of all the models and plot
+
+From the above plot, its clear that the **Model 6 not always** (marked in **darkorchid**) selected as the **best model**, because doesn't shows the RMSE is lowest among the other models(2/3/4/5/7/8/9). There are many instances, where the **Model 6** RMSE is higher than that of other models. Also though, there are instances where the **Model 6** RMSE is the lowest among other models. However other models also have the RMSE in range with the **model 6**. Hence, if we consider all the 1000 simulated RMSE, **Model 6 is not the best model always being selected**. Let's take a loot at the average plot of RMSE of all the models and plot
 
 
 ####[2.4.4] Average of the Test RMSE, methods selects the correct model (i.e. **Model 6**)?
@@ -800,13 +820,14 @@ plot(seq(1,9), test_rmse_mat[,1], type="o", col="chartreuse4", pch=8, lty=1,main
 points(6, min(test_rmse_mat[,1]), col="chartreuse4",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 1
 ```
 
-The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 1**, the **model 6** has the lowest RMSE which is around `r min(test_rmse_mat[,1])`
+The above plot shows the **model 6** has the lowest RMSE which is around `r min(test_rmse_mat[,1])`, which runs on average RMSE for **1000 simulation** over **9 models** for the **sigma = 1**. In this methods (averaging) shows **model 6** selects as the best model
 
 ```{r}
 plot(seq(1,9), test_rmse_mat[,2], type="o", col="blue4", pch="*", lty=1,main="Sigma = 2",xlab = "MODEL SIZE",ylab = "RMSE")
 points(6, min(test_rmse_mat[,2]), col="blue4",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 2
 ```
-The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 2**, the **model 6** has the lowest RMSE which is around `r min(test_rmse_mat[,2])`
+
+The above plot shows the **model 6** has the lowest RMSE which is around `r min(test_rmse_mat[,2])`, which runs on average RMSE for **1000 simulation** over **9 models** for the **sigma = 1**. In this methods (averaging) shows **model 6** selects as the best model
 
 
 ```{r}
@@ -814,7 +835,7 @@ plot(seq(1,9), test_rmse_mat[,3], type="o", col="red", pch="*", lty=1,main="Sigm
 points(6, min(test_rmse_mat[,3]), col="red",pch=16,cex=3) #This is to highlight the point where the RMSE is minimum for sigma = 4
 ```
 
-The above plot shows the average RMSE for **1000 simulation** over **9 models** for the **sigma = 4**, the **model 6** has the lowest RMSE which is around `r min(test_rmse_mat[,3])`
+The above plot shows the **model 6** has the lowest RMSE which is around `r min(test_rmse_mat[,3])`, which runs on average RMSE for **1000 simulation** over **9 models** for the **sigma = 1**. In this methods (averaging) shows **model 6** selects as the best model
 
 
 ```{r}
@@ -830,7 +851,7 @@ points(6, min(test_rmse_mat[,1]), col="chartreuse4",pch=16,cex=3) #This is to hi
 legend("topright",legend=c("sigma = 4","sigma = 2","simga = 1"),col=c("red","blue4","chartreuse4"),lty=c(1,2,3))
 ```
 
-The above plots shows the comparision of the average RMSE of all the 9 models for respective 3 sigma values (1, 2 and 4). The big filled circle points the lowest of the RMSE. From the comparision of the plot, it shows that **lowest RMSE** is from the **sigma =1**, also noted that **higher the value of sigma, higher will be the Test RMSE**. Hence to lower the RMSE for the test, we need to choose the lower value of noise (i.e. sigma) 
+The above plots shows the comparision of the average RMSE of all the 9 models for respective 3 sigma values (1, 2 and 4). The big filled circle points shows the lowest of the RMSE against the Model Size. From the comparision of the plot, it shows that **lowest RMSE** is from the **sigma =1**, also noted that **higher the value of sigma, higher will be the Test RMSE**. Hence to lower the RMSE for the test, we need to choose the lower value of noise (i.e. sigma) 
 
 
 ## [3] Simulation Study 3, Power
@@ -840,9 +861,9 @@ In this simulation project we will investigate the **power** of the signifincanc
 
 $H_0 : \beta_{0} = 0 Vs H_1: \beta_{1} \neq 0$
 
-where, Power is the probability of rejecting the null hypothesis when the null is not true, that is, the alternative is true and $\beta_{1}$ is non-zero.
+Where, Power is the probability of rejecting the null hypothesis when the null is not true, that is, the alternative is true and $\beta_{1}$ is non-zero.
 
-We will do the simulation of the Simple linear regression of the model \[ Y_i = \beta_0 + \beta_1 x_{i1} + \epsilon_i.\]. 
+We will do the simulation of the Simple linear regression (**SLR**) of the model \[ Y_i = \beta_0 + \beta_1 x_{i1} + \epsilon_i.\]. 
 
 For the simplicity we will make $\beta_0$ = 0, thus $\beta_1$ is essentially controlling the amount of signal. We will be considering the following for the different signals , noises and sample sizes
 
@@ -850,7 +871,7 @@ For the simplicity we will make $\beta_0$ = 0, thus $\beta_1$ is essentially con
  - σ ∈ (1,2,4), **three distinct values of sigma**
  - n ∈(10,20,30), **three distinct values of n (sample size)**
  
-We will hold the value if the $\alpha$ as **0.05**, while validing the hypothesis. For the generation of the sample data, will be using the seq(0, 5, length = n) for different values of the sample size (i.e., n)
+We will hold the value if the $\alpha$ as **0.05**, while validing the hypothesis. For the generation of the sample data, will be using the **seq(0, 5, length = n)** for different values of the sample size (i.e., n)
 
 For each possible combination of $\beta_{1}$ and $\alpha$, we will simulate 1000 times to perform the significance of linear regression (**SLR**) and following formula will be using to measure the Power
 
@@ -863,15 +884,15 @@ As part of this exercise, the following are the Goals to achieve
  - Simulate the SLR models for 1000 times for a given value of σ, n , β1 and stored the Power you get
  - Plot the Power Curve against the signal strength (β1) for different value of n, plot this kind of plot for each value of σ
  - Discuss with relevant plots, what are the impact of σ, n , β1 on the Power, as following 
-   - What's the impact of σ on Power
-   - What's the impact of n on Power
-   - What's the impact of β1 on Power
+     - What's the impact of σ on Power
+     - What's the impact of n on Power
+     - What's the impact of β1 on Power
  - As we have simulated for the 1000 iterations, would it be suffice ? or more simulations have more important informations to revealed?
 
- In order to achieve these goals, we have various methods (especially R codes and R markdown) on how we achieve these goals
+ In order to achieve these goals, we have various methods in the form of R codes, markdown
  
 ###[3.2] Methods
-Below is the code which will runs the 1000 simulations against β1, σ and n. After each simulations,
+Below are the methods proposed which will runs the 1000 simulations against β1, σ and n. After each simulations,
 
  - The power value is being agregated and stored in the matrix model_sim
  - The 1st column of the row of the matix is the β1 value
@@ -879,7 +900,7 @@ Below is the code which will runs the 1000 simulations against β1, σ and n. Af
  - 5th, 6th and 7th column of matrix = model_sim, stores the power values for sigma = 2, for the sample size of 10, 20 and 30 respectively
  - 8th, 9th and 10th column of matrix = model_sim, stores the power values for sigma = 5, for the sample size of 10, 20 and 30 respectively
  
-Once the matrix model_sim is populated and completed, we will be using to plot different plots to address different discussion
+Once the matrix model_sim is populated, we will be using the matix to have different plots to address different discussion
 
 ####[3.2.1] Code for Simulations
 ```{r}
@@ -944,12 +965,12 @@ lines(model_sim[,1], model_sim[,4], col="darkorchid",lty=3)
 legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
 ```
 
-The above plot depicts the following for the noise of sigma = 1
+The above plot depicts the following for sigma = 1
 
- - The power is constant i.e. 1 (# rejected hypothesis = # simulation) for beta_1 between -2 and -1 for all sample size (10,20 and 30)
- - As beta_1 increases after -1 and before 0, power decreases rapidly towards 0, means number of rejected hypothesis becomes smaller (failed to reject hypothesis becomes larger) 
- - Again as beta_1 increases after 0, the power increases, i.e. number of rejected hypothesis is larger.
- - Dropping of power nearly or after -1 depends on the sample size, more the sample size (30 > 20 > 10) power becomes constant to 1 (i.e. # reject hypothesis is higher)
+ - The power is 1 (i.e. # rejected hypothesis = # simulation) for **beta_1 between -2 and -1** for all sample size (10,20 and 30)
+ - As beta_1 increases after -1 and before 0, **power decreases rapidly towards 0**, means number of rejected hypothesis becomes small (failed to reject hypothesis becomes larger) 
+ - Again as beta_1 increases after 0, the **power increases**, i.e. number of rejected hypothesis is large.
+ - Dropping of power nearly or after -1 depends on the sample size, more the sample size (30 > 20 > 10) power becomes 1 (i.e. # reject hypothesis is higher)
 
 
 
@@ -963,12 +984,12 @@ lines(model_sim[,1], model_sim[,7], col="darkorchid",lty=3)
 legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
 ```
 
-The above plot depicts the following for the noise of sigma = 2
+The above plot depicts the following for the sigma = 2
 
- - The power is constant i.e. 1 (# rejected hypothesis = # simulation) for beta_1 between till -1.5 for sample size 20 and 30. However lower the sample size with higher noise, the power decreases rapidly (i.e., # of hypothesis rejectes is less)
- - Once beta_1 increase after 0, power increases very rapidly for higher sample size, however slow for small sample size
- - As noise level increases (Sigma =2), the rate at which the power increases/ decreases also lower. So if we compare the power rate increases / decreases between sigma = 1 versus sigma = 2, it founds that power rate increase/decreases is much faster rate in sigma = 1 than in sigma = 2
- - The distance between the power increase/decrease for different sample size (n=10/20 and 30) is wider for higher noise level (sigma = 2) than that of sigma =1, means rejected of hypothesis is higher for higher simga and even higher for lower sample size
+ - The power is 1 (i.e. # rejected hypothesis = # simulation) for beta_1 between till -1.5 for sample size 20 and 30. However lower the sample size with higher noise, the power decreases rapidly (i.e., # of hypothesis rejectes is small)
+ - Once beta_1 increase after 0, power increases very rapidly for higher sample size, however slow for smaller sample size
+ - As noise level increases (Sigma =2), the rate at which the power increases/ decreases also lower. So if we compare the power rate increases / decreases between sigma = 1 versus sigma = 2, it founds that power rate increase/decreases is much faster rate in sigma = 1 than that of sigma = 2
+ - The distance between the power increase/decrease for different sample size (n=10/20 and 30) is wider for higher noise level (sigma = 2) than that of smaller noise level(sigma =1), which means reject the hypothesis is higher for higher sigma and even higher for lower sample size
 
 
 #####[3.3.2] Below code plot the effect of Signal (β1) against the Power for noise of sigma = 4 against all sample size (10,20 and 30)
@@ -981,11 +1002,11 @@ lines(model_sim[,1], model_sim[,10], col="darkorchid",lty=3)
 legend("topright",legend=c("n = 10","n = 20"," n = 30"),col=c("dodgerblue","red","darkorchid"),pch=c(1,8,16),lty=c(1,2,3))
 ```
 
-The above plot depicts the following for the noise of sigma = 4
+The above plot depicts the following for tsigma = 4
 
  - The power seems lower at the initial stage of beta_1 itself, for the lower sample size (10) and decrease very fast until 0. However though it decreases very fast for higher sample size(n=20, 30), however relatively slow as compared to lower sample size (n=10)
  - The above point still valid for the case of increase of beta_1 beyond point 0, where power increases rapidly for higher sample size (30 and then 30) as compared to lower sample size
- - The distance between the power increase/decrease for different sample size (n=10/20 and 30) is wider for higher noise level (sigma = 4) than that of sigma =1 & 2, means rejected of hypothesis is higher for higher simga and even higher for lower sample size
+ - The distance between the power increase/decrease for different sample size (n=10/20 and 30) is wider for higher noise level (sigma = 4) than that of sigma =1 & 2, means rejecte the null hypothesis is higher for higher simga and even higher for lower sample size
 
 
 ###[3.4] Discussion
@@ -1017,8 +1038,8 @@ legend("topright",legend=c("sigma=1,n=10,20,30","sigma=2,n=10,20,30","sigma=3,n=
 
 **Below are the observations on the effect of σ on power**
 
- - Higher the sigma (σ),lower is the power. 
- - It clearly visible that all the blue line (sigma=1) have higher power than that of green line (sigma = 2) & red line (sigma = 4) for any particular value of β1 and sample size. That means higher the value of the sigma (σ) = number of rejected hypothesis will be lower and lower the value of sigma (σ) = number of rejected hypothesis becomes higher.
+ - **Higher the sigma (σ),lower is the Power**
+ - It clearly visible that all the blue line (sigma=1) have higher power than that of green line (sigma = 2) & red line (sigma = 4) for any particular value of β1 and sample size. That means higher the value of the sigma (σ) = number of reject the hypothesis will be lower and lower the value of sigma (σ) = number of reject the null hypothesis becomes higher.
 
 #####[3.4.2] Effect of n(10,20,30) on the Power **
 ```{r}
@@ -1052,7 +1073,8 @@ legend("topright",legend=c("n=10","n=20","n=30"),col=c("deeppink","darkolivegree
 
 **Below are the observations on the effect of sample size (n = 10,20 and 30) on the beta_1**
 
- - From the abobe 3 plots, for different value of sigma (σ), Higher the sample size (n=30),higher is the power. It clearly visible that for all the 3 plots (against 3 different sigma (σ)), the blueviolet (n = 30) lines have higher than that of the rest 2 lines (green,n = 20 and deep pink, n= 10). That is higher the sample size, reject the hypothesis becomes higher
+ - From the abobe 3 plots, for different value of sigma (σ), **Higher the sample size (n=30),higher is the power**
+ - It clearly visible that for all the 3 plots (against 3 different sigma (σ)), the blueviolet (n = 30) lines have higher than that of the rest 2 lines (green,n = 20 and deep pink, n= 10). That is higher the sample size, reject the hypothesis becomes higher
 
 #####[3.4.3] Effect of n(10,20,30) on the Power **
 ```{r}
@@ -1083,8 +1105,8 @@ legend("topright",legend=c("sigma=1,n=10","sigma=1,n=20","sigma=1,n=30","sigma=2
 
 If we combine all the plots for all the sample size beta(β1), sample size(n) and sigma(σ), from the above figure, **below are the observations on the effect of β1 on power ***
 
- - Power decreased as β1 increased from -2 till 0 for any given sigma(σ) and sample size(n), means as β1 increases, reject hypothesis decreases
- - Power increased as β1 increased from 0 till 2  for any given sigma(σ) and sample size(n), means as β1 increases, reject hypothesis increases
+ - **Power decreased as β1 increased** between **-2 and 0** for any given sigma(σ) and sample size(n), means as β1 increases, reject hypothesis decreases
+ - **Power increased as β1 increased** between **0 and 2**  for any given sigma(σ) and sample size(n), means as β1 increases, reject hypothesis increases
 
  
 ####[3.4.4] Are 1000 simulations sufficient
@@ -1126,7 +1148,7 @@ for(s in 1:length(sigma)){ #sigma = c(1,2,4)
 
 ```{r}
 par(mfrow=c(1, 2))
-plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="RMSE - 1000 Iterations",xlab = "beta_1",ylab = "Power")
+plot(model_sim[,1],model_sim[,2], type="o", col="dodgerblue", pch=1, lty=1,main="1000 Iterations",xlab = "beta_1",ylab = "Power")
 points(model_sim[,1], model_sim[,3], col="red", pch=2,lty=2)
 lines(model_sim[,1], model_sim[,3], col="red",lty=2)
 points(model_sim[,1], model_sim[,4], col="tan1", pch=3,lty=3)
@@ -1148,11 +1170,11 @@ lines(model_sim[,1], model_sim[,9], col="darkblue",lty=8)
 points(model_sim[,1], model_sim[,10], col="blueviolet", pch=9,lty=9)
 lines(model_sim[,1], model_sim[,10], col="blueviolet",lty=9)
 
-legend("topright",legend=c("sigma=1,n=10","sigma=1,n=20","sigma=1,n=30","sigma=2,n=10","sigma=2,n=20","sigma=2,n=30","sigma=3,n=10","sigma=3,n=20","sigma=3,n=30"),col=c("dodgerblue","red","darkorchid","yellow","deeppink","darkolivegreen4","darkgreen","darkblue","blueviolet"),pch=c(1,2,3,4,5,6,7,8,9),lty=c(1,2,3,4,5,6,7,8,9))
+legend("topright",legend=c("σ=1,n=10","σ=1,n=20","σ=1,n=30","σ=2,n=10","σ=2,n=20","σ=2,n=30","σ=3,n=10","σ=3,n=20","σ=3,n=30"),col=c("dodgerblue","red","darkorchid","yellow","deeppink","darkolivegreen4","darkgreen","darkblue","blueviolet"),pch=c(1,2,3,4,5,6,7,8,9),lty=c(1,2,3,4,5,6,7,8,9))
 
 #Below code is to plot the simulated beta_1 for 3000 simulations. This plot will helps us to understands, whether there is anything changes because of increase the simulation
 #from 1000 iteration to 3000 iteration
-plot(model_sim_3000[,1],model_sim_3000[,2], type="o", col="dodgerblue", pch=1, lty=1,main="RMSE - 3000 Iterations",xlab = "beta_1",ylab = "Power")
+plot(model_sim_3000[,1],model_sim_3000[,2], type="o", col="dodgerblue", pch=1, lty=1,main="3000 Iterations",xlab = "beta_1",ylab = "Power")
 points(model_sim_3000[,1], model_sim_3000[,3], col="red", pch=2,lty=2)
 lines(model_sim_3000[,1], model_sim_3000[,3], col="red",lty=2)
 points(model_sim_3000[,1], model_sim_3000[,4], col="tan1", pch=3,lty=3)
@@ -1174,16 +1196,16 @@ lines(model_sim_3000[,1], model_sim_3000[,9], col="darkblue",lty=8)
 points(model_sim_3000[,1], model_sim_3000[,10], col="blueviolet", pch=9,lty=9)
 lines(model_sim_3000[,1], model_sim_3000[,10], col="blueviolet",lty=9)
 
-legend("topright",legend=c("sigma=1,n=10","sigma=1,n=20","sigma=1,n=30","sigma=2,n=10","sigma=2,n=20","sigma=2,n=30","sigma=3,n=10","sigma=3,n=20","sigma=3,n=30"),col=c("dodgerblue","red","darkorchid","yellow","deeppink","darkolivegreen4","darkgreen","darkblue","blueviolet"),pch=c(1,2,3,4,5,6,7,8,9),lty=c(1,2,3,4,5,6,7,8,9))
+legend("topright",legend=c("σ=1,n=10","σ=1,n=20","σ=1,n=30","σ=2,n=10","σ=2,n=20","σ=2,n=30","σ=3,n=10","σ=3,n=20","σ=3,n=30"),col=c("dodgerblue","red","darkorchid","yellow","deeppink","darkolivegreen4","darkgreen","darkblue","blueviolet"),pch=c(1,2,3,4,5,6,7,8,9),lty=c(1,2,3,4,5,6,7,8,9))
 ```
 
-From the above plots its clearly visible that the plots for the 3000 iterations have much smoother curve with respect to the Power value, as compared to the 1000 iterations (where the power value is ups-down). Let's take the range of the RMSE of a Train / TEST for the 1000 vs 3000 iterations for a given value of sigma (let's say , sigma = 1) and for a particular value of sample size ( n= 10).
+From the above plots its clearly visible that the plots for the 3000 iterations have much smoother curve with respect to the Power value, as compared to the 1000 iterations (where the power value is ups-down). Let's take the range of the Power for the 1000 vs 3000 iterations for a given value of sigma (let's say , sigma = 1) and for a particular value of sample size ( n= 10).
 
-- Power for 1000 Iteration (sigma = 1, n = 10) is between `r range(model_sim[,2])[1]` and `r range(model_sim[,2])[2]`
-- Power for 3000 Iteration (sigma = 1, n = 10)is between `r range(model_sim_3000[,2])[1]` and `r range(model_sim_3000[,2])[2]`
+- Power for 1000 Iteration (sigma = 1, n = 10) is between **`r range(model_sim[,2])[1]`** and **`r range(model_sim[,2])[2]`**
+- Power for 3000 Iteration (sigma = 1, n = 10)is between **`r range(model_sim_3000[,2])[1]`** and **`r range(model_sim_3000[,2])[2]`**
 
 
-From the range prospective the 3000 iterative have slightly increased value as compared to 1000 iteration, however as part of the Goal to check the impact of beta(β1), sample size(n) and sigma(σ) on the Power, **1000 iteration is sufficient**
- 
+From the range prospective the 3000 iterative have slightly increased value as compared to 1000 iteration. Hence if we increase the iteration, the Power becomes more and more accurate to the Truth, hence I conclude that **1000 iteration is sufficient** to know the impact of beta(β1), sample size(n) and sigma(σ) on the Power, however **1000 iteration is not sufficient** to know the truth of Power 
+
  
  
