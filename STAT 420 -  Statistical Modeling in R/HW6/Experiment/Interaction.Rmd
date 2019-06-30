@@ -50,23 +50,59 @@ where
 $$
 x_2 = 
   \begin{cases}
-  0 & \text{Domestic}\\
-  1 & \text{Automatic}
+  1 & \text{Domestic} \\
+  0 & \text{Foreign}\\  
   \end{cases}
 $$
 
 
 ```{r}
 mpg_disp_add = lm(mpg~disp+domestic,data=data)
-int_dom = summary(mpg_disp_add)$coefficient[1,1]
-int_for = summary(mpg_disp_add)$coefficient[1,1] + summary(mpg_disp_add)$coefficient[3,1]
+int_for = summary(mpg_disp_add)$coefficient[1,1]
+int_dom = summary(mpg_disp_add)$coefficient[1,1] + summary(mpg_disp_add)$coefficient[3,1]
 
-slope_dom = summary(mpg_disp_add)$coefficient[2,1]
 slope_for = summary(mpg_disp_add)$coefficient[2,1]
+slope_dom = summary(mpg_disp_add)$coefficient[2,1]
 
 plot(mpg~disp, data = data,col = domestic + 1,pch = domestic + 1)
-abline(int_dom,slope_dom,lwd=3,col=1,lty=1)
-abline(int_for,slope_for,lwd=3,col=2,lty=2)
-legend("topright",legend=c("domestic","foreign"),col=c(1,2),pch=c(1,2))
+abline(int_for,slope_for,lwd=3,col=2,lty=1)
+abline(int_dom,slope_dom,lwd=3,col=1,lty=2)
+legend("topright",legend=c("Foreign","Domestic"),col=c(1,2),pch=c(1,2))
+```
 
+
+$$
+Y_i = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2 + \epsilon
+$$
+
+For domestic cars, that is $x_2 = 1$, we have 
+$$
+Y_i = (\beta_0 + \beta_2) + (\beta_1 +\beta_3 ) x_1 + \epsilon
+$$
+
+For foreign cars, that is $x_2 = 0$, we have 
+$$
+Y_i = \beta_0 + \beta_1 x_1 + \epsilon
+$$
+
+These two models have both different slopes and interceps
+
+- $\beta_0$ is the average `mpg` for foreign cars when the `disp` is **0**
+- $\beta_1$ is the change in average `mpg`, when the `disp` is increased by 1, for **foreign** cars 
+- $\beta_0 + \beta_2$ is average `mpg` for domestic cars when the `disp` is **0**
+- $\beta_1 + \beta_3$ is the change in average `mpg`, when the `disp` is increased by 1, for **domestic** cars 
+
+
+```{r}
+mpg_disp_inter = lm(mpg~disp + domestic + disp:domestic,data=data)
+int_for = summary(mpg_disp_inter)$coefficient[1,1]
+int_dom = summary(mpg_disp_inter)$coefficient[1,1]+summary(mpg_disp_inter)$coefficient[3,1]
+
+slope_for = summary(mpg_disp_inter)$coefficient[2,1]
+slope_dom = summary(mpg_disp_inter)$coefficient[2,1] + summary(mpg_disp_inter)$coefficient[4,1]
+
+plot(mpg~disp,data=data,col=domestic+1,pch=domestic+1)
+abline(int_for,slope_for,lwd=2,col=1,lty=1)
+abline(int_dom,slope_dom,lwd=2,col=2,lty=2)
+legend("topright",legend=c("Foreign","Domestic"),col=c(1,2),pch=c(1,2))
 ```
