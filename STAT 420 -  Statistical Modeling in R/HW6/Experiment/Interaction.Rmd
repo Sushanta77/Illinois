@@ -106,3 +106,95 @@ abline(int_for,slope_for,lwd=2,col=1,lty=1)
 abline(int_dom,slope_dom,lwd=2,col=2,lty=2)
 legend("topright",legend=c("Foreign","Domestic"),col=c(1,2),pch=c(1,2))
 ```
+
+#Numeric-Numeric Interaction
+
+$$
+Y_i = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2 + \epsilon
+$$
+
+where
+
+- $Y$ is `mpg`, the fuel efficient in miles per gallon
+- $x_1$ is the `disp`, the displacement in cubic inches
+- $x_2$ is the `hp`, the horsepower, in foot-pound per square
+
+$$
+Y_i = \beta_0 + (\beta_1 + \beta_3 x_2) x_1 + \beta_2 x_2 + \epsilon
+$$
+
+```{r}
+mpg_disp_add_hp = lm(mpg~disp+hp,data=data)
+mpg_disp_int_hp = lm(mpg~disp*hp,data=data)
+
+summary(mpg_disp_int_hp)
+```
+
+$$
+H_0: \beta_3 = 0, H_1 : \beta_3 \neq 0
+$$
+```{r}
+anova(mpg_disp_add_hp,mpg_disp_int_hp)
+```
+
+$$
+Y_i = \beta_0 + \beta_1 x_1 + \beta_2 v_2 + \beta_3 v_3 + \epsilon
+$$
+$$
+v1 = 
+ \begin{cases}
+ 1 & \text{4 Cylinder} \\
+ 0 & \text{Not a 4 Cylinder}
+ \end{cases}
+$$
+
+$$
+v2 = 
+ \begin{cases}
+ 1 & \text{6 Cylinder} \\
+ 0 & \text{Not a 6 Cylinder}
+ \end{cases}
+$$
+
+$$
+v3 = 
+ \begin{cases}
+ 1 & \text{8 Cylinder} \\
+ 0 & \text{Not a 8 Cylinder}
+ \end{cases}
+$$
+For a 4 Cylinder Engine, $v_2$ and $v_3$ will be **0**
+$$
+Y_i = \beta_0 + \beta_1 x_1 + \epsilon
+$$
+
+For a 6 Cylinder Engine, $v_2$ = 1 and $v_3$ = **0**
+$$
+Y_i = (\beta_0 + \beta_2) + \beta_1 x_1 + \epsilon
+$$
+
+For a 8 Cylinder Engine, $v_2$ = 0 and $v_3$ = **1**
+$$
+Y_i = (\beta_0 + \beta_3) + \beta_1 x_1 + \epsilon
+$$
+
+
+```{r}
+mpg_disp = lm(mpg~disp,data=data)
+mpg_disp_add_cyl = lm(mpg~disp+cyl,data=data)
+int_4cyl = summary(mpg_disp_add_cyl)$coefficient[1,1]
+int_6cyl = summary(mpg_disp_add_cyl)$coefficient[1,1] + summary(mpg_disp_add_cyl)$coefficient[3,1]
+int_8cyl = summary(mpg_disp_add_cyl)$coefficient[1,1]+ summary(mpg_disp_add_cyl)$coefficient[4,1]
+
+slope_all_cyl = summary(mpg_disp_add_cyl)$coefficient[2,1]
+
+plot_colours = c("Darkorange","Darkgrey","Dodgerblue")
+plot(mpg~disp,data=data,col=plot_colours[cyl],pch=as.numeric(cyl))
+abline(mpg_disp,lwd=1,col="green",lty=8)
+
+abline(int_4cyl,slope_all_cyl,lwd=2,col=plot_colours[1],lty=1)
+abline(int_6cyl,slope_all_cyl,lwd=2,col=plot_colours[2],lty=2)
+abline(int_8cyl,slope_all_cyl,lwd=2,col=plot_colours[3],lty=3)
+
+legend("topright",legend=c("4 Cyliner","6 Cyliner","8 Cyliner"),col=plot_colours,pch=c(1,2,3))
+```
