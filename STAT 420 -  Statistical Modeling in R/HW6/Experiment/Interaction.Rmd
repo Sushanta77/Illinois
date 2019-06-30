@@ -30,9 +30,43 @@ data = data[data$cyl != 3,]
 #the following line would verify the remaining cylinder possibilities are 4,6,8
 #unique(data$cyl)
 #change cyl to a factor variable
-data$cyl = as.factor(data$cyl)
+data$cyl = as.factor(data$cyl) 
 ```
 
 ```{r}
 str(data)
+```
+
+$$
+Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon
+$$
+
+where
+
+- $Y$ is `mpg`, the fuel efficieny in miles per gallon 
+- $x_1$ is `disp`, the displacement in cubic inches
+- $x_2$ is `domestic` as described above, is a dummy variable
+
+$$
+x_2 = 
+  \begin{cases}
+  0 & \text{Domestic}\\
+  1 & \text{Automatic}
+  \end{cases}
+$$
+
+
+```{r}
+mpg_disp_add = lm(mpg~disp+domestic,data=data)
+int_dom = summary(mpg_disp_add)$coefficient[1,1]
+int_for = summary(mpg_disp_add)$coefficient[1,1] + summary(mpg_disp_add)$coefficient[3,1]
+
+slope_dom = summary(mpg_disp_add)$coefficient[2,1]
+slope_for = summary(mpg_disp_add)$coefficient[2,1]
+
+plot(mpg~disp, data = data,col = domestic + 1,pch = domestic + 1)
+abline(int_dom,slope_dom,lwd=3,col=1,lty=1)
+abline(int_for,slope_for,lwd=3,col=2,lty=2)
+legend("topright",legend=c("domestic","foreign"),col=c(1,2),pch=c(1,2))
+
 ```
