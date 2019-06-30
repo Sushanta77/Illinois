@@ -168,7 +168,6 @@ beta_5 = summary(blood_int)$coefficient[2,1]
 ```
 Estimate of the change in average `Blood` for a one-unit increase in `Age` for a highly educated, low income, male patient is: **`r  (beta_1 + beta_5)`**
 
-***
 
 ## Exercise 3 (Hospital SUPPORT Data, Stay Duration)
 
@@ -213,10 +212,34 @@ days_int = lm(Days ~ Pressure * Blood * Rate, data = hospital)
 Use a statistical test to compare the two models. Report the following:
 
 - The null and alternative hypotheses in terms of the model given in the exercise description
+$$
+
+Y_i = \beta_0 + \beta_1 x_{Pressure} + \beta_2 x_{Blood} + \beta_3 x_{Rate} + \epsilon \\
+Y_i = \beta_0 + \beta_1 x_{Pressure} + \beta_2 x_{Blood} + \beta_3 x_{Rate} + \beta_4 x_{Pressure} x_{Blood} + \beta_5 x_{Pressure} x_{Rate} + \beta_6 x_{Blood} x_{Rate} + \beta_7 x_{Pressure} x_{Blood} x_{Rate} + \epsilon \\
+
+H_{null} : \beta_5 = \beta_6 = \beta_7 = 0 \\
+H_{alternate} : Atleast one of the parameter \beta_5 \neq 0, \beta_6 \neq 0, \beta_7 \neq 0
+$$
 - The value of the test statistic
+```{r}
+anova(days_add,days_int)$'F'[2]
+```
+The value of the test statistic is : `r anova(days_add,days_int)$'F'[2]`
+
 - The p-value of the test
+
+```{r}
+anova(days_add,days_int)$'Pr(>F)'[2]
+```
+The p-value of the test : `r anova(days_add,days_int)$'Pr(>F)'[2]`
+
 - A statistical decision using a significance level of $\alpha = 0.10$
+
+Since the **P value** from the F Test comes out as **`r anova(days_add,days_int)$'Pr(>F)'[2]`** < 0.1 ($\alpha$), hence we **reject the null hypothesis**.
+
 - Which model you prefer
+
+Since we **reject the null hypothesis**, we prefer the **interaction model**
 
 **(b)** Give an expression based on the model in the exercise description for the true change in length of hospital stay in days for a 1 bpm increase in `Rate` for a patient with a `Pressure` of 139 mmHg and a `Blood` of 10 gm/dL. Your answer should be a linear function of the $\beta$s.
 

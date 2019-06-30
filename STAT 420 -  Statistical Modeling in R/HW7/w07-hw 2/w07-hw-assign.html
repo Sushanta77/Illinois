@@ -347,17 +347,16 @@ anova(blood_add,blood_int)</code></pre>
 <h5>P Value from the Additive and Interaction Model</h5>
 <pre class="r"><code>anova(blood_add,blood_int)$'Pr(&gt;F)'[2]</code></pre>
 <pre><code>## [1] 0.1128</code></pre>
-<p>The P values from anova between the Additive model and Interaction model is 0.1128 &gt; 0.10 (<span class="math inline">\(\alpha\)</span>), hence we <strong>failed to reject the additive hypothesis</strong>, hence we prefer the <strong>Additive Model</strong>, i.e. the model without any interaction</p>
+<p>The P values from anova between the Additive model and Interaction model is <strong>0.1128</strong> &gt; 0.10 (<span class="math inline">\(\alpha\)</span>), hence we <strong>failed to reject the additive hypothesis</strong>, hence we prefer the <strong>Additive Model</strong>, i.e. the model without any interaction</p>
 <p><strong>(d)</strong> Fit a model similar to that in <strong>(c)</strong>, but additionally add the interaction between <code>Income</code> and <code>Age</code> as well as a three-way interaction between <code>Age</code>, <code>Income</code>, and <code>Sex</code>. Use a statistical test to compare this model to the preferred model from <strong>(c)</strong> using a significance level of <span class="math inline">\(\alpha = 0.10\)</span>. Which do you prefer?</p>
 <p><strong>(e)</strong> Using the model in <strong>(d)</strong>, give an estimate of the change in average <code>Blood</code> for a one-unit increase in <code>Age</code> for a highly educated, low income, male patient. <span class="math display">\[
-Y_i = \beta_0 + \beta_1 x_{age} + \beta_2 x_{education} + \beta_3 x_{income} + \beta_
+Y_i = \beta_0 + \beta_1 x_{age} + \beta_2 x_{education} + \beta_3 x_{income}
 \]</span></p>
 <pre class="r"><code>beta_1 = summary(blood_int)$coefficient[2,1]
 beta_5 = summary(blood_int)$coefficient[2,1]
 (beta_1 + beta_5)</code></pre>
 <pre><code>## [1] 0.08704</code></pre>
 <p>Estimate of the change in average <code>Blood</code> for a one-unit increase in <code>Age</code> for a highly educated, low income, male patient is: <strong>0.087</strong></p>
-<hr />
 </div>
 </div>
 <div id="exercise-3-hospital-support-data-stay-duration" class="section level2">
