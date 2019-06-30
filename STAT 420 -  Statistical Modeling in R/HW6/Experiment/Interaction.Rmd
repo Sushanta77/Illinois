@@ -198,3 +198,37 @@ abline(int_8cyl,slope_all_cyl,lwd=2,col=plot_colours[3],lty=3)
 
 legend("topright",legend=c("4 Cyliner","6 Cyliner","8 Cyliner"),col=plot_colours,pch=c(1,2,3))
 ```
+
+Below is the interaction model
+$$
+Y_i = \beta_0 + \beta_1 x + \beta_2 v_2 + \beta_3 v_3 + \gamma_2 x v_2 + \gamma_3 x v_3 + \epsilon
+$$
+For a 4 Cylinder Engine
+$$
+Y_i = \beta_0 + \beta_1 x + \epsilon
+$$
+For a 6 Cylinder Engine
+$$
+Y_i = (\beta_0 + \beta_2) + (\beta_1 + \gamma_2) x + \epsilon
+$$
+For a 8 Cylinder Engine
+$$
+Y_i = (\beta_0 + \beta_3) + (\beta_1 + \gamma_3) x + \epsilon
+$$
+
+```{r}
+mpg_disp_int_cyl = lm(mpg~disp*cyl,data=data)
+int_4cyl = summary(mpg_disp_int_cyl)$coefficient[1,1]
+int_6cyl = summary(mpg_disp_int_cyl)$coefficient[1,1] + summary(mpg_disp_int_cyl)$coefficient[3,1]
+int_8cyl = summary(mpg_disp_int_cyl)$coefficient[1,1] + summary(mpg_disp_int_cyl)$coefficient[4,1]
+
+slope_4cyl = summary(mpg_disp_int_cyl)$coefficient[2,1]
+slope_6cyl = summary(mpg_disp_int_cyl)$coefficient[2,1] + summary(mpg_disp_int_cyl)$coefficient[5,1]
+slope_8cyl = summary(mpg_disp_int_cyl)$coefficient[2,1] + summary(mpg_disp_int_cyl)$coefficient[6,1]
+
+plot (mpg~disp,data=data,col=plot_colours[cyl],pch=as.numeric(cyl))
+abline(int_4cyl,slope_4cyl,lwd=2,col=plot_colours[1],pch=1,lty=1)
+abline(int_6cyl,slope_6cyl,lwd=2,col=plot_colours[2],pch=2,lty=2)
+abline(int_8cyl,slope_8cyl,lwd=2,col=plot_colours[3],pch=3,lty=3)
+legend("topright",legend=c("4 Cyliner","6 Cyliner","8 Cyliner"),col=plot_colours,pch=c(1,2,3))
+```
