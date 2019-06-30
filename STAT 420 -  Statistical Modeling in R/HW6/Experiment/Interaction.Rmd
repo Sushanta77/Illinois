@@ -232,3 +232,64 @@ abline(int_6cyl,slope_6cyl,lwd=2,col=plot_colours[2],pch=2,lty=2)
 abline(int_8cyl,slope_8cyl,lwd=2,col=plot_colours[3],pch=3,lty=3)
 legend("topright",legend=c("4 Cyliner","6 Cyliner","8 Cyliner"),col=plot_colours,pch=c(1,2,3))
 ```
+
+Now, do the F Test between the Additive Model and Interaction Model, below are the 2 models
+
+$$
+H_0 : \gamma_2 = \gamma_3 = 0
+$$
+
+
+Below is the Additive Model
+$$
+Y_i = \beta_0 + \beta_1 x_1 + \beta_2 v_2 + \beta_3 v_3 + \epsilon
+$$
+
+Below is the Interaction Model
+$$
+Y_i = \beta_0 + \beta_1 x + \beta_2 v_2 + \beta_3 v_3 + \gamma_2 x v_2 + \gamma_2 x v_3 + \epsilon
+$$
+
+
+```{r}
+anova(mpg_disp_add_cyl,mpg_disp_int_cyl)
+```
+
+##Parameterization
+
+$$
+Y_i = \beta_0 + \beta_1 x + \beta_2 v2 + \beta_3 v3 + \gamma_2 x v2 + \gamma_3 x v3 + \epsilon
+$$
+
+$$
+Y_i = \mu_1 v_1 + \mu_2 v_2 + \mu_3 v_3 + \beta_1 x v_1 + \beta_2 x v_2 + \beta_3 x v_3 + \epsilon
+$$
+
+
+```{r}
+lm(mpg~disp*cyl,data=data)
+lm(mpg~disp+cyl+disp:cyl,data=data)
+lm(mpg~0+cyl+cyl:disp,data=data)
+lm(mpg~0+cyl+cyl*disp,data=data)
+```
+
+## Larger Models
+
+$$
+Y_i = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_1 x_2 + \beta_5 x_1 x_3 + \beta_6 x_2 x_3 + \beta_7 x_1 x_2 x_3 + \epsilon
+$$
+
+
+```{r}
+two_way_int_model1 = lm(mpg~disp * hp + disp * domestic + domestic * hp ,data=data)
+large_model1 = lm(mpg~disp * hp * domestic,data=data)
+large_model2 = lm(mpg~disp+hp+cyl+disp:hp+disp:cyl+disp:hp:cyl,data=data)
+```
+
+$$
+H_0 : \beta_7 = 0
+$$
+
+```{r}
+anova(two_way_int_model1,large_model1)
+```
