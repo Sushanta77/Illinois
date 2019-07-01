@@ -50,31 +50,161 @@ We will attempt to model `CO2` using both `horse` and `type`. In practice, we wo
 
 Load the data, and check its structure using `str()`. Verify that `type` is a factor; if not, coerce it to be a factor.
 
+###Load the epa2015 dataset
+```{r}
+epa2015 = read.csv("epa2015.csv")
+str(epa2015)
+```
+###Verify "type" ia a factor variable
+```{r}
+is.factor(epa2015$type)
+```
+The Type of the vehicle is a **factor variable**
+
 **(a)** Do the following:
 
 - Make a scatterplot of `CO2` versus `horse`. Use a different color point for each vehicle `type`.
+```{r}
+plot_colors = c("Darkorange","Darkgrey","Dodgerblue")
+plot(CO2~horse,data=epa2015,col=plot_colors[type],pch=as.numeric(type))
+legend("topright",legend=c("Both","Car","Truck"),col = plot_colors,pch=c(1,2,3))
+```
+
 - Fit a simple linear regression model with `CO2` as the response and only `horse` as the predictor.
+```{r}
+slr_model = lm(CO2~horse,data = epa2015)
+slr_model
+```
+
 - Add the fitted regression line to the scatterplot. Comment on how well this line models the data.
+```{r}
+plot(CO2~horse,data=epa2015,col=plot_colors[type],pch=as.numeric(type))
+abline(slr_model,lwd=2,col="green",lty=2)
+legend("topright",legend=c("Both","Car","Truck"),col = plot_colors,pch=c(1,2,3))
+```
+
 - Give an estimate for the average change in `CO2` for a one foot-pound per second increase in `horse` for a vehicle of type `car`. 
+```{r}
+summary(slr_model)$coefficient[2,1]
+```
+
+The estimate for the average change in `CO2` for a one foot-pound per second increase in `horse` for a vehicle of type `car` is : **`summary(slr_model)$coefficient[2,1]`
+
 - Give a 90% prediction interval using this model for the `CO2` of a Subaru Impreza Wagon, which is a vehicle with 148 horsepower and is considered type `Both`. (Interestingly, the dataset gives the wrong drivetrain for most Subarus in this dataset, as they are almost all listed as `F`, when they are in fact all-wheel drive.)
+
+```{r}
+predict(slr_model,interval="prediction",level=0.90,newdata=data.frame(horse=148))
+```
+
+The 90% prediction interval for the `CO2` of a Subaru Impreza Wagon, which is a vehicle with 148 horsepower and is considered type `Both` by using the Simple Linear Regression is : **`r predict(slr_model,interval="prediction",level=0.90,newdata=data.frame(horse=148))`**
 
 **(b)** Do the following:
 
 - Make a scatterplot of `CO2` versus `horse`. Use a different color point for each vehicle `type`.
+
+```{r}
+plot_colors = c("Darkorange","Darkgrey","Dodgerblue")
+plot(CO2~horse,data=epa2015,col=plot_colors[type],pch=as.numeric(type))
+legend("topright",legend=c("Both","Car","Truck"),col = plot_colors,pch=c(1,2,3))
+```
+
 - Fit an additive multiple regression model with `CO2` as the response and `horse` and `type` as the predictors.
+
+```{r}
+CO2_add = lm(CO2~horse+type,data = epa2015)
+CO2_add
+```
 - Add the fitted regression "lines" to the scatterplot with the same colors as their respective points (one line for each vehicle type). Comment on how well this line models the data. 
+
+```{r}
+intercept_both = summary(CO2_add)$coefficient[1,1]
+intercept_car = summary(CO2_add)$coefficient[1,1] + summary(CO2_add)$coefficient[3,1]
+intercept_truck = summary(CO2_add)$coefficient[1,1] + summary(CO2_add)$coefficient[4,1]
+
+slope_all_type = summary(CO2_add)$coefficient[2,1]
+  
+plot(CO2~horse,data = epa2015,col = plot_colors[type],pch = as.numeric(type))
+abline(intercept_both,slope_all_type,lwd = 2,col = plot_colors[1],lty = 1)
+abline(intercept_car,slope_all_type,lwd = 2,col = plot_colors[2],lty = 2)
+abline(intercept_truck,slope_all_type,lwd = 2,col = plot_colors[3],lty = 3)
+legend("topright",legend = c("Both","Car","Truck"),col = plot_colors,pch = c(1,2,3))
+```
+
 - Give an estimate for the average change in `CO2` for a one foot-pound per second increase in `horse` for a vehicle of type `car`. 
+
+```{r}
+CO2_add$coefficient[2.1]
+```
+
+The estimate for the average change in `CO2` for a one foot-pound per seconds increase in `horse` for a vehicle of type `car` is : **`r CO2_add$coefficient[2.1]`**
+
 - Give a 90% prediction interval using this model for the `CO2` of a Subaru Impreza Wagon, which is a vehicle with 148 horsepower and is considered type `Both`. 
+```{r}
+predict(CO2_add,interval="prediction",level=0.90,newdata=data.frame(horse=148,type='Both'))
+```
+
+The 90% prediction interval for the `CO2` of a Subaru Impreza Wagon, which is a vehicle with 148 horsepower and is considered type `Both` by using the Additive Model is : **`r predict(CO2_add,interval="prediction",level=0.90,newdata=data.frame(horse=148,type='Both'))`**
 
 **(c)** Do the following:
 
 - Make a scatterplot of `CO2` versus `horse`. Use a different color point for each vehicle `type`. 
+```{r}
+plot(CO2~horse,data=epa2015,col=plot_colors[type],pch=as.numeric(type))
+legend("topright",legend=c("Both","Car","Truck"),col = plot_colors,pch=c(1,2,3))
+```
+
 - Fit an interaction multiple regression model with `CO2` as the response and `horse` and `type` as the predictors.
+```{r}
+CO2_int = lm(CO2~horse*type,data = epa2015)
+CO2_int
+```
+
 - Add the fitted regression "lines" to the scatterplot with the same colors as their respective points (one line for each vehicle type). Comment on how well this line models the data. 
+
+```{r}
+intercept_both  = summary(CO2_int)$coefficient[1,1]
+intercept_car   = summary(CO2_int)$coefficient[1,1] + summary(CO2_int)$coefficient[3,1]
+intercept_truck = summary(CO2_int)$coefficient[1,1] + summary(CO2_int)$coefficient[4,1]
+
+slope_both  = summary(CO2_int)$coefficient[2,1]
+slope_car   = summary(CO2_int)$coefficient[2,1] + summary(CO2_int)$coefficient[5,1]
+slope_truck = summary(CO2_int)$coefficient[2,1] + summary(CO2_int)$coefficient[6,1]
+  
+plot(CO2~horse,data = epa2015,col = plot_colors[type],pch = as.numeric(type))
+abline(intercept_both,slope_both,lwd = 2,col = plot_colors[1],lty = 1)
+abline(intercept_car,slope_car,lwd = 2,col = plot_colors[2],lty = 2)
+abline(intercept_truck,slope_truck,lwd = 2,col = plot_colors[3],lty = 3)
+legend("topright",legend = c("Both","Car","Truck"),col = plot_colors,pch = c(1,2,3))
+```
+
+
 - Give an estimate for the average change in `CO2` for a one foot-pound per second increase in `horse` for a vehicle of type `car`. 
-- Give a 90% prediction interval using this model for the `CO2` of a Subaru Impreza Wagon, which is a vehicle with 148 horsepower and is considered type `Both`. 
+
+```{r}
+beta_1 = summary(CO2_int)$coefficient[2,1]
+gamma_1 = summary(CO2_int)$coefficient[5,1]
+beta_1 + gamma_1
+```
+
+The estimate for the average change in `CO2` for a one foot-pound per second increase in `horse` for a vehicle of type `car` is **`r beta_1 + gamma_1`**
+
+
+- Give a 90% prediction interval using this model for the `CO2` of a Subaru Impreza Wagon, which is a vehicle with 148 horsepower and is considered type `Both`.
+
+```{r}
+predict(CO2_int,newdata = data.frame(horse=148,type="Both"),interval = "prediction", level = 0.90)
+```
+
+The 90% prediction interval using this model for the `CO2` of a Subaru Impreza Wagon, which is a vehicle with 148 horsepower and is considered type `Both` is **`r predict(CO2_int,newdata = data.frame(horse=148,type="Both"),interval = "prediction", level = 0.90)`**
 
 **(d)** Based on the previous plots, you probably already have an opinion on the best model. Now use an ANOVA $F$-test to compare the additive and interaction models. Based on this test and a significance level of $\alpha = 0.10$, which model is preferred?
+
+####Anova F Test between Additive vs Interaction Model
+```
+anova(CO2_add,CO2_int)
+anova(CO2_add,CO2_int)$'Pr(>F)'[2]
+```
+The Anova F test gives the P value as **`r anova(CO2_add,CO2_int)$'Pr(>F)'[2]`** < 0.10 ($\alpha$), where the P value (**`r anova(CO2_add,CO2_int)$'Pr(>F)'[2]`**) is very smaller than of 0.10 ($\alpha$), hence **we reject the Additive Model**, and select the **Interaction Model**. Based on the test and significance level we will preferred the **Interaction Model**.
 
 ***
 
@@ -204,7 +334,7 @@ where
 
 **(a)** Fit the model above. Also fit a smaller model using the provided `R` code.
 
-```{r, eval = FALSE}
+```{r}
 days_add = lm(Days ~ Pressure + Blood + Rate, data = hospital)
 days_int = lm(Days ~ Pressure * Blood * Rate, data = hospital)
 ```
