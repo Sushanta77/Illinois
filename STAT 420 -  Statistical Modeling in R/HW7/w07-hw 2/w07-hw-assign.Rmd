@@ -141,7 +141,7 @@ The Type of the vehicle is a **factor variable**
 - Give an estimate for the average change in `CO2` for a one foot-pound per second increase in `horse` for a vehicle of type `car`. 
 
     ```{r}
-    CO2_add$coefficient[2.1]
+    summary(CO2_add)$coefficient[2,1]
     ```
 
     The estimate for the average change in `CO2` for a one foot-pound per seconds increase in `horse` for a vehicle of type `car` is : **`r CO2_add$coefficient[2.1]`**
@@ -150,8 +150,6 @@ The Type of the vehicle is a **factor variable**
     ```{r}
     predict(CO2_add,interval="prediction",level=0.90,newdata=data.frame(horse=148,type='Both'))
     ```
-
-The 90% prediction interval for the `CO2` of a Subaru Impreza Wagon, which is a vehicle with 148 horsepower and is considered type `Both` by using the Additive Model is : **`r predict(CO2_add,interval="prediction",level=0.90,newdata=data.frame(horse=148,type='Both'))`**
 
 **(c)** Do the following:
 
@@ -186,6 +184,10 @@ The 90% prediction interval for the `CO2` of a Subaru Impreza Wagon, which is a 
     legend("topright",legend = c("Both","Car","Truck"),col = plot_colors,pch = c(1,2,3))
     ```
 
+    #####Comment on how well this line models the data 
+    
+    There are 3 regression line, with 3 different color for 3 vehicle type. The regression line in `grey` and `orange` color shows close enough to the `Car` and `Both` dataset respectively. Also the `blue` line fitted well to the `Truck` dataset, which seems `underfitting` in the `additive` model (**previously**)
+
 
 - Give an estimate for the average change in `CO2` for a one foot-pound per second increase in `horse` for a vehicle of type `car`. 
 
@@ -204,18 +206,14 @@ The 90% prediction interval for the `CO2` of a Subaru Impreza Wagon, which is a 
     predict(CO2_int,newdata = data.frame(horse=148,type="Both"),interval = "prediction", level = 0.90)
     ```
 
-    The 90% prediction interval using this model for the `CO2` of a Subaru Impreza Wagon, which is a vehicle with 148 horsepower and is considered type `Both` is **`r predict(CO2_int,newdata = data.frame(horse=148,type="Both"),interval = "prediction", level = 0.90)`**
-
 **(d)** Based on the previous plots, you probably already have an opinion on the best model. Now use an ANOVA $F$-test to compare the additive and interaction models. Based on this test and a significance level of $\alpha = 0.10$, which model is preferred?
 
-####Anova F Test between Additive vs Interaction Model
-    ```
-    anova(CO2_add,CO2_int)
-    anova(CO2_add,CO2_int)$'Pr(>F)'[2]
-    ```
-    The Anova F test gives the P value as **`r anova(CO2_add,CO2_int)$'Pr(>F)'[2]`** < 0.10 ($\alpha$), where the P value (**`r anova(CO2_add,CO2_int)$'Pr(>F)'[2]`**) is very smaller than of 0.10 ($\alpha$), hence **we reject the Additive Model**, and select the **Interaction Model**. Based on the test and significance level we will preferred the **Interaction Model**.
-
-***
+```{r}
+anova(CO2_add,CO2_int)
+anova(CO2_add,CO2_int)$'Pr(>F)'[2]
+```
+    
+The Anova F test gives the P value as **`r anova(CO2_add,CO2_int)$'Pr(>F)'[2]`** < 0.10 ($\alpha$), where the P value (**`r anova(CO2_add,CO2_int)$'Pr(>F)'[2]`**) is very smaller than of 0.10 ($\alpha$), hence **we reject the Additive Model**. Based on the test and significance level we will preferred the **Interaction Model**.
 
 ## Exercise 2 (Hospital SUPPORT Data, White Blood Cells)
 
