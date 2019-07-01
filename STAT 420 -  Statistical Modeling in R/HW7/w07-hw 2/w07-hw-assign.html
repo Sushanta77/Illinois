@@ -423,35 +423,53 @@ beta_1 + gamma_1</code></pre>
 <li><code>Rate</code> - Heart rate, in bpm</li>
 </ul>
 <p>For this exercise, we will use <code>Age</code>, <code>Education</code>, <code>Income</code>, and <code>Sex</code> in an attempt to model <code>Blood</code>. Essentially, we are attempting to model white blood cell count using only demographic information.</p>
-<p><strong>(a)</strong> Load the data, and check its structure using <code>str()</code>. Verify that <code>Education</code>, <code>Income</code>, and <code>Sex</code> are factors; if not, coerce them to be factors. What are the levels of <code>Education</code>, <code>Income</code>, and <code>Sex</code>? #####Load the dataset</p>
-<pre class="r"><code>hospital = read.csv(&quot;hospital.csv&quot;)</code></pre>
-<div id="verify-the-education-is-a-factor-variable" class="section level5">
-<h5>Verify the Education is a Factor variable</h5>
+<p><strong>(a)</strong> Load the data, and check its structure using <code>str()</code>. Verify that <code>Education</code>, <code>Income</code>, and <code>Sex</code> are factors; if not, coerce them to be factors. What are the levels of <code>Education</code>, <code>Income</code>, and <code>Sex</code>?</p>
+<div id="load-the-dataset" class="section level6">
+<h6>Load the dataset</h6>
+<pre class="r"><code>hospital = read.csv(&quot;hospital.csv&quot;)
+str(hospital)</code></pre>
+<pre><code>## 'data.frame':    580 obs. of  13 variables:
+##  $ Days       : int  8 14 21 4 11 9 25 26 9 16 ...
+##  $ Age        : num  42.3 63.7 41.5 42 52.1 ...
+##  $ Sex        : Factor w/ 2 levels &quot;female&quot;,&quot;male&quot;: 1 1 2 2 2 2 1 1 2 2 ...
+##  $ Comorbidity: Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 2 2 2 2 2 1 2 2 ...
+##  $ EdYears    : int  11 22 18 16 8 12 12 13 16 30 ...
+##  $ Education  : Factor w/ 2 levels &quot;high&quot;,&quot;low&quot;: 2 1 1 1 2 2 2 1 1 1 ...
+##  $ Income     : Factor w/ 2 levels &quot;high&quot;,&quot;low&quot;: 1 1 1 1 1 1 2 1 1 1 ...
+##  $ Charges    : num  9914 283303 320843 4173 13414 ...
+##  $ Care       : Factor w/ 2 levels &quot;high&quot;,&quot;low&quot;: 2 1 1 2 2 2 2 1 2 2 ...
+##  $ Race       : Factor w/ 2 levels &quot;non-white&quot;,&quot;white&quot;: 1 2 2 2 2 2 2 2 2 2 ...
+##  $ Pressure   : int  84 69 66 97 89 57 99 115 93 102 ...
+##  $ Blood      : num  11.3 30.1 0.2 10.8 6.4 ...
+##  $ Rate       : int  94 108 130 88 92 114 150 132 86 90 ...</code></pre>
+</div>
+<div id="verify-the-education-is-a-factor-variable" class="section level6">
+<h6>Verify the Education is a Factor variable</h6>
 <pre class="r"><code>is.factor(hospital$Education)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 </div>
-<div id="verify-the-income-is-a-factor-variable" class="section level5">
-<h5>Verify the Income is a Factor variable</h5>
+<div id="verify-the-income-is-a-factor-variable" class="section level6">
+<h6>Verify the Income is a Factor variable</h6>
 <pre class="r"><code>is.factor(hospital$Income)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 </div>
-<div id="verify-the-sex-is-a-factor-variable" class="section level5">
-<h5>Verify the Sex is a Factor variable</h5>
+<div id="verify-the-sex-is-a-factor-variable" class="section level6">
+<h6>Verify the Sex is a Factor variable</h6>
 <pre class="r"><code>is.factor(hospital$Sex)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 </div>
-<div id="levels-of-education-variable" class="section level5">
-<h5>Levels of Education variable</h5>
+<div id="levels-of-education-variable" class="section level6">
+<h6>Levels of Education variable</h6>
 <pre class="r"><code>levels(hospital$Education)</code></pre>
 <pre><code>## [1] &quot;high&quot; &quot;low&quot;</code></pre>
 </div>
-<div id="levels-of-income-variable" class="section level5">
-<h5>Levels of Income variable</h5>
+<div id="levels-of-income-variable" class="section level6">
+<h6>Levels of Income variable</h6>
 <pre class="r"><code>levels(hospital$Income)</code></pre>
 <pre><code>## [1] &quot;high&quot; &quot;low&quot;</code></pre>
 </div>
-<div id="levels-of-sex-variable" class="section level5">
-<h5>Levels of Sex variable</h5>
+<div id="levels-of-sex-variable" class="section level6">
+<h6>Levels of Sex variable</h6>
 <pre class="r"><code>levels(hospital$Sex)</code></pre>
 <pre><code>## [1] &quot;female&quot; &quot;male&quot;</code></pre>
 <p><strong>(b)</strong> Fit an additive multiple regression model with <code>Blood</code> as the response using <code>Age</code>, <code>Education</code>, <code>Income</code>, and <code>Sex</code> as predictors. What does <code>R</code> choose as the reference level for <code>Education</code>, <code>Income</code>, and <code>Sex</code>?</p>
@@ -465,8 +483,8 @@ blood_add</code></pre>
 ##  (Intercept)           Age  Educationlow     Incomelow       Sexmale  
 ##      10.8662        0.0283        0.5967        0.1867       -1.8714</code></pre>
 </div>
-<div id="below-is-what-r-choose-as-the-reference-level" class="section level5">
-<h5>Below is what R choose as the Reference level</h5>
+<div id="below-is-what-r-choose-as-the-reference-level" class="section level6">
+<h6>Below is what R choose as the Reference level</h6>
 <ul>
 <li>Reference level for <code>Education</code> : <strong>high</strong></li>
 <li>Reference level for <code>Income</code> : <strong>high</strong></li>
@@ -474,7 +492,18 @@ blood_add</code></pre>
 </ul>
 <p><strong>(c)</strong> Fit a multiple regression model with <code>Blood</code> as the response. Use the main effects of <code>Age</code>, <code>Education</code>, <code>Income</code>, and <code>Sex</code>, as well as the interaction of <code>Sex</code> with <code>Age</code> and the interaction of <code>Sex</code> and <code>Income</code>. Use a statistical test to compare this model to the additive model using a significance level of <span class="math inline">\(\alpha = 0.10\)</span>. Which do you prefer?</p>
 <pre class="r"><code>blood_int = lm(Blood~Age+Education+Income+Sex+Sex:Age+Sex:Income,data=hospital)
-anova(blood_add,blood_int)</code></pre>
+blood_int</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Blood ~ Age + Education + Income + Sex + Sex:Age + 
+##     Sex:Income, data = hospital)
+## 
+## Coefficients:
+##       (Intercept)                Age       Educationlow          Incomelow  
+##           10.6821             0.0435             0.5641            -1.2384  
+##           Sexmale        Age:Sexmale  Incomelow:Sexmale  
+##           -1.4898            -0.0263             2.6718</code></pre>
+<pre class="r"><code>anova(blood_add,blood_int)</code></pre>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Model 1: Blood ~ Age + Education + Income + Sex
@@ -483,20 +512,46 @@ anova(blood_add,blood_int)</code></pre>
 ## 1    575 35694                         
 ## 2    573 35423  2       271 2.19   0.11</code></pre>
 </div>
-<div id="p-value-from-the-additive-and-interaction-model" class="section level5">
-<h5>P Value from the Additive and Interaction Model</h5>
+<div id="p-value-from-the-additive-and-interaction-model" class="section level6">
+<h6>P Value from the Additive and Interaction Model</h6>
 <pre class="r"><code>anova(blood_add,blood_int)$'Pr(&gt;F)'[2]</code></pre>
 <pre><code>## [1] 0.1128</code></pre>
-<p>The P values from anova between the Additive model and Interaction model is <strong>0.1128</strong> &gt; 0.10 (<span class="math inline">\(\alpha\)</span>), hence we <strong>failed to reject the additive hypothesis</strong>, hence we prefer the <strong>Additive Model</strong>, i.e. the model without any interaction</p>
+<p>The P values from anova between the Additive model and Interaction model is <strong>0.1128</strong> &gt; 0.10 (<span class="math inline">\(\alpha\)</span>), hence we <strong>failed to reject the additive hypothesis</strong>, hence we prefer the <strong>Additive Model</strong></p>
 <p><strong>(d)</strong> Fit a model similar to that in <strong>(c)</strong>, but additionally add the interaction between <code>Income</code> and <code>Age</code> as well as a three-way interaction between <code>Age</code>, <code>Income</code>, and <code>Sex</code>. Use a statistical test to compare this model to the preferred model from <strong>(c)</strong> using a significance level of <span class="math inline">\(\alpha = 0.10\)</span>. Which do you prefer?</p>
-<p><strong>(e)</strong> Using the model in <strong>(d)</strong>, give an estimate of the change in average <code>Blood</code> for a one-unit increase in <code>Age</code> for a highly educated, low income, male patient. <span class="math display">\[
-Y_i = \beta_0 + \beta_1 x_{age} + \beta_2 x_{education} + \beta_3 x_{income}
-\]</span></p>
-<pre class="r"><code>beta_1 = summary(blood_int)$coefficient[2,1]
-beta_5 = summary(blood_int)$coefficient[2,1]
-(beta_1 + beta_5)</code></pre>
-<pre><code>## [1] 0.08704</code></pre>
-<p>Estimate of the change in average <code>Blood</code> for a one-unit increase in <code>Age</code> for a highly educated, low income, male patient is: <strong>0.087</strong></p>
+<pre class="r"><code>blood_int_3 = lm(Blood~Age+Education+Income+Sex+Sex:Age+Sex:Income+Age:Income+Sex:Age:Income,data=hospital)
+blood_int_3</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Blood ~ Age + Education + Income + Sex + Sex:Age + 
+##     Sex:Income + Age:Income + Sex:Age:Income, data = hospital)
+## 
+## Coefficients:
+##           (Intercept)                    Age           Educationlow  
+##               14.3481                -0.0175                 0.5646  
+##             Incomelow                Sexmale            Age:Sexmale  
+##               -8.3236                -5.6283                 0.0424  
+##     Incomelow:Sexmale          Age:Incomelow  Age:Incomelow:Sexmale  
+##               10.9485                 0.1149                -0.1345</code></pre>
+<pre class="r"><code>anova(blood_int,blood_int_3)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Blood ~ Age + Education + Income + Sex + Sex:Age + Sex:Income
+## Model 2: Blood ~ Age + Education + Income + Sex + Sex:Age + Sex:Income + 
+##     Age:Income + Sex:Age:Income
+##   Res.Df   RSS Df Sum of Sq    F Pr(&gt;F)
+## 1    573 35423                         
+## 2    571 35166  2       257 2.08   0.13</code></pre>
+<pre class="r"><code>anova(blood_int,blood_int_3)$'Pr(&gt;F)'[2]</code></pre>
+<pre><code>## [1] 0.1254</code></pre>
+<p>The F Test Statistics shows, the P value is 0.1254 &gt; 0.10 (<span class="math inline">\(\alpha\)</span>), hence we <strong>failed to reject the model in (c)</strong>, so we prefer the <strong>model in (c)</strong></p>
+<p><strong>(e)</strong> Using the model in <strong>(d)</strong>, give an estimate of the change in average <code>Blood</code> for a one-unit increase in <code>Age</code> for a highly educated, low income, male patient.</p>
+<pre class="r"><code>beta_1 = summary(blood_int_3)$coefficient[2,1]
+gamma_2 = summary(blood_int_3)$coefficient[6,1]
+gamma_4 = summary(blood_int_3)$coefficient[8,1]
+gamma_5 = summary(blood_int_3)$coefficient[9,1]
+(beta_1 + gamma_2 + gamma_4 + gamma_5)</code></pre>
+<pre><code>## [1] 0.0053</code></pre>
+<p>Estimate of the change in average <code>Blood</code> for a one-unit increase in <code>Age</code> for a highly educated, low income, male patient is: <strong>0.0053</strong></p>
 </div>
 </div>
 <div id="exercise-3-hospital-support-data-stay-duration" class="section level2">
@@ -534,29 +589,31 @@ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_1 x_2 + \beta_
 days_int = lm(Days ~ Pressure * Blood * Rate, data = hospital)</code></pre>
 <p>Use a statistical test to compare the two models. Report the following:</p>
 <ul>
-<li>The null and alternative hypotheses in terms of the model given in the exercise description $$</li>
+<li>The null and alternative hypotheses in terms of the model given in the exercise description</li>
 </ul>
-<p>Y_i = <em>0 + <em>1 x</em>{Pressure} + <em>2 x</em>{Blood} + <em>3 x</em>{Rate} + \ Y_i = <em>0 + <em>1 x</em>{Pressure} + <em>2 x</em>{Blood} + <em>3 x</em>{Rate} + <em>4 x</em>{Pressure} x</em>{Blood} + <em>5 x</em>{Pressure} x</em>{Rate} + <em>6 x</em>{Blood} x_{Rate} + <em>7 x</em>{Pressure} x_{Blood} x_{Rate} + \</p>
-<p>H_{null} : _5 = _6 = <em>7 = 0 \ H</em>{alternate} : Atleast one of the parameter _5 0, _6 0, _7 0 $$ - The value of the test statistic</p>
+<p><span class="math display">\[
+H_{null} : \beta_5 = \beta_6 = \beta_7 = 0 \\
+H_{alternate} : \text {Atleast one of the parameter is not zero}, \beta_5 \neq 0, \beta_6 \neq 0, \beta_7 \neq 0
+\]</span> - The value of the test statistic</p>
 <pre class="r"><code>anova(days_add,days_int)$'F'[2]</code></pre>
 <pre><code>## [1] 2.043</code></pre>
-<p>The value of the test statistic is : 2.0426</p>
+<pre><code>The value of the test statistic (F Test) is : **2.0426**</code></pre>
 <ul>
 <li>The p-value of the test</li>
 </ul>
 <pre class="r"><code>anova(days_add,days_int)$'Pr(&gt;F)'[2]</code></pre>
 <pre><code>## [1] 0.08705</code></pre>
-<p>The p-value of the test : 0.087</p>
+<pre><code>The p-value of the test : **0.087**</code></pre>
 <ul>
-<li>A statistical decision using a significance level of <span class="math inline">\(\alpha = 0.10\)</span></li>
+<li><p>A statistical decision using a significance level of <span class="math inline">\(\alpha = 0.10\)</span></p>
+<p>Since the <strong>P value</strong> from the F Test comes out as <strong>0.087</strong> &lt; 0.1 (<span class="math inline">\(\alpha\)</span>)<strong>, hence we </strong>reject the null hypothesis**.</p></li>
+<li><p>Which model you prefer</p>
+<p>Since we <strong>reject the null hypothesis</strong>, we prefer the <strong>interaction model</strong></p></li>
 </ul>
-<p>Since the <strong>P value</strong> from the F Test comes out as <strong>0.087</strong> &lt; 0.1 (<span class="math inline">\(\alpha\)</span>), hence we <strong>reject the null hypothesis</strong>.</p>
-<ul>
-<li>Which model you prefer</li>
-</ul>
-<p>Since we <strong>reject the null hypothesis</strong>, we prefer the <strong>interaction model</strong></p>
 <p><strong>(b)</strong> Give an expression based on the model in the exercise description for the true change in length of hospital stay in days for a 1 bpm increase in <code>Rate</code> for a patient with a <code>Pressure</code> of 139 mmHg and a <code>Blood</code> of 10 gm/dL. Your answer should be a linear function of the <span class="math inline">\(\beta\)</span>s.</p>
+<p>The expression Is: <span class="math inline">\(\beta_3 + 10 \beta_5 + 139 \beta_6 + 1390 \beta_7\)</span></p>
 <p><strong>(c)</strong> Give an expression based on the additive model in part <strong>(a)</strong> for the true change in length of hospital stay in days for a 1 bpm increase in <code>Rate</code> for a patient with a <code>Pressure</code> of 139 mmHg and a <code>Blood</code> of 10 gm/dL. Your answer should be a linear function of the <span class="math inline">\(\beta\)</span>s.</p>
+<p>The expression Is: <span class="math inline">\(\beta_3\)</span></p>
 <hr />
 </div>
 <div id="exercise-4-t-test-is-a-linear-model" class="section level2">
@@ -644,9 +701,22 @@ for(i in 1:num_sims){
   tt_p[i] = t.test(values ~ groups, data = sim_data, var.equal = TRUE)$p.value
 }</code></pre>
 <p><strong>(b)</strong> Report the value obtained by running <code>mean(lm_t == tt_t)</code>, which tells us what proportion of the test statistics is equal. The result may be extremely surprising!</p>
+<p>The value coming from <strong><code>mean(lm_t == tt_t)</code></strong> is : <strong>0</strong></p>
 <p><strong>(c)</strong> Report the value obtained by running <code>mean(lm_p == tt_p)</code>, which tells us what proportion of the p-values is equal. The result may be extremely surprising!</p>
+<p>The value coming from <strong><code>mean(lm_p == tt_p)</code></strong> is : <strong>0.0267</strong></p>
 <p><strong>(d)</strong> If you have done everything correctly so far, your answers to the last two parts won’t indicate the equivalence we want to show! What the heck is going on here? The first issue is one of using a computer to do calculations. When a computer checks for equality, it demands <strong>equality</strong>; nothing can be different. However, when a computer performs calculations, it can only do so with a certain level of precision. So, if we calculate two quantities we know to be analytically equal, they can differ numerically. Instead of <code>mean(lm_p == tt_p)</code> run <code>all.equal(lm_p, tt_p)</code>. This will perform a similar calculation, but with a very small error tolerance for each equality. What is the result of running this code? What does it mean?</p>
+<p>Value of <strong><code>all.equal(lm_p, tt_p)</code></strong> is: <strong>TRUE</strong></p>
+<p>The result from <code>all.equal</code> between lm_p and tt_p <code>TRUE</code>. This means that, all the p values comes from 2 sample t test is matching with the single two level factor variable in a linear model, however with a very small error tolerance.</p>
 <p><strong>(e)</strong> Your answer in <strong>(d)</strong> should now make much more sense. Then what is going on with the test statistics? Look at the values stored in <code>lm_t</code> and <code>tt_t</code>. What do you notice? Is there a relationship between the two? Can you explain why this is happening?</p>
+<pre class="r"><code>head(lm_t,5)</code></pre>
+<pre><code>## [1]  0.89667 -2.02530  0.93800  0.89394 -0.08407</code></pre>
+<pre class="r"><code>head(tt_t,5)</code></pre>
+<pre><code>## [1] -0.89667  2.02530 -0.93800 -0.89394  0.08407</code></pre>
+<p><strong>What do we notice: </strong></p>
+<p>By looking at the test statistics values for both, it seems that the absolute values are matching, however sign is reverse</p>
+<p><strong>Is there a relationship between the two test statistics: </strong></p>
+<p>The relationship between the two test statistics is just the reverse of the sign, where as the data is equal</p>
+<p><strong>Why this is happening: </strong></p>
 </div>
 </div>
 
