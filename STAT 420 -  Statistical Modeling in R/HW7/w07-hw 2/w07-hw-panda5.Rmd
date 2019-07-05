@@ -50,12 +50,12 @@ We will attempt to model `CO2` using both `horse` and `type`. In practice, we wo
 
 Load the data, and check its structure using `str()`. Verify that `type` is a factor; if not, coerce it to be a factor.
 
-###Load the epa2015 dataset
+#####Load the epa2015 dataset
 ```{r}
 epa2015 = read.csv("epa2015.csv")
 str(epa2015)
 ```
-###Verify "type" ia a factor variable
+#####Verify "type" ia a factor variable
 ```{r}
 is.factor(epa2015$type)
 ```
@@ -371,14 +371,16 @@ $$
 ```{r}
 anova(days_add,days_int)$'F'[2]
 ```
-    The value of the test statistic (F Test) is : **`r anova(days_add,days_int)$'F'[2]`**
+
+The value of the test statistic (F Test) is : **`r anova(days_add,days_int)$'F'[2]`**
 
 - The p-value of the test
 
 ```{r}
 anova(days_add,days_int)$'Pr(>F)'[2]
 ```
-    The p-value of the test : **`r anova(days_add,days_int)$'Pr(>F)'[2]`**
+
+The p-value of the test : **`r anova(days_add,days_int)$'Pr(>F)'[2]`**
 
 - A statistical decision using a significance level of $\alpha = 0.10$
 
@@ -494,8 +496,8 @@ The result from `all.equal` between lm_p and tt_p `TRUE`. This means that, all t
 **(e)** Your answer in **(d)** should now make much more sense. Then what is going on with the test statistics? Look at the values stored in `lm_t` and `tt_t`. What do you notice? Is there a relationship between the two? Can you explain why this is happening?
 
 ```{r}
-head(lm_t,5)
-head(tt_t,5)
+head(lm_t,8)
+head(tt_t,8)
 ```
 
 **What do we notice: **
@@ -508,4 +510,6 @@ By looking at the test statistics values for both, it seems that the absolute va
 The relationship between the two test statistics is just the reverse of the sign, where as the data is equal
 
 **Why this is happening: **
+
+The difference in the test statistics is because of the sign change, if we compare with the absoulute value, all the t value will be matched (with a very small error tolerance), and while matching with `for.all` its coming as `r all.equal(abs(lm_t),abs(tt_t))`. The t value from the two-sample t-test have a differnt sign as compared to the coefficient of a single two-level factor variable, could be because of the mean of the one group (dummy variable) would be more/less than the mean of the other group (dummy variable). so, in order to check the value without the sign, we need to compare the t test statistics for the two with `abs` function.
 
