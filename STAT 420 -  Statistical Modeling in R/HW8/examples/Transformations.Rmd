@@ -11,7 +11,7 @@ initech = read.csv("initech.csv")
 ```
 
 ```{r}
-plot(salary~years,data=initech,col = "darkgrey",pch = 20,cex = 1,main = "Salaries at Initech, By Seniority")
+plot(salary~years,data=initech,col = "darkgrey",pch = 1,cex = 1,main = "Salaries at Initech, By Seniority")
 ```
 
 ```{r}
@@ -23,21 +23,15 @@ summary(initech_fit)
 
 ```{r}
 #Plot the Scatter Plot and the fitted the line
-plot(salary~years,data=initech,col = "darkgrey",pch = 20, cex = 1)
+plot(salary~years,data=initech,col = "darkgrey",pch = 1, cex = 1)
 abline(initech_fit,col = "darkorange", lwd = 2)
 ```
 
 
-```{r}
-bptest(initech_fit)
-```
-
-Since the P value is very very small **`r bptest(initech_fit)`**, we reject the NULL hypothesis, that it's Homoscedasticity 
-
 ```{r fig.height=5, fig.width=10}
 par(mfrow=c(1,2))
 
-plot(fitted(initech_fit),resid(initech_fit),col = "darkgrey", pch = 20, cex = 1, xlab = "Fitted Values", ylab = "Residuals", main = "Fitted Values Vs Residuals of Initech")
+plot(fitted(initech_fit),resid(initech_fit),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted Values", ylab = "Residuals", main = "Fitted Values Vs Residuals of Initech")
 abline(h = 0, col = "darkorange", lwd = 2, lty = 2)
 
 #Now, let's plot Q-Q plot
@@ -54,43 +48,40 @@ $$
 par(mfrow=c(1,2))
 
 #Plot the Scatter Plot and the fitted the line
-plot(salary~years,data=initech,col = "darkgrey",pch = 20, cex = 1)
+plot(salary~years,data=initech,col = "darkgrey",pch = 1, cex = 1)
 abline(initech_fit,col = "darkorange", lwd = 2, lty = 2)
 
 #Now, let's model the log(salary)
 initech_fit_log = lm(log(salary)~years,data = initech)
-plot(log(salary)~years,data = initech,col = "darkgrey", pch = 20, cex = 1)
+plot(log(salary)~years,data = initech,col = "darkgrey", pch = 1, cex = 1)
 abline(initech_fit_log, col = "darkorange", lwd = 2, lty = 2)
 ```
 
 ```{r fig.height=5, fig.width=10}
 par(mfrow = c(1,2))
 
-plot(fitted(initech_fit_log),resid(initech_fit_log),col = "darkgrey", pch = 20, cex = 1, xlab = "Fitted Values", ylab = "Residuals")
+plot(fitted(initech_fit_log),resid(initech_fit_log),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted Values", ylab = "Residuals")
 abline ( h = 0, col = "darkorange", lwd = 2, lty = 2)
 
-qqnorm(resid(initech_fit_log), col = "darkgrey", pch = 20, cex = 1)
+qqnorm(resid(initech_fit_log), col = "darkgrey", pch = 1, cex = 1)
 qqline(resid(initech_fit_log),lwd = 2, col = "darkorange",lty = 2)
 ```
 ```{r fig.height=5, fig.width=10}
 par(mfrow = c(1,2))
 
 #Now, let's plot Q-Q plot (With Transformation - Log Transformation)
-plot(fitted(initech_fit),resid(initech_fit),col = "darkgrey", pch = 20, cex = 1, xlab = "Fitted Values", ylab = "Residuals", main = "Fitted Values Vs Residuals of Initech")
+plot(fitted(initech_fit),resid(initech_fit),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted Values", ylab = "Residuals", main = "Fitted Values Vs Residuals of Initech")
 abline(h = 0, col = "darkorange", lwd = 2, lty = 2)
 
 
 #Now, let's plot Q-Q plot (Without Transformation)
-plot(fitted(initech_fit_log),resid(initech_fit_log),col = "darkgrey", pch = 20, cex = 1, xlab = "Fitted Values", ylab = "Residuals", main = "Fitted Values Vs Residuals of Initech (Log Transformation of Response)")
+plot(fitted(initech_fit_log),resid(initech_fit_log),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted Values", ylab = "Residuals", main = "Fitted Values Vs Residuals of Initech (Log Transformation of Response)")
 abline ( h = 0, col = "darkorange", lwd = 2, lty = 2)
 ```
 
 
-Breusch Pagan Test(Without Trasnformation) is : `r bptest(initech_fit)`
-Breusch Pagan Test(Log Trasnformation) is : `r bptest(initech_fit_log)`
-
-
 ```{r fig.height=5, fig.width=10}
+par(mfrow = c(1,2))
 #Now, let's plot Q-Q plot (Without Transformation)
 qqnorm(resid(initech_fit),col = "darkgrey",pch = 1, cex = 1)
 qqline(resid(initech_fit),col = "dodgerblue",lwd = 2, lty = 2)
@@ -102,3 +93,108 @@ qqline(resid(initech_fit_log),lwd = 2, col = "darkorange",lty = 2)
 
 Shapiro Wrilk for Fit (Before Transformation): `r shapiro.test(resid(initech_fit))`
 Shapiro Wrilk for Fit (Log Transformation): `r shapiro.test(resid(initech_fit))`
+
+```{r}
+plot(salary~years,data=initech,col = "darkgrey", pch = 1, cex = 1, main = "Years Vs Number of Years of Experience - Initech")
+curve(exp(initech_fit_log$coef[1]+initech_fit_log$coef[2] * x), from = 0 , to = 30,add = TRUE,col = "dodgerblue",lwd = 2, lty =2)
+```
+
+```{r}
+#Now let's check the RMSE, which one is better, Normal vs Logarathimic Transformation
+sqrt(mean(resid(initech_fit)^2))
+sqrt(mean(resid(initech_fit_log)^2))
+```
+
+```{r}
+sqrt(sum((initech$salary - fitted(initech_fit))^2))
+sqrt(sum((initech$salary - exp(fitted(initech_fit_log)))^2))
+```
+
+
+```{r}
+sim_quad = function(samples_size = 500){
+  x = runif(n = samples_size) * 5
+  y = 3 + 5 * x ^2 + rnorm(samples_size, mean = 0, sd = 5)
+  data.frame(x,y)
+}
+```
+
+```{r}
+set.seed(314)
+quad_data = sim_quad(samples_size = 200)
+head(quad_data)
+```
+
+```{r}
+lin_fit = lm(y~x,data=quad_data)
+summary(lin_fit)
+```
+
+```{r}
+plot(y~x,data = quad_data,col = "darkgrey",pch = 1, cex = 1,main = "Simulated Quadratic Data")
+abline(lin_fit,lwd = 2, col = "darkorange", lty = 2)
+```
+
+```{r fig.height=5, fig.width=10}
+par(mfrow = c(1,2))
+#Let's see the Plot between Fitted Values Vs Residual Plots
+plot(fitted(lin_fit),resid(lin_fit),col = "darkgrey", pch = 1, cex = 1, main = "Fitted Vs Residual - Linear Fit")
+abline (h = 0, col = "darkorange", lwd = 2, lty =2)
+
+qqnorm(resid(lin_fit),pch = 1, cex = 1, col = "darkgrey", main = "Fitted Vs Residual - Linear Fit")
+qqline(resid(lin_fit),lwd = 2, col = "darkorange",lty = 2)
+```
+
+
+$$
+Y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \epsilon
+$$
+
+```{r}
+#Let's fit a quadratic model
+quad_fit = lm(y ~ x + I(x^2), data = quad_data)
+summary(quad_fit)
+```
+
+```{r}
+plot(y~x,data=quad_data,col = "darkgrey", pch = 1, cex = 1, main = "Plot ")
+curve(quad_fit$coef[1] + quad_fit$coef[2] * x + quad_fit$coef[3] * x^2,from = -5, to = 30, col = "darkorange", lwd = 2, add = TRUE)
+
+```
+
+```{r fig.height=5, fig.width=10}
+par(mfrow = c(1,2))
+
+plot(fitted(quad_fit),resid(quad_fit),col = "darkgrey", pch = 1, cex = 1)
+abline(h = 0, lwd = 2, col = "darkorange", lty = 2)
+
+qqnorm(resid(quad_fit),col = "darkgrey", pch = 1, cex = 1)
+qqline(resid(quad_fit),col = "dodgerblue",lwd = 2, lty = 2)
+```
+
+```{r}
+sim_for_perf = function(){
+  x = seq(0,10)
+  y = 3 + x - 4 * x ^ 2 + rnorm(n = 11, mean = 0 , sd = 25)
+  data.frame(x,y)
+}
+```
+
+```{r}
+set.seed(1234)
+data_for_perf = sim_for_perf()
+head(data_for_perf)
+```
+
+```{r}
+fit_correct = lm(y ~ x + I(x^2),data = data_for_perf)
+fit_perfect = lm(y ~ x + I(x^2) + I(x^3) + I(x^4) + I(x^5) + I(x^6) + I(x^7) + I(x^8) + I(x^9) + I(x^10),data = data_for_perf)
+```
+
+
+```{r fig.height=2, fig.width=3}
+x_plot = seq(-5,15, by = 0.1)
+plot(y~x,data = data_for_perf,ylim = c(-450,100), pch = 1, cex = 1 )
+lines(x_plot,predict(fit_correct,newdata=data.frame(x = x_plot)),col = "dodgerblue", lwd = 1, lty = 1)
+lines(x_plot,predict(fit_perfect,newdata=data.frame(x = x_plot)),col = "darkorange", lwd = 1, lty = 2)
+```
