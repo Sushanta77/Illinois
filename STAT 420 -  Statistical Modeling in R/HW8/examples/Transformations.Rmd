@@ -21,3 +21,84 @@ initech_fit = lm(salary~years,data=initech)
 summary(initech_fit)
 ```
 
+```{r}
+#Plot the Scatter Plot and the fitted the line
+plot(salary~years,data=initech,col = "darkgrey",pch = 20, cex = 1)
+abline(initech_fit,col = "darkorange", lwd = 2)
+```
+
+
+```{r}
+bptest(initech_fit)
+```
+
+Since the P value is very very small **`r bptest(initech_fit)`**, we reject the NULL hypothesis, that it's Homoscedasticity 
+
+```{r fig.height=5, fig.width=10}
+par(mfrow=c(1,2))
+
+plot(fitted(initech_fit),resid(initech_fit),col = "darkgrey", pch = 20, cex = 1, xlab = "Fitted Values", ylab = "Residuals", main = "Fitted Values Vs Residuals of Initech")
+abline(h = 0, col = "darkorange", lwd = 2, lty = 2)
+
+#Now, let's plot Q-Q plot
+qqnorm(resid(initech_fit),col = "darkgrey",pch = 1, cex = 1)
+qqline(resid(initech_fit),col = "dodgerblue",lwd = 2, lty = 2)
+```
+
+###Now, let's do the transformation to see what's will happen
+
+$$
+\log(Y_i) = \beta_0 + \beta_1 x_i + \epsilon
+$$
+```{r fig.height=5, fig.width=10}
+par(mfrow=c(1,2))
+
+#Plot the Scatter Plot and the fitted the line
+plot(salary~years,data=initech,col = "darkgrey",pch = 20, cex = 1)
+abline(initech_fit,col = "darkorange", lwd = 2, lty = 2)
+
+#Now, let's model the log(salary)
+initech_fit_log = lm(log(salary)~years,data = initech)
+plot(log(salary)~years,data = initech,col = "darkgrey", pch = 20, cex = 1)
+abline(initech_fit_log, col = "darkorange", lwd = 2, lty = 2)
+```
+
+```{r fig.height=5, fig.width=10}
+par(mfrow = c(1,2))
+
+plot(fitted(initech_fit_log),resid(initech_fit_log),col = "darkgrey", pch = 20, cex = 1, xlab = "Fitted Values", ylab = "Residuals")
+abline ( h = 0, col = "darkorange", lwd = 2, lty = 2)
+
+qqnorm(resid(initech_fit_log), col = "darkgrey", pch = 20, cex = 1)
+qqline(resid(initech_fit_log),lwd = 2, col = "darkorange",lty = 2)
+```
+```{r fig.height=5, fig.width=10}
+par(mfrow = c(1,2))
+
+#Now, let's plot Q-Q plot (With Transformation - Log Transformation)
+plot(fitted(initech_fit),resid(initech_fit),col = "darkgrey", pch = 20, cex = 1, xlab = "Fitted Values", ylab = "Residuals", main = "Fitted Values Vs Residuals of Initech")
+abline(h = 0, col = "darkorange", lwd = 2, lty = 2)
+
+
+#Now, let's plot Q-Q plot (Without Transformation)
+plot(fitted(initech_fit_log),resid(initech_fit_log),col = "darkgrey", pch = 20, cex = 1, xlab = "Fitted Values", ylab = "Residuals", main = "Fitted Values Vs Residuals of Initech (Log Transformation of Response)")
+abline ( h = 0, col = "darkorange", lwd = 2, lty = 2)
+```
+
+
+Breusch Pagan Test(Without Trasnformation) is : `r bptest(initech_fit)`
+Breusch Pagan Test(Log Trasnformation) is : `r bptest(initech_fit_log)`
+
+
+```{r fig.height=5, fig.width=10}
+#Now, let's plot Q-Q plot (Without Transformation)
+qqnorm(resid(initech_fit),col = "darkgrey",pch = 1, cex = 1)
+qqline(resid(initech_fit),col = "dodgerblue",lwd = 2, lty = 2)
+
+#Now, let's plot Q-Q plot (With Transformation - Log Transformation)
+qqnorm(resid(initech_fit_log), col = "darkgrey", pch = 20, cex = 1)
+qqline(resid(initech_fit_log),lwd = 2, col = "darkorange",lty = 2)
+```
+
+Shapiro Wrilk for Fit (Before Transformation): `r shapiro.test(resid(initech_fit))`
+Shapiro Wrilk for Fit (Log Transformation): `r shapiro.test(resid(initech_fit))`
