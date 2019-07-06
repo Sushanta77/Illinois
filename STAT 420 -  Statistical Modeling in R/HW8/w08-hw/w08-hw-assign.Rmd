@@ -266,11 +266,11 @@ abline(diamonds_slr_log,lwd = 2, col = "darkorange", lty = 1)
 ```{r fig.height=5, fig.width=10}
 par(mfrow = c(1,2))
 #Plot the Fitted Versus Residual Plot
-plot(fitted(diamonds_slr_log),resid(diamonds_slr_log),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Versus Residual Plot of Diamond model for Log(Price)")
+plot(fitted(diamonds_slr_log),resid(diamonds_slr_log),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Versus Residual Plot of Diamond model for Log(Price)",cex.main = 0.8)
 abline(h = 0, col = "darkorange", lwd = 2, lty = 1)
 
 #Plot the Q-Q Plot
-qqnorm(resid(diamonds_slr_log),col = "darkgrey", pch = 1, cex = 1, main = "Q-Q Plot of the Diamond Model for the Log(Price)")
+qqnorm(resid(diamonds_slr_log),col = "darkgrey", pch = 1, cex = 1, main = "Q-Q Plot of the Diamond Model for the Log(Price)",cex.main = 0.8)
 qqline(resid(diamonds_slr_log),col = "darkorange", lwd = 2, lty = 1)
 ```
 
@@ -284,18 +284,18 @@ qplot(price, data = diamonds, bins = 30)
 ```{r}
 diamonds_slr_predict_log = lm(log(price)~log(carat), data = diamonds_data)
 
-plot(log(price)~log(carat), data = diamonds_data, col = "darkgrey", pch = 1, cex = 1)
+plot(log(price)~log(carat), data = diamonds_data, col = "darkgrey", pch = 1, cex = 1,cex.main = 0.8)
 abline(diamonds_slr_predict_log,lwd = 2, col = "darkorange", lty = 1)
 ```
 
 ```{r fig.height=5, fig.width=10}
 par(mfrow = c(1,2))
 #Plot the Fitted Versus Residual Plot
-plot(fitted(diamonds_slr_predict_log),resid(diamonds_slr_predict_log),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Versus Residual Plot of Diamond model for Log(Price) and Log(carat)")
+plot(fitted(diamonds_slr_predict_log),resid(diamonds_slr_predict_log),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Versus Residual Plot of Diamond model for Log(Price) and Log(carat)",cex.main = 0.8)
 abline(h = 0, col = "darkorange", lwd = 2, lty = 1)
 
 #Plot the Q-Q Plot
-qqnorm(resid(diamonds_slr_predict_log),col = "darkgrey", pch = 1, cex = 1, main = "Q-Q Plot of the Diamond Model for the Log(Price) and Log(carat)")
+qqnorm(resid(diamonds_slr_predict_log),col = "darkgrey", pch = 1, cex = 1, main = "Q-Q Plot of the Diamond Model for the Log(Price) and Log(carat)",cex.main = 0.8)
 qqline(resid(diamonds_slr_predict_log),col = "darkorange", lwd = 2, lty = 1)
 ```
 **(e)** Use the model from part **(d)** to predict the price (in dollars) of a 3-carat diamond. Construct a 99% prediction interval for the price (in dollars).
