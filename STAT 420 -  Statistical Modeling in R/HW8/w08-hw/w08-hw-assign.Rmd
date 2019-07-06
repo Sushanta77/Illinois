@@ -203,8 +203,19 @@ bptest(fit_2)
 num_sims = 2500
 p_val_1 = rep(0, num_sims)
 p_val_2 = rep(0, num_sims)
-birthday = 19081014
+birthday = 19770411
 set.seed(birthday)
+
+for(i in 1:2500){
+  y_1 = 4 + 1 * x_1 + 0 * x_2 + rnorm(n = n, mean = 0, sd = 1)
+  fit_1 = lm(y_1 ~ x_1 + x_2)
+  p_val_1[i] = summary(fit_1)$coefficient[3,4]
+  
+  
+  y_2 = 4 + 1 * x_1 + 0 * x_2 + rnorm(n = n, mean = 0, sd = abs(x_2))
+  fit_2 = lm(y_2 ~ x_1 + x_2)
+  p_val_2[i] = summary(fit_2)$coefficient[3,4]
+}
 ```
 
 Repeat the above process of generating `y_1` and `y_2` as defined above, and fit models with each as the response `2500` times. Each time, store the p-value for testing,
@@ -217,6 +228,16 @@ using both models, in the appropriate variables defined above. (You do not need 
 
 **(b)** What proportion of the `p_val_1` values is less than 0.01? Less than 0.05? Less than 0.10? What proportion of the `p_val_2` values is less than 0.01? Less than 0.05? Less than 0.10? Arrange your results in a table. Briefly explain these results.
 
+```{r}
+library(knitr)
+Proportion_report = data.frame(
+  p_value = c("p_value_1","p_value_1","p_value_1","p_value_2","p_value_2","p_value_2"),
+  alpha_value = c("0.01","0.05","0.1","0.01","0.05","0.1"),
+  Proportion = c(mean(p_val_1<0.01),mean(p_val_1<0.05),mean(p_val_1<0.10),mean(p_val_2<0.01),mean(p_val_2<0.05),mean(p_val_2<0.1))
+)
+
+kable(Proportion_report, format = "pandoc",padding = 2,caption = "Summary of Proportion Results")
+```
 ***
 
 ## Exercise 4 (Corrosion Data)
@@ -229,8 +250,45 @@ library(faraway)
 
 **(a)** Fit a simple linear regression with `loss` as the response and `Fe` as the predictor. Plot a scatterplot and add the fitted line. Check the assumptions of this model.
 
+```{r}
+corrosion_data = faraway::corrosion
+corrosion_slr_fit = lm(loss ~ Fe, data = corrosion_data)
+corrosion_slr_fit
+```
+
+####Check the Assumption of Constant Varience
+```{r}
+#Plot the Fitted Vs Residuals of Corrosion Data
+plot(fitted(corrosion_slr_fit),resid(corrosion_slr_fit),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Vs Residuals")
+abline(h = 0, col = "darkorange", lwd = 2, lty = 1)
+```
+```{r}
+#Plot the Q-Q Plot
+qqnorm(resid(corrosion_slr_fit),col = "darkgrey", pch = 1, cex = 1, main = "Q-Q Plot")
+qqline(resid(corrosion_slr_fit), col = "darkorange", lwd = 2, lty = 1)
+```
+
 **(b)** Fit higher order polynomial models of degree 2, 3, and 4. For each, plot a fitted versus residuals plot and comment on the constant variance assumption. Based on those plots, which of these three models do you think are acceptable? Use a statistical test(s) to compare the models you just chose. Based on the test, which is preferred? Check the normality assumption of this model. Identify any influential observations of this model.
 
+```{r}
+corrosion_model_2 = lm(loss ~ poly(Fe,2), data = corrosion_data)
+corrosion_model_4 = lm(loss ~ poly(Fe,4), data = corrosion_data)
+corrosion_model_6 = lm(loss ~ poly(Fe,6), data = corrosion_data)
+corrosion_model_2
+corrosion_model_4
+corrosion_model_6
+```
+
+```{r}
+plot(fitted(corrosion_model_2),resid(corrosion_model_2),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Vs Residuals - Poly 2")
+abline(h = 0, col = "darkorange", lwd = 2, lty = 1)
+
+plot(fitted(corrosion_model_4),resid(corrosion_model_4),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Vs Residuals - Poly 4")
+abline(h = 0, col = "darkorange", lwd = 2, lty = 1)
+
+plot(fitted(corrosion_model_6),resid(corrosion_model_6),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Vs Residuals - Poly 6")
+abline(h = 0, col = "darkorange", lwd = 2, lty = 1)
+```
 ***
 
 ## Exercise 5 (Diamonds)
