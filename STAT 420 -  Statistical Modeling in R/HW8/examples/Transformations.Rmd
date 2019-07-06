@@ -1,0 +1,23 @@
+---
+title: "Transformation"
+author: "Sushanta Panda"
+date: "7/6/2019"
+output: html_document
+---
+
+##Load the Dataset
+```{r setup, include=FALSE}
+initech = read.csv("initech.csv")
+```
+
+```{r}
+plot(salary~years,data=initech,col = "darkgrey",pch = 20,cex = 1,main = "Salaries at Initech, By Seniority")
+```
+
+```{r}
+#Let's fit a linear model
+
+initech_fit = lm(salary~years,data=initech)
+summary(initech_fit)
+```
+
