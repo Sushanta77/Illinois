@@ -198,3 +198,13 @@ plot(y~x,data = data_for_perf,ylim = c(-450,100), pch = 1, cex = 1 )
 lines(x_plot,predict(fit_correct,newdata=data.frame(x = x_plot)),col = "dodgerblue", lwd = 1, lty = 1)
 lines(x_plot,predict(fit_perfect,newdata=data.frame(x = x_plot)),col = "darkorange", lwd = 1, lty = 2)
 ```
+
+```{r}
+lm(y~x+I(x^2))
+lm(y~x+I(x+x))
+```
+
+```{r}
+auto
+pairs()
+```

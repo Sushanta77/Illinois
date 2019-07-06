@@ -42,6 +42,34 @@ The function should output:
 
 Consider using this function to help with the remainder of the assignment as well.
 
+```{r fig.height=10, fig.width=5}
+#Function created as part of the (a)
+diagnostics = function(model = fit_1, pcol = "grey", lcol = "dodgerblue", alpha = 0.05, plotit = TRUE, testit = TRUE){
+  
+  p_val = shapiro.test(resid(model))$'p.value'
+  decision = ifelse (p_val > alpha, "Fail to Reject","Reject")
+  list_p_decision = list(p_val=p_val,decision=decision) #Create the List 
+
+
+  #if plotit = TRUE, 
+  if (plotit){
+    par(mfrow=c(1,2))
+    #Fitted Versus Residual Plot
+    plot(fitted(model), resid(model), col = pcol, pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Versus Residual")
+    abline (h = 0, col = lcol, lwd = 1, lty = 1)
+    
+    #Q-Q Plot
+    qqnorm(resid(model), col = pcol, pch = 1, cex = 1, main = "Q-Q Plot of the Model")
+    qqline(resid(model), col = lcol, lwd = 1, lty = 1)
+  }
+
+  #if testit = TRUE 
+  if (testit){
+    list_p_decision
+  }  
+}
+```
+
 **(b)** Run the following code.
 
 ```{r}
@@ -63,7 +91,7 @@ data_3$y = with(data_3, 2 + 1 * x + rnorm(n = 40, sd = x))
 fit_3 = lm(y ~ x, data = data_3)
 ```
 
-```{r, eval = FALSE}
+```{r fig.height=5, fig.width=10}
 diagnostics(fit_1, plotit = FALSE)$p_val
 diagnostics(fit_2, plotit = FALSE)$decision
 diagnostics(fit_1, testit = FALSE, pcol = "black", lcol = "black")
@@ -79,13 +107,41 @@ For this exercise, we will use the `prostate` data, which can be found in the `f
 
 ```{r, message = FALSE, warning = FALSE}
 library(faraway)
+prostate_data = faraway::prostate
 ```
 
 **(a)** Fit an additive multiple regression model with `lpsa` as the response and the remaining variables in the `prostate` dataset as predictors. Report the $R^2$ value for this model.
 
+```{r}
+prostate_add_model = lm(lpsa~.,data = prostate_data)
+summary(prostate_add_model)
+```
+$R^2$ value for this model is : `r summary(prostate_add_model)$'r.squared'`
+
 **(b)** Check the constant variance assumption for this model. Do you feel it has been violated? Justify your answer.
 
+```{r}
+plot(fitted(prostate_add_model),resid(prostate_add_model),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Vs Residual Plot for Additive Model")
+abline(h = 0, col = "darkorange", lwd = 1, lty = 1)
+```
+
+From the above Fitted Versus Residual Plots of the Prostate Additive model, it seems it **follows the constant varience**, means it doesn't violates the constant varience. Let's check the botest as well below
+
+```{r}
+library(lmtest)
+bptest(prostate_add_model)
+```
+
+The bptest also shows the P value which is **`r bptest(prostate_add_model)$'p.value'** is higher, means **it follows constant varience**
+
 **(c)** Check the normality assumption for this model. Do you feel it has been violated? Justify your answer.
+
+```{r}
+qqnorm(resid(prostate_add_model),col = "darkgrey", pch = 1, cex = 1, main = "Q-Q Plot for the Additive Prostate Model")
+qqline(resid(prostate_add_model),col = "darkorange", lwd = 1, lty = 1)
+```
+
+The Q-Q plots, show all the circle follows in the straight line, except for the upper and lower part, however most of the other follows the straight line. Since it follows the straight line, the **model doesn't violates the normal distribution**
 
 **(d)** Check for any high leverage observations. Report any observations you determine to have high leverage.
 
@@ -125,6 +181,7 @@ That is,
 We now simulate `y_1` in a manner that does **not** violate any assumptions, which we will verify. In this case $\epsilon \sim N(0, 1).$
 
 ```{r}
+library(lmtest)
 set.seed(1)
 y_1 = 4 + 1 * x_1 + 0 * x_2 + rnorm(n = n, mean = 0, sd = 1)
 fit_1 = lm(y_1 ~ x_1 + x_2)
@@ -185,11 +242,37 @@ library(ggplot2)
 ```
 
 **(a)** Fit a linear model with `price` as the response variable $y$, and `carat` as the predictor $x$. Return the summary information of this model.
+```{r}
+diamonds_data = ggplot2::diamonds
+diamonds_slr = lm(price~carat,data = diamonds_data)
+summary(diamonds_slr)
+```
 
 **(b)** Plot a scatterplot of price versus carat and add the line for the fitted model in part **(a)**. Using a fitted versus residuals plot and/or a Q-Q plot, comment on the diagnostics. 
 
+```{r fig.height=10, fig.width=12}
+plot(price~carat,data = diamonds_data,col = "darkgrey", pch = 1, cex = 1,main = "Carat Vs Price of the Diamonds")
+```
 
 **(c)** Seeing as the price stretches over several orders of magnitude, it seems reasonable to try a log transformation of the response. Fit a model with a logged response, plot a scatterplot of log-price versus carat and add the line for the fitted model, then use a fitted versus residuals plot and/or a Q-Q plot to comment on the diagnostics of the model.
+
+```{r fig.height=10, fig.width=12}
+diamonds_slr_log = lm(log(price)~carat, data = diamonds_data)
+
+plot(log(price)~carat, data = diamonds_data, col = "darkgrey", pch = 1, cex = 1)
+abline(diamonds_slr_log,lwd = 2, col = "darkorange", lty = 1)
+```
+
+```{r fig.height=5, fig.width=10}
+par(mfrow = c(1,2))
+#Plot the Fitted Versus Residual Plot
+plot(fitted(diamonds_slr_log),resid(diamonds_slr_log),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Versus Residual Plot of Diamond model for Log(Price)")
+abline(h = 0, col = "darkorange", lwd = 2, lty = 1)
+
+#Plot the Q-Q Plot
+qqnorm(resid(diamonds_slr_log),col = "darkgrey", pch = 1, cex = 1, main = "Q-Q Plot of the Diamond Model for the Log(Price)")
+qqline(resid(diamonds_slr_log),col = "darkorange", lwd = 2, lty = 1)
+```
 
 ```{r}
 qplot(price, data = diamonds, bins = 30)
@@ -198,5 +281,25 @@ qplot(price, data = diamonds, bins = 30)
 
 **(d)** Try adding log transformation of the predictor. Fit a model with a logged response and logged predictor, plot a scatterplot of log-price versus log-carat and add the line for the fitted model, then use a fitted versus residuals plot and/or a Q-Q plot to comment on the diagnostics of the model.
 
+```{r}
+diamonds_slr_predict_log = lm(log(price)~log(carat), data = diamonds_data)
+
+plot(log(price)~log(carat), data = diamonds_data, col = "darkgrey", pch = 1, cex = 1)
+abline(diamonds_slr_predict_log,lwd = 2, col = "darkorange", lty = 1)
+```
+
+```{r fig.height=5, fig.width=10}
+par(mfrow = c(1,2))
+#Plot the Fitted Versus Residual Plot
+plot(fitted(diamonds_slr_predict_log),resid(diamonds_slr_predict_log),col = "darkgrey", pch = 1, cex = 1, xlab = "Fitted", ylab = "Residuals", main = "Fitted Versus Residual Plot of Diamond model for Log(Price) and Log(carat)")
+abline(h = 0, col = "darkorange", lwd = 2, lty = 1)
+
+#Plot the Q-Q Plot
+qqnorm(resid(diamonds_slr_predict_log),col = "darkgrey", pch = 1, cex = 1, main = "Q-Q Plot of the Diamond Model for the Log(Price) and Log(carat)")
+qqline(resid(diamonds_slr_predict_log),col = "darkorange", lwd = 2, lty = 1)
+```
 **(e)** Use the model from part **(d)** to predict the price (in dollars) of a 3-carat diamond. Construct a 99% prediction interval for the price (in dollars).
 
+```{r}
+exp(predict(diamonds_slr_predict_log,newdata = data.frame(carat = log(3)) , interval = "prediction", level = 0.99))
+```
