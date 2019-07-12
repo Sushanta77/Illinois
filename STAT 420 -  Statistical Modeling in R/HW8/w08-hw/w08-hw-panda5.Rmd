@@ -120,7 +120,7 @@ plot(fitted(prostate_add_model),resid(prostate_add_model),col = "darkgrey", pch 
 abline(h = 0, col = "darkorange", lwd = 1, lty = 1)
 ```
 
-From the above Fitted Versus Residual Plots of the Prostate Additive model, it seems it **assumption of constant varience is not suspect**, as for the fitted values, the residuals uniformly distributed accross the orange line. Though there are few grey points which are bit higher / lower in certain areas against fitted valued, but rest all places it follows the uniformity
+From the above Fitted Versus Residual Plots of the Prostate Additive model, it seems it **assumption of constant varience is not suspect**, means the assumption of the constant varience **is not** violating by the model. As for the fitted values, the residuals uniformly distributed accross the orange line. Though there are few grey points which are bit higher / lower in certain areas against fitted valued, but rest all places it follows the uniformity
 
 **(c)** Check the normality assumption for this model. Do you feel it has been violated? Justify your answer.
 
@@ -133,12 +133,18 @@ The Q-Q plots, show all the grey circle follows in the straight line, except for
 
 **(d)** Check for any high leverage observations. Report any observations you determine to have high leverage.
 
+Below are the leverage which are high
+```{r}
+hatvalues(prostate_add_model)[hatvalues(prostate_add_model) > 2 * mean(hatvalues(prostate_add_model))]
+```
+
 Below are the observations which have high leverage
 ```{r}
 prostate_data[hatvalues(prostate_add_model) > 2 * mean(hatvalues(prostate_add_model)),]
 ```
 
 **(e)** Check for any influential observations. Report any observations you determine to be influential.
+
 Below are the influential observations
 ```{r}
 high_cd = cooks.distance(prostate_add_model) > (4/length(cooks.distance(prostate_add_model)))
@@ -158,10 +164,13 @@ compare_coefficient = data.frame(
 kable(compare_coefficient, format = "pandoc",padding = 2,caption = "Compare Coefficient before and After Removal of Influencers")
 ```
 
+From the above table, it seems that other than the `intercept`, rest other estimated parameters do have the same sign and not a very big difference. However the value of the `intercept` is significantly different in both the model
+
 **(g)** Create a data frame that stores the observations that were "removed" because they were influential. Use the two models you have fit to make predictions with these observations. Comment on the difference between these two sets of predictions.
 
 ```{r}
 influential_data =  prostate_data[high_cd,]
+influential_data
 predict(prostate_add_model,newdata = influential_data)
 predict(prostate_add_model_fix,newdata = influential_data)
 
@@ -174,7 +183,7 @@ kable(compare_prediction, format = "pandoc",padding = 2,caption = "Compare Predi
 
 ```
 
-It seems that, prediction seems nearly equal in both the model with a littile bit of difference, means the prediction has no impact if we don't keep these observation in the dataset.
+It seems that, prediction seems equal with not very large difference from both the model, also it seems the prediction has no impact on output if we don't keep these observation in the dataset.
 
 ***
 
@@ -282,6 +291,12 @@ library(faraway)
 corrosion_data = faraway::corrosion
 corrosion_slr_fit = lm(loss ~ Fe, data = corrosion_data)
 corrosion_slr_fit
+```
+
+Below is the scatter plot between Weight loss in mg per square decimeter per day Vs Iron content in percent In Corrosion loss and the fitted regression line
+```{r}
+plot(loss~Fe, data=corrosion_data,pch = 1, cex = 1, main = "Weight loss in mg per square decimeter per day Vs Iron content in percent In Corrosion loss",cex.main = 0.8)
+abline(corrosion_slr_fit, col = "dodgerblue", lwd = 2, lty = 1)
 ```
 
 **Assumption of constant varience**
