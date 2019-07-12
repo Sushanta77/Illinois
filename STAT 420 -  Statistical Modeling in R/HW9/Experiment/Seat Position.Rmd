@@ -5,10 +5,11 @@ date: "7/12/2019"
 output: html_document
 ---
 
-#Corelation Plot of the Seat Position Data from the Faraway package
+###Corelation Plot of the Seat Position Data from the Faraway package
 
-### Plot the Pair Plot
-```{r fig.height=4, fig.width=4}
+##### Plot the Pair Plot
+```{r fig.height=8, fig.width=8}
+library(faraway)
 pairs(seatpos,col = "dodgerblue")
 ```
 ##See the Corelation Coefficient
@@ -57,4 +58,53 @@ Let's plot the fitted value of the model which are predicted from the acutal ver
 ```{r}
 plot(fitted(hip_model),fitted(hip_model_noise),col = "dodgerblue", pch = 1, cex = 1, xlab = "Predicted, without Noise", ylab = "Predicted, with Noise")
 abline(0, 1, col = "darkorange",lwd = 2)
+```
+
+###Let's Create a smaller model
+```{r}
+hip_model_small = lm(hipcenter~ Age + Arm + Ht, data = seatpos)
+hip_model_small
+```
+
+```{r}
+vif(hip_model_small)
+```
+
+```{r}
+noise = rnorm(nrow(seatpos), mean = 0, sd = 5)
+hip_model_small_noise = lm(hipcenter + noise ~ Age + Arm + Ht , data = seatpos)
+```
+
+```{r}
+coef(hip_model_small)
+coef(hip_model_small_noise)
+```
+
+```{r}
+plot(fitted(hip_model_small_noise), fitted(hip_model_small), col = "dodgerblue", pch = 1, cex = 1)
+abline (0, 1, col = "darkorange", lty = 1, lwd = 2)
+```
+
+```{r}
+anova(hip_model_small,hip_model)
+```
+
+Anova F Test shows the smaller model is sufficient and we **failed to reject** the smaller model
+
+```{r}
+hip_model_small = lm(hipcenter~ Age + Arm + Ht, data = seatpos)
+hip_model_HtShoes = lm(HtShoes~ Age + Arm + Ht, data = seatpos)
+
+cor(resid(hip_model_small),resid(hip_model_HtShoes))
+```
+
+It seems the partial corelation coefficient is very small, hence HtShoes addition is not very useful to the smaller model
+
+
+####Now let's plot a Additive Model
+```{r}
+plot(resid(hip_model_HtShoes),resid(hip_model_small), col = "dodgerblue", pch = 1, cex = 1, xlab = "Residuals, Added Predictor", ylab = "Residuals, Original Model", main = "Variable Added Plot")
+abline(h = 0, lty = 2)
+abline(v = 0, lty = 2)
+abline(lm(resid(hip_model_small)~resid(hip_model_HtShoes)), col = "darkorange", lwd = 2, lty =1 ) 
 ```
