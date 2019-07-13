@@ -1,0 +1,87 @@
+---
+title: "Cross Validation"
+author: "Sushanta Panda"
+date: "7/13/2019"
+output: html_document
+---
+
+```{r}
+make_poly_data = function(sample_size = 11) {
+  x = seq(0,10)
+  y = 3 + x + 4 * x ^ 2 + rnorm(n = sample_size, mean = 0, sd = 20)
+  data.frame(x,y)
+}
+```
+
+#####Lets create the polynomial data via calling the function make_poly_data
+```{r}
+set.seed(1234)
+poly_data = make_poly_data()
+```
+
+
+#####Let's fit 3 different model, one for Linear, one for qudratic and last one is for big model of polunomia of degree 8
+```{r}
+fit_lin = lm(y ~ x, data = poly_data)
+fit_quad = lm(y ~ poly(x,2), data = poly_data)
+fit_big = lm(y ~ poly(x,8),data = poly_data)  
+```
+
+####Let's check the RMSE of the 3 model and it's behaviour
+```{r}
+sqrt(mean((resid(fit_lin))^2))
+sqrt(mean((resid(fit_quad))^2))
+sqrt(mean((resid(fit_big))^2))
+```
+
+From the abobve response it clearly sees that the RMSE error for the the Large model is certainly low, so we could think that, it's the best model. Let's plot the data to see 
+
+
+####Let's plot the data + 3 model's prediction
+```{r}
+xplot = seq(0,10,by=0.1)
+plot(y ~ x, data = poly_data, ylim = c(-100,400), pch = 20, cex = 2)
+lines(xplot, predict(fit_quad,newdata = data.frame(x=xplot)), lwd = 2, col = "dodgerblue", lty = 1)
+lines(xplot,predict(fit_big,newdata = data.frame(x=xplot)),lwd = 2, col = "darkorange",lty = 2)
+legend("topleft", legend = c("Quadratic","Bigger - Degree 8"), col = c("dodgerblue","darkorange"), lty = c(1,2))
+```
+
+The Bigger - Degree 8 `darkorange` fits the data very well as it covers all the points, where as the `blue line` kind of little distance from the few points.
+
+
+Now, let's see how it behaves to any point which is not seen previously. So we will train the model without this point and predict this point along with the other point, will see what's the behaviour of this model
+
+```{r}
+remove = 2 #This is the point which we believe not to be seen by the model
+
+fit_quad_removed = lm(y ~ poly(x,2), data = poly_data[-remove,])
+fit_big_removed  = lm(y ~ poly(x,8), data = poly_data[-remove,])
+
+xplot = seq(0,10,by=0.1)
+plot(y ~ x, data = poly_data, pch = 20, cex = 2)
+lines(xplot, predict(fit_quad_removed,newdata=data.frame(x = xplot)), col = "dodgerblue", lwd = 2)
+lines(xplot, predict(fit_big_removed,newdata=data.frame(x = xplot)), col = "darkorange", lwd = 2)
+```
+
+So, even though the `bigger` model has done good job in predicting the know data, however done very bad job predicting the value which is not known. In this case where the point = 2, where it has not been see, the predicted point is very large, however the `quad model` still is doing well
+
+####Let's check the RMSE of the 3 model and it's behaviour
+```{r}
+sqrt(mean((resid(fit_quad_removed))^2))
+sqrt(mean((resid(fit_big_removed))^2))
+```
+You can see, still the RMSE of the traning of the `big model` is very low, which seems to be a better model. However since its overfitting (`model fitting the noise`). Now, let's see what's the RMSE of the Leave One Out Cross Validation
+
+```{r}
+rmse_loocv = function(model){
+  sqrt(mean((resid(model) / (1 - hatvalues(model)))^2))
+}
+```
+
+
+```{r}
+rmse_loocv(fit_lin)
+rmse_loocv(fit_quad)
+rmse_loocv(fit_big)
+```
+
