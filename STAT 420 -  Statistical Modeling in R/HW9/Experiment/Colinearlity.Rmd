@@ -1,0 +1,110 @@
+---
+title: "Seat Position - Corelation"
+author: "Sushanta Panda"
+date: "7/12/2019"
+output: html_document
+---
+
+###Corelation Plot of the Seat Position Data from the Faraway package
+
+##### Plot the Pair Plot
+```{r fig.height=8, fig.width=8}
+library(faraway)
+pairs(seatpos,col = "dodgerblue")
+```
+##See the Corelation Coefficient
+```{r}
+round(cor(seatpos),2)
+```
+
+##Model for all model Predictors
+```{r}
+hip_model = lm(hipcenter~., data = seatpos)
+summary(hip_model)
+```
+
+###Varience Inflation Factor (VIF)
+
+```{r}
+ht_shoes_model = lm(HtShoes~.-hipcenter, data = seatpos)
+summary(ht_shoes_model)$r.squared
+```
+
+This means the `HtShoes` is well explained by the other predictor in the model. Especially if we see the `pairs` plot, it clearly explained that `Ht` and `HtShoes` predictor is having a linear relationship.
+
+```{r}
+car::vif(hip_model)
+```
+
+From the above, it sees that `HtShoes` and `Ht` have the high variation inflation factor (vif)
+
+Let's add some noise to the hipcenter and see what's the impact of the varience of the parameter
+```{r}
+set.seed(1337)
+noise = rnorm(n = nrow(seatpos), mean = 0, sd = 5)
+hip_model_noise = lm(hipcenter+noise~., data = seatpos)
+```
+
+
+
+```{r}
+coef(hip_model)
+coef(hip_model_noise)
+```
+
+From the above it see that the by adding a little noise to the hip center data, also it seems the the parameter sign have reversed for the parameter `Ht`
+
+Let's plot the fitted value of the model which are predicted from the acutal versis actual + noise
+```{r}
+plot(fitted(hip_model),fitted(hip_model_noise),col = "dodgerblue", pch = 1, cex = 1, xlab = "Predicted, without Noise", ylab = "Predicted, with Noise")
+abline(0, 1, col = "darkorange",lwd = 2)
+```
+
+###Let's Create a smaller model
+```{r}
+hip_model_small = lm(hipcenter~ Age + Arm + Ht, data = seatpos)
+hip_model_small
+```
+
+```{r}
+vif(hip_model_small)
+```
+
+```{r}
+noise = rnorm(nrow(seatpos), mean = 0, sd = 5)
+hip_model_small_noise = lm(hipcenter + noise ~ Age + Arm + Ht , data = seatpos)
+```
+
+```{r}
+coef(hip_model_small)
+coef(hip_model_small_noise)
+```
+
+```{r}
+plot(fitted(hip_model_small_noise), fitted(hip_model_small), col = "dodgerblue", pch = 1, cex = 1)
+abline (0, 1, col = "darkorange", lty = 1, lwd = 2)
+```
+
+```{r}
+anova(hip_model_small,hip_model)
+```
+
+Anova F Test shows the smaller model is sufficient and we **failed to reject** the smaller model
+
+```{r}
+hip_model_small = lm(hipcenter~ Age + Arm + Ht, data = seatpos)
+hip_model_HtShoes = lm(HtShoes~ Age + Arm + Ht, data = seatpos)
+
+cor(resid(hip_model_small),resid(hip_model_HtShoes))
+```
+
+It seems the partial corelation coefficient is very small, hence HtShoes addition is not very useful to the smaller model
+
+
+####Now let's plot a Additive Model
+```{r}
+plot(resid(hip_model_HtShoes),resid(hip_model_small), col = "dodgerblue", pch = 1, cex = 1, xlab = "Residuals, Added Predictor", ylab = "Residuals, Original Model", main = "Variable Added Plot")
+abline(h = 0, lty = 2)
+abline(v = 0, lty = 2)
+abline(lm(resid(hip_model_small)~resid(hip_model_HtShoes)), col = "darkorange", lwd = 2, lty =1 ) 
+```
