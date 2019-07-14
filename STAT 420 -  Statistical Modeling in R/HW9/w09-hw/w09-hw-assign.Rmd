@@ -467,7 +467,7 @@ Note that in both cases, you could `sum()` the result to obtain the number of fa
 
 **(a)** Set a seed equal to your birthday; then, using the given data for each `x` variable above in `sim_data_1`, simulate the response variable `y` 300 times. Each time,
 
-```{r}
+```{r message=FALSE, warning=TRUE}
 library(knitr)
 birthday = 19770411
 set.seed(birthday)
@@ -549,7 +549,7 @@ sim_data_2 = data.frame(x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10,
 ```
 
 
-```{r}
+```{r message=FALSE, warning=TRUE}
 library(knitr)
 birthday = 19770411
 set.seed(birthday)
