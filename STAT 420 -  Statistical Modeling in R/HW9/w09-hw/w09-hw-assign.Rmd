@@ -350,11 +350,24 @@ sqrt(mean((resid(good_model) / (1 - hatvalues(good_model)))^2)) < 77500
 
 ```{r}
 predict_price = predict(good_model, newdata = sac_tst_data[,c("beds","baths","sqft","type","latitude","longitude","limits")])
+
+average_percent_error = (mean(abs(predict_price - sac_tst_data$price) / predict_price)) * 100
+average_percent_error
 ```
+
+The average percent error is around **`r average_percent_error`**
 
 - Plot the predicted versus the actual values and add the line $y = x$.
 
+```{r}
+xplot = seq(0,10,by=0.1)
+plot(predict_price~sac_tst_data$price, col = "dodgerblue", xlim=c(0,700000), ylim=c(0,700000),pch = 1, cex = 1, xlab = "Actual Price", ylab = "Predicted Price", main = "Actual Price Versus Predicted Price")
+abline(a = 0, b = 1, col = "darkorange", lwd = 2)
+```
+
 Based on all of this information, argue whether or not this model is useful.
+
+The model seems to be usefull, howver not that great. The reason because of the fact that, the Total Percent of error is around 23% and from the above plots it also sees that, the predicted price is not close to the orange line for the lower value. For the higher actual price, the predicted price is somehow not    
 
 ***
 
@@ -454,6 +467,50 @@ Note that in both cases, you could `sum()` the result to obtain the number of fa
 
 **(a)** Set a seed equal to your birthday; then, using the given data for each `x` variable above in `sim_data_1`, simulate the response variable `y` 300 times. Each time,
 
+```{r}
+library(knitr)
+birthday = 19770411
+set.seed(birthday)
+num_sim = 300
+false_negative_aic = 0 
+false_postive_aic = 0
+false_negative_bic = 0
+false_postive_bic = 0
+rate_false_negative_aic = 0
+rate_false_postive_aic = 0
+rate_false_negative_bic = 0 
+rate_false_postive_bic = 0
+for(i in 1:num_sim){
+  #sim_data = sim_data_1
+  sim_data_1 = data.frame(x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10,
+  y = beta_0 + beta_1 * x_1 + beta_2 * x_2 + beta_3 * x_3 + beta_4 * x_4 + 
+      beta_5 * x_5 + rnorm(n, 0 , sigma)
+  )  
+  fit_add = lm(y ~ ., data = sim_data_1)
+  
+  fit_add_aic_back = step(fit_add, direction = "backward")
+  false_negative_aic = false_negative_aic + sum(!(signif %in% names(coef(fit_add_aic_back)))) # which are false negatives?
+  false_postive_aic = false_postive_aic + sum(names(coef(fit_add_aic_back)) %in% not_sig) # which are false positives?
+  
+  fit_add_bic_back = step(fit_add, direction = "backward", k = log(n))
+  false_negative_bic = false_negative_bic + sum(!(signif %in% names(coef(fit_add_bic_back)))) # which are false negatives?
+  false_postive_bic = false_postive_bic + sum(names(coef(fit_add_bic_back)) %in% not_sig) # which are false positives?
+}
+
+rate_false_negative_aic = false_negative_aic / num_sim
+rate_false_postive_aic = false_postive_aic / num_sim
+  
+rate_false_negative_bic = false_negative_bic / num_sim
+rate_false_postive_bic = false_postive_bic / num_sim
+
+compare_aic_bic = data.frame(
+  Attribute = c("False Negetive","False Positve"),
+  AIC = c(rate_false_negative_aic,rate_false_postive_aic),
+  BIC = c(rate_false_negative_bic,rate_false_postive_bic)
+)
+kable(compare_aic_bic, format = "pandoc",padding = 2,caption = "Compare AIC BIC against False Positive, False Negetive")
+```
+
 - Fit an additive model using each of the `x` variables.
 - Perform variable selection using backwards AIC.
 - Perform variable selection using backwards BIC.
@@ -489,5 +546,49 @@ sim_data_2 = data.frame(x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10,
   y = beta_0 + beta_1 * x_1 + beta_2 * x_2 + beta_3 * x_3 + beta_4 * x_4 + 
       beta_5 * x_5 + rnorm(n, 0 , sigma)
 )
+```
+
+
+```{r}
+library(knitr)
+birthday = 19770411
+set.seed(birthday)
+num_sim = 300
+false_negative_aic = 0 
+false_postive_aic = 0
+false_negative_bic = 0
+false_postive_bic = 0
+rate_false_negative_aic = 0
+rate_false_postive_aic = 0
+rate_false_negative_bic = 0 
+rate_false_postive_bic = 0
+for(i in 1:num_sim){
+  sim_data_2 = data.frame(x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10,
+  y = beta_0 + beta_1 * x_1 + beta_2 * x_2 + beta_3 * x_3 + beta_4 * x_4 + 
+      beta_5 * x_5 + rnorm(n, 0 , sigma)
+  )
+  fit_add = lm(y ~ ., data = sim_data_2)
+  
+  fit_add_aic_back = step(fit_add, direction = "backward")
+  false_negative_aic = false_negative_aic + sum(!(signif %in% names(coef(fit_add_aic_back)))) # which are false negatives?
+  false_postive_aic = false_postive_aic + sum(names(coef(fit_add_aic_back)) %in% not_sig) # which are false positives?
+  
+  fit_add_bic_back = step(fit_add, direction = "backward", k = log(n))
+  false_negative_bic = false_negative_bic + sum(!(signif %in% names(coef(fit_add_bic_back)))) # which are false negatives?
+  false_postive_bic = false_postive_bic + sum(names(coef(fit_add_bic_back)) %in% not_sig) # which are false positives?
+}
+
+rate_false_negative_aic = false_negative_aic / num_sim
+rate_false_postive_aic = false_postive_aic / num_sim
+  
+rate_false_negative_bic = false_negative_bic / num_sim
+rate_false_postive_bic = false_postive_bic / num_sim
+
+compare_aic_bic = data.frame(
+  Attribute = c("False Negetive","False Positve"),
+  AIC = c(rate_false_negative_aic,rate_false_postive_aic),
+  BIC = c(rate_false_negative_bic,rate_false_postive_bic)
+)
+kable(compare_aic_bic, format = "pandoc",padding = 2,caption = "Compare AIC BIC against False Positive, False Negetive")
 ```
 
