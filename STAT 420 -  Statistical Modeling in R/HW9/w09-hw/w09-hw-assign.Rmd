@@ -53,9 +53,9 @@ car::vif(fit_lin)
 ```{r}
 which.max(car::vif(fit_lin))
 ```
-The variable `r which.max(car::vif(fit_lin))` **(GNP)** has the largest Varience Inflation Factor (VIF)
+The variable `r names(which.max(car::vif(fit_lin)))` **`r names(which.max(car::vif(fit_lin)))`** has the largest Varience Inflation Factor (VIF) and value is: **`r max(car::vif(fit_lin))`**
 
-From the VIF it seems that the varibale `GNP.deflator`, `GNP` (**> 1500**), `Population`(**>300**) and `Year`(**>750**) has the highest VIF, hence **there is multicolinearity exists between the variables**
+From the VIF it seems that the varibale `GNP.deflator` (** > 130**), `GNP` (** > 1500**), `Population`(** > 300**) and `Year`(** > 750**) has the higher VIF , hence **there is multicolinearity exists between the variables**
 
 **(c)** What proportion of the observed variation in `Population` is explained by a linear relationship with the other predictors?
 ```{r}
@@ -63,7 +63,7 @@ fit_lin_population = lm(Population ~ .-Employed, data = longley)
 summary(fit_lin_population)$r.squared
 ```
 
-The Proportion of the observerd variation in `Population is explained by a linear relationhip with other predictors is: **`r summary(fit_lin_population)$r.squared`**
+The Proportion of the observerd variation in `Population` is explained by a linear relationhip with other predictors is: **`r summary(fit_lin_population)$r.squared`**
 
 **(d)** Calculate the partial correlation coefficient for `Population` and `Employed` **with the effects of the other predictors removed**.
 
@@ -73,7 +73,7 @@ fit_lin_Population = lm(Population ~ 1, data = longley)
 cor(resid(fit_lin_Employed), resid(fit_lin_Population))
 ```
 
-The partial correlation coefficient for `population` and `Employed` is : **`r cor(resid(fit_lin_Employed), resid(fit_lin_Population))`**
+The partial correlation coefficient for `population` and `Employed` **with the effects of the other predictors removed** is : **`r cor(resid(fit_lin_Employed), resid(fit_lin_Population))`**
 
 **(e)** Fit a new model with `Employed` as the response and the predictors from the model in **(b)** that were significant. (Use $\alpha = 0.05$.) Calculate and report the variance inflation factor for each of the predictors. Which variable has the largest VIF? Do any of the VIFs suggest multicollinearity?
 
@@ -87,6 +87,7 @@ The predictors which are significance from the model **(b)** are **`Unemployed`*
 **Fit a new model with these predictors which are significant**
 ```{r}
 fit_model_sign = lm(Employed ~ Unemployed + Armed.Forces + Year, data = longley)
+fit_model_sign
 ```
 
 ```{r}
@@ -100,7 +101,7 @@ The variation inflation factor of `Unemployed` is: **`r car::vif(fit_model_sign)
 which.max(car::vif(fit_model_sign))
 ```
 
-The variable which has highest variation inflation factor(VIF) is: **`year`**
+The variable which has highest variation inflation factor(VIF) is: **`r names(which.max(car::vif(fit_model_sign)))`** having VIF is: **`r max(car::vif(fit_model_sign))`**
 
 **(f)** Use an $F$-test to compare the models in parts **(b)** and **(e)**. Report the following:
 
@@ -122,6 +123,24 @@ $$
 
 - The distribution of the test statistic under the null hypothesis
 
+The distribution of the test statiscs under the null hypothesis for the following parameter is as below
+
+**Distribution of the F value **
+
+The ditribution of the **F value** is **F distribution with Degree of Freedom between `3` (df1) and `12` (df2)**
+$$
+F \sim F(p - 1, n - p), \text {where n = 16 and p = 4}
+$$
+The ditribution of the **P value** is **Uniform distribution**
+$$
+\text{p-value} \sim \text{Unif}(0, 1).
+$$
+    
+The ditribution of the **R2 value** is **Beta distribution** with parameter of shape1 = 4/2, asd shape2 = 11/2
+    
+$$
+R ^ 2 \sim \text{Beta}\left(\frac{p}{2}, \frac{n - p - 1}{2}\right) , \text {where n = 16 and p = 4}
+$$
 
 - The p-value
 
@@ -160,14 +179,15 @@ plot_qq = function(model, pointcol = "dodgerblue", linecol = "darkorange") {
 ```{r}
 plot_fitted_resid(model = null_model)
 ```
-The **constant varience** assumption seems to be suspect, as from the above plot, it seem that the residuals are not uniformly ditributed accross the dark orange like. Hence it violates the constant varience assumption 
+
+The **constant varience** assumption seems to be **suspect**, as from the above plot, it seem that the residuals are not uniformly ditributed accross the dark orange like. Hence it violates the constant varience assumption 
 
 
 ```{r}
 plot_qq(model = null_model)
 ```
 
-The **normality** assumptions seems to be suspect, as from the above Q-Q plot, it seems that it has a heavy tail on both higher and lower quantiles. Hence it also vilates the normality assumptions
+The **normality** assumptions seems to be **suspect**, as from the above Q-Q plot, it seems that it has a heavy tail on both higher and lower quantiles. Hence it also violates the normality assumptions
 
 
 ***
@@ -380,7 +400,7 @@ abline(a = 0, b = 1, col = "darkorange", lwd = 2)
 
 Based on all of this information, argue whether or not this model is useful.
 
-The model seems to be usefull, howver not that great. The reason because of the fact that, the Total Percent of error is around 23% and from the above plots it also sees that, the predicted price is not close to the orange line for the lower value. For the higher actual price, the predicted price is somehow not    
+The model seems to be usefull for lower price value, howver not that great, but is not at all usefull for higher price value. The reason because of the fact that, the Total Percent of error is around 23% and from the above plots it also sees that, the predicted price is not close to the orange line (where the predicted value should match with the actual value) for the lower value. As the price goes high, the difference between the predicted price versus actual price seems wider.
 
 ***
 
@@ -639,7 +659,9 @@ final_Results
 kable(final_Results, format = "pandoc",padding = 2,caption = "Model 1 & Model 2 Compare AIC BIC against False Positive (FP), False negative(FN)")
 ```
 
+In the `sim_data_2`, the variable x_8, x_9 and x_10 has `exact collinearity` with the x_1, x_2 and x_2 respectively, where as this collinearity doesn't exists in `sim_data_1`. Hence False Negetive (FN) in the model 1 (`sim_data_1`) is zero(0), means none of the significance parameters have moved out from the model (via AIC or BIC). On the contrary, it happened in the Model 2 (`sim_data_2`) because AIC/BIC picks x_8 / x_9 / x_10 instead of x_1 or x_2 in the model because of collinearity.
 
+Since the Model 2 (`sim_data_2`) picks sometime the x_8 / x_9  or x_10 instead of x_1 / x_2 (because of collinearity), the False positive have increased in Moddel 2 (`sim_data_2`) as compared to the Model 1 (`sim_data_1`).
 
 
 
