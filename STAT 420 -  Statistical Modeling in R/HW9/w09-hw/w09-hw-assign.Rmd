@@ -38,10 +38,19 @@ The largest correlation between any pair of predictors in the dataset is **`r ma
 
 **(b)** Fit a model with `Employed` as the response and the remaining variables as predictors. Calculate and report the variance inflation factor (VIF) for each of the predictors. Which variable has the largest VIF? Do any of the VIFs suggest multicollinearity?
 
+**Fit the model eith `Employed` as the response and all remaining variables as predictors**
 ```{r}
 fit_lin = lm(Employed ~ . , data = longley)
 fit_lin
+```
+
+**Derive the Varience Inflation Factor (VIF) for each variable**
+```{r}
 car::vif(fit_lin)
+```
+
+**Derive the maximim Varience Inflation Factor (VIF) for the variable**
+```{r}
 which.max(car::vif(fit_lin))
 ```
 The variable `r which.max(car::vif(fit_lin))` **(GNP)** has the largest Varience Inflation Factor (VIF)
@@ -50,16 +59,17 @@ From the VIF it seems that the varibale `GNP.deflator`, `GNP` (**> 1500**), `Pop
 
 **(c)** What proportion of the observed variation in `Population` is explained by a linear relationship with the other predictors?
 ```{r}
-fit_lin = lm(Employed ~ .-Population, data = longley)
 fit_lin_population = lm(Population ~ .-Employed, data = longley)
-cor(resid(fit_lin), resid(fit_lin_population))
+summary(fit_lin_population)$r.squared
 ```
+
+The Proportion of the observerd variation in `Population is explained by a linear relationhip with other predictors is: **`r summary(fit_lin_population)$r.squared`**
 
 **(d)** Calculate the partial correlation coefficient for `Population` and `Employed` **with the effects of the other predictors removed**.
 
 ```{r}
-fit_lin_Employed = lm(Employed ~ .-Population, data = longley)
-fit_lin_Population = lm(Population ~ .-Employed, data = longley)
+fit_lin_Employed = lm(Employed ~ 1, data = longley)
+fit_lin_Population = lm(Population ~ 1, data = longley)
 cor(resid(fit_lin_Employed), resid(fit_lin_Population))
 ```
 
@@ -67,15 +77,19 @@ The partial correlation coefficient for `population` and `Employed` is : **`r co
 
 **(e)** Fit a new model with `Employed` as the response and the predictors from the model in **(b)** that were significant. (Use $\alpha = 0.05$.) Calculate and report the variance inflation factor for each of the predictors. Which variable has the largest VIF? Do any of the VIFs suggest multicollinearity?
 
-
+**Identifying predictor from the model in (b) which are significanct**
 ```{r}
 summary(fit_lin)$coefficient[,'Pr(>|t|)'][summary(fit_lin)$coefficient[,'Pr(>|t|)'] < 0.05]
 ```
 
 The predictors which are significance from the model **(b)** are **`Unemployed`**,**`Armed.Forces`** and **`Year`**
 
+**Fit a new model with these predictors which are significant**
 ```{r}
 fit_model_sign = lm(Employed ~ Unemployed + Armed.Forces + Year, data = longley)
+```
+
+```{r}
 car::vif(fit_model_sign)
 ```
 
@@ -212,15 +226,19 @@ get_adj_r2 = function(model) {
 ```
 
 ```{r, eval = TRUE}
-#mod_a = lm(formula = Balance ~ Income + Limit + Student, data = Credit)
-
-
-
 get_loocv_rmse(mod_a)
 get_adj_r2(mod_a)
 get_bp_decision(mod_a, alpha = 0.01)
 get_num_params(mod_a)
 ```
+
+```{r, eval = TRUE}
+get_loocv_rmse(mod_a) < 135
+get_adj_r2(mod_a) > 0.90
+get_bp_decision(mod_a, alpha = 0.01) == "Fail to Reject"
+get_num_params(mod_a) < 10
+```
+
 
 **(b)** Find another "good" model for `balance` using the available predictors. Use any methods seen in class except transformations of the response. The model should:
 
@@ -269,6 +287,14 @@ get_adj_r2(mod_b)
 get_sw_decision(mod_b, alpha = 0.01)
 get_num_params(mod_b)
 ```
+
+```{r, eval = TRUE}
+get_loocv_rmse(mod_b) < 125
+get_adj_r2(mod_b) > 0.90 
+get_sw_decision(mod_b, alpha = 0.01) == "Fail to Reject"
+get_num_params(mod_b) < 25
+```
+
 
 ***
 

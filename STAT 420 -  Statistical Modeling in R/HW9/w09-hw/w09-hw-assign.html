@@ -230,6 +230,7 @@ $(document).ready(function () {
 ## GNP    2   6</code></pre>
 <p>The largest correlation between any pair of predictors in the dataset is <strong>0.9953</strong> whcich is between <code>Year</code> and <code>GNP</code></p>
 <p><strong>(b)</strong> Fit a model with <code>Employed</code> as the response and the remaining variables as predictors. Calculate and report the variance inflation factor (VIF) for each of the predictors. Which variable has the largest VIF? Do any of the VIFs suggest multicollinearity?</p>
+<p><strong>Fit the model eith <code>Employed</code> as the response and all remaining variables as predictors</strong></p>
 <pre class="r"><code>fit_lin = lm(Employed ~ . , data = longley)
 fit_lin</code></pre>
 <pre><code>## 
@@ -241,32 +242,36 @@ fit_lin</code></pre>
 ##   -3482.2586        0.0151       -0.0358       -0.0202       -0.0103  
 ##   Population          Year  
 ##      -0.0511        1.8292</code></pre>
+<p><strong>Derive the Varience Inflation Factor (VIF) for each variable</strong></p>
 <pre class="r"><code>car::vif(fit_lin)</code></pre>
 <pre><code>## GNP.deflator          GNP   Unemployed Armed.Forces   Population         Year 
 ##      135.532     1788.513       33.619        3.589      399.151      758.981</code></pre>
+<p><strong>Derive the maximim Varience Inflation Factor (VIF) for the variable</strong></p>
 <pre class="r"><code>which.max(car::vif(fit_lin))</code></pre>
 <pre><code>## GNP 
 ##   2</code></pre>
 <p>The variable 2 <strong>(GNP)</strong> has the largest Varience Inflation Factor (VIF)</p>
 <p>From the VIF it seems that the varibale <code>GNP.deflator</code>, <code>GNP</code> (<strong>&gt; 1500</strong>), <code>Population</code>(<strong>&gt;300</strong>) and <code>Year</code>(<strong>&gt;750</strong>) has the highest VIF, hence <strong>there is multicolinearity exists between the variables</strong></p>
 <p><strong>(c)</strong> What proportion of the observed variation in <code>Population</code> is explained by a linear relationship with the other predictors?</p>
-<pre class="r"><code>fit_lin = lm(Employed ~ .-Population, data = longley)
-fit_lin_population = lm(Population ~ .-Employed, data = longley)
-cor(resid(fit_lin), resid(fit_lin_population))</code></pre>
-<pre><code>## [1] -0.07514</code></pre>
+<pre class="r"><code>fit_lin_population = lm(Population ~ .-Employed, data = longley)
+summary(fit_lin_population)$r.squared</code></pre>
+<pre><code>## [1] 0.9975</code></pre>
+<p>The Proportion of the observerd variation in `Population is explained by a linear relationhip with other predictors is: <strong>0.9975</strong></p>
 <p><strong>(d)</strong> Calculate the partial correlation coefficient for <code>Population</code> and <code>Employed</code> <strong>with the effects of the other predictors removed</strong>.</p>
-<pre class="r"><code>fit_lin_Employed = lm(Employed ~ .-Population, data = longley)
-fit_lin_Population = lm(Population ~ .-Employed, data = longley)
+<pre class="r"><code>fit_lin_Employed = lm(Employed ~ 1, data = longley)
+fit_lin_Population = lm(Population ~ 1, data = longley)
 cor(resid(fit_lin_Employed), resid(fit_lin_Population))</code></pre>
-<pre><code>## [1] -0.07514</code></pre>
-<p>The partial correlation coefficient for <code>population</code> and <code>Employed</code> is : <strong>-0.0751</strong></p>
+<pre><code>## [1] 0.9604</code></pre>
+<p>The partial correlation coefficient for <code>population</code> and <code>Employed</code> is : <strong>0.9604</strong></p>
 <p><strong>(e)</strong> Fit a new model with <code>Employed</code> as the response and the predictors from the model in <strong>(b)</strong> that were significant. (Use <span class="math inline">\(\alpha = 0.05\)</span>.) Calculate and report the variance inflation factor for each of the predictors. Which variable has the largest VIF? Do any of the VIFs suggest multicollinearity?</p>
+<p><strong>Identifying predictor from the model in (b) which are significanct</strong></p>
 <pre class="r"><code>summary(fit_lin)$coefficient[,'Pr(&gt;|t|)'][summary(fit_lin)$coefficient[,'Pr(&gt;|t|)'] &lt; 0.05]</code></pre>
-<pre><code>##  (Intercept)          GNP   Unemployed Armed.Forces         Year 
-##    0.0009572    0.0378913    0.0000397    0.0003972    0.0008670</code></pre>
+<pre><code>##  (Intercept)   Unemployed Armed.Forces         Year 
+##    0.0035604    0.0025351    0.0009444    0.0030368</code></pre>
 <p>The predictors which are significance from the model <strong>(b)</strong> are <strong><code>Unemployed</code></strong>,<strong><code>Armed.Forces</code></strong> and <strong><code>Year</code></strong></p>
-<pre class="r"><code>fit_model_sign = lm(Employed ~ Unemployed + Armed.Forces + Year, data = longley)
-car::vif(fit_model_sign)</code></pre>
+<p><strong>Fit a new model with these predictors which are significant</strong></p>
+<pre class="r"><code>fit_model_sign = lm(Employed ~ Unemployed + Armed.Forces + Year, data = longley)</code></pre>
+<pre class="r"><code>car::vif(fit_model_sign)</code></pre>
 <pre><code>##   Unemployed Armed.Forces         Year 
 ##        3.318        2.223        3.891</code></pre>
 <p>The variation inflation factor of <code>Unemployed</code> is: <strong>3.3179</strong>, <code>Armed.Forces</code> is: <strong>2.2233</strong>, <code>Year</code> is: <strong>3.8909</strong></p>
@@ -352,11 +357,7 @@ get_loocv_rmse = function(model) {
 get_adj_r2 = function(model) {
   summary(model)$adj.r.squared
 }</code></pre>
-<pre class="r"><code>#mod_a = lm(formula = Balance ~ Income + Limit + Student, data = Credit)
-
-
-
-get_loocv_rmse(mod_a)</code></pre>
+<pre class="r"><code>get_loocv_rmse(mod_a)</code></pre>
 <pre><code>## [1] 131.2</code></pre>
 <pre class="r"><code>get_adj_r2(mod_a)</code></pre>
 <pre><code>## [1] 0.9204</code></pre>
@@ -364,6 +365,14 @@ get_loocv_rmse(mod_a)</code></pre>
 <pre><code>## [1] &quot;Fail to Reject&quot;</code></pre>
 <pre class="r"><code>get_num_params(mod_a)</code></pre>
 <pre><code>## [1] 7</code></pre>
+<pre class="r"><code>get_loocv_rmse(mod_a) &lt; 135</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>get_adj_r2(mod_a) &gt; 0.90</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>get_bp_decision(mod_a, alpha = 0.01) == &quot;Fail to Reject&quot;</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>get_num_params(mod_a) &lt; 10</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 <p><strong>(b)</strong> Find another “good” model for <code>balance</code> using the available predictors. Use any methods seen in class except transformations of the response. The model should:</p>
 <ul>
 <li>Reach a LOOCV-RMSE below <code>125</code></li>
@@ -405,6 +414,14 @@ get_adj_r2 = function(model) {
 <pre><code>## [1] &quot;Fail to Reject&quot;</code></pre>
 <pre class="r"><code>get_num_params(mod_b)</code></pre>
 <pre><code>## [1] 9</code></pre>
+<pre class="r"><code>get_loocv_rmse(mod_b) &lt; 125</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>get_adj_r2(mod_b) &gt; 0.90 </code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>get_sw_decision(mod_b, alpha = 0.01) == &quot;Fail to Reject&quot;</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>get_num_params(mod_b) &lt; 25</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 <hr />
 </div>
 <div id="exercise-3-sacramento-housing-data" class="section level2">
