@@ -467,50 +467,6 @@ Note that in both cases, you could `sum()` the result to obtain the number of fa
 
 **(a)** Set a seed equal to your birthday; then, using the given data for each `x` variable above in `sim_data_1`, simulate the response variable `y` 300 times. Each time,
 
-```{r message=FALSE, warning=TRUE}
-library(knitr)
-birthday = 19770411
-set.seed(birthday)
-num_sim = 300
-false_negative_aic = 0 
-false_postive_aic = 0
-false_negative_bic = 0
-false_postive_bic = 0
-rate_false_negative_aic = 0
-rate_false_postive_aic = 0
-rate_false_negative_bic = 0 
-rate_false_postive_bic = 0
-for(i in 1:num_sim){
-  #sim_data = sim_data_1
-  sim_data_1 = data.frame(x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10,
-  y = beta_0 + beta_1 * x_1 + beta_2 * x_2 + beta_3 * x_3 + beta_4 * x_4 + 
-      beta_5 * x_5 + rnorm(n, 0 , sigma)
-  )  
-  fit_add = lm(y ~ ., data = sim_data_1)
-  
-  fit_add_aic_back = step(fit_add, direction = "backward")
-  false_negative_aic = false_negative_aic + sum(!(signif %in% names(coef(fit_add_aic_back)))) # which are false negatives?
-  false_postive_aic = false_postive_aic + sum(names(coef(fit_add_aic_back)) %in% not_sig) # which are false positives?
-  
-  fit_add_bic_back = step(fit_add, direction = "backward", k = log(n))
-  false_negative_bic = false_negative_bic + sum(!(signif %in% names(coef(fit_add_bic_back)))) # which are false negatives?
-  false_postive_bic = false_postive_bic + sum(names(coef(fit_add_bic_back)) %in% not_sig) # which are false positives?
-}
-
-rate_false_negative_aic = false_negative_aic / num_sim
-rate_false_postive_aic = false_postive_aic / num_sim
-  
-rate_false_negative_bic = false_negative_bic / num_sim
-rate_false_postive_bic = false_postive_bic / num_sim
-
-compare_aic_bic = data.frame(
-  Attribute = c("False Negetive","False Positve"),
-  AIC = c(rate_false_negative_aic,rate_false_postive_aic),
-  BIC = c(rate_false_negative_bic,rate_false_postive_bic)
-)
-kable(compare_aic_bic, format = "pandoc",padding = 2,caption = "Compare AIC BIC against False Positive, False Negetive")
-```
-
 - Fit an additive model using each of the `x` variables.
 - Perform variable selection using backwards AIC.
 - Perform variable selection using backwards BIC.
@@ -518,6 +474,58 @@ kable(compare_aic_bic, format = "pandoc",padding = 2,caption = "Compare AIC BIC 
 - Calculate and store the number of false positives for the models chosen by AIC and BIC.
 
 Calculate the rate of false positives and negatives for both AIC and BIC. Compare the rates between the two methods. Arrange your results in a well formatted table.
+
+
+```{r message=FALSE, warning=TRUE}
+library(knitr)
+birthday = 19770411
+set.seed(birthday)
+num_sim = 300
+mod1_false_negative_aic = 0 
+mod1_false_postive_aic = 0
+mod1_false_negative_bic = 0
+mod1_false_postive_bic = 0
+
+for(i in 1:num_sim){
+  sim_data_1 = data.frame(x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10,
+  y = beta_0 + beta_1 * x_1 + beta_2 * x_2 + beta_3 * x_3 + beta_4 * x_4 + 
+      beta_5 * x_5 + rnorm(n, 0 , sigma)
+  )  
+  
+  mod1_fit_add = lm(y ~ ., data = sim_data_1)
+  
+  mod1_fit_add_aic_back = step(mod1_fit_add, direction = "backward",trace=0)
+  mod1_false_negative_aic = mod1_false_negative_aic + sum(!(signif %in% names(coef(mod1_fit_add_aic_back)))) # which are false negatives?
+  mod1_false_postive_aic = mod1_false_postive_aic + sum(names(coef(mod1_fit_add_aic_back)) %in% not_sig) # which are false positives?
+  
+  mod1_fit_add_bic_back = step(mod1_fit_add, direction = "backward", k = log(n),trace=0)
+  mod1_false_negative_bic = mod1_false_negative_bic + sum(!(signif %in% names(coef(mod1_fit_add_bic_back)))) # which are false negatives?
+  mod1_false_postive_bic = mod1_false_postive_bic + sum(names(coef(mod1_fit_add_bic_back)) %in% not_sig) # which are false positives?
+}
+```
+
+
+```{r}
+mod1_rate_false_negative_aic = mod1_false_negative_aic / num_sim
+mod1_rate_false_postive_aic = mod1_false_postive_aic / num_sim
+  
+mod1_rate_false_negative_bic = mod1_false_negative_bic / num_sim
+mod1_rate_false_postive_bic = mod1_false_postive_bic / num_sim
+
+mod1_results = data.frame(
+  FN = c(mod1_rate_false_negative_aic,mod1_rate_false_negative_bic),
+  FP = c(mod1_rate_false_postive_aic,mod1_rate_false_postive_bic)
+)
+rownames(mod1_results) = c("AIC", "BIC")
+
+mod1_results
+```
+
+```{r}
+kable(mod1_results, format = "pandoc",padding = 2,caption = "Compare AIC BIC against False Positive (FP), False negative(FN)")
+```
+
+
 
 **(b)** Set a seed equal to your birthday; then, using the given data for each `x` variable below in `sim_data_2`, simulate the response variable `y` 300 times. Each time,
 
@@ -554,41 +562,56 @@ library(knitr)
 birthday = 19770411
 set.seed(birthday)
 num_sim = 300
-false_negative_aic = 0 
-false_postive_aic = 0
-false_negative_bic = 0
-false_postive_bic = 0
-rate_false_negative_aic = 0
-rate_false_postive_aic = 0
-rate_false_negative_bic = 0 
-rate_false_postive_bic = 0
+
+mod2_false_negative_aic = 0 
+mod2_false_postive_aic = 0
+mod2_false_negative_bic = 0
+mod2_false_postive_bic = 0
+
+
 for(i in 1:num_sim){
   sim_data_2 = data.frame(x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10,
   y = beta_0 + beta_1 * x_1 + beta_2 * x_2 + beta_3 * x_3 + beta_4 * x_4 + 
       beta_5 * x_5 + rnorm(n, 0 , sigma)
   )
-  fit_add = lm(y ~ ., data = sim_data_2)
+
+  mod2_fit_add = lm(y ~ ., data = sim_data_2)
   
-  fit_add_aic_back = step(fit_add, direction = "backward", Trace=0)
-  false_negative_aic = false_negative_aic + sum(!(signif %in% names(coef(fit_add_aic_back)))) # which are false negatives?
-  false_postive_aic = false_postive_aic + sum(names(coef(fit_add_aic_back)) %in% not_sig) # which are false positives?
+  mod2_fit_add_aic_back = step(mod2_fit_add, direction = "backward",trace=0)
+  mod2_false_negative_aic = mod2_false_negative_aic + sum(!(signif %in% names(coef(mod2_fit_add_aic_back)))) # which are false negatives?
+  mod2_false_postive_aic = mod2_false_postive_aic + sum(names(coef(mod2_fit_add_aic_back)) %in% not_sig) # which are false positives?
   
-  fit_add_bic_back = step(fit_add, direction = "backward", k = log(n), Trace=0)
-  false_negative_bic = false_negative_bic + sum(!(signif %in% names(coef(fit_add_bic_back)))) # which are false negatives?
-  false_postive_bic = false_postive_bic + sum(names(coef(fit_add_bic_back)) %in% not_sig) # which are false positives?
+  mod2_fit_add_bic_back = step(mod2_fit_add, direction = "backward", k = log(n),trace=0)
+  mod2_false_negative_bic = mod2_false_negative_bic + sum(!(signif %in% names(coef(mod2_fit_add_bic_back)))) # which are false negatives?
+  mod2_false_postive_bic = mod2_false_postive_bic + sum(names(coef(mod2_fit_add_bic_back)) %in% not_sig) # which are false positives?
 }
 
-rate_false_negative_aic = false_negative_aic / num_sim
-rate_false_postive_aic = false_postive_aic / num_sim
-  
-rate_false_negative_bic = false_negative_bic / num_sim
-rate_false_postive_bic = false_postive_bic / num_sim
-
-compare_aic_bic = data.frame(
-  Attribute = c("False Negetive","False Positve"),
-  AIC = c(rate_false_negative_aic,rate_false_postive_aic),
-  BIC = c(rate_false_negative_bic,rate_false_postive_bic)
-)
-kable(compare_aic_bic, format = "pandoc",padding = 2,caption = "Compare AIC BIC against False Positive, False Negetive")
 ```
+
+```{r}
+mod2_rate_false_negative_aic = mod2_false_negative_aic / num_sim
+mod2_rate_false_postive_aic = mod2_false_postive_aic / num_sim
+  
+mod2_rate_false_negative_bic = mod2_false_negative_bic / num_sim
+mod2_rate_false_postive_bic = mod2_false_postive_bic / num_sim
+
+mod2_results = data.frame(
+  FN = c(mod2_rate_false_negative_aic,mod2_rate_false_negative_bic),
+  FP = c(mod2_rate_false_postive_aic,mod2_rate_false_postive_bic)
+)
+rownames(mod2_results) = c("AIC", "BIC")
+mod2_results
+```
+
+```{r}
+kable(mod2_results, format = "pandoc",padding = 2,caption = "Model 2 Compare AIC BIC against False Positive (FP), False negative(FN)")
+```
+
+
+```{r}
+kable(mod1_results, mod2_results, format = "pandoc",padding = 2,caption = "Compare AIC BIC against False Positive (FP), False negative(FN)")
+```
+
+
+
 
