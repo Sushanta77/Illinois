@@ -327,7 +327,8 @@ Credit = subset(Credit, select = -c(ID))</code></pre>
 <li>Use fewer than 10 <span class="math inline">\(\beta\)</span> parameters</li>
 </ul>
 <p>Store your model in a variable called <code>mod_a</code>. Run the two given chunks to verify your model meets the requested criteria. If you cannot find a model that meets all criteria, partial credit will be given for meeting at least some of the criteria.</p>
-<pre class="r"><code>mod_a = lm(formula = Balance ~ Income + Limit + Student, data = Credit)</code></pre>
+<pre class="r"><code>mod_a = lm(Balance ~ log(Income) + Limit + Cards + Age + Gender + 
+                   Student, data = Credit)</code></pre>
 <pre class="r"><code>library(lmtest)
 
 get_bp_decision = function(model, alpha) {
@@ -356,13 +357,13 @@ get_adj_r2 = function(model) {
 
 
 get_loocv_rmse(mod_a)</code></pre>
-<pre><code>## [1] 105</code></pre>
+<pre><code>## [1] 131.2</code></pre>
 <pre class="r"><code>get_adj_r2(mod_a)</code></pre>
-<pre><code>## [1] 0.9484</code></pre>
+<pre><code>## [1] 0.9204</code></pre>
 <pre class="r"><code>get_bp_decision(mod_a, alpha = 0.01)</code></pre>
-<pre><code>## [1] &quot;Reject&quot;</code></pre>
+<pre><code>## [1] &quot;Fail to Reject&quot;</code></pre>
 <pre class="r"><code>get_num_params(mod_a)</code></pre>
-<pre><code>## [1] 4</code></pre>
+<pre><code>## [1] 7</code></pre>
 <p><strong>(b)</strong> Find another “good” model for <code>balance</code> using the available predictors. Use any methods seen in class except transformations of the response. The model should:</p>
 <ul>
 <li>Reach a LOOCV-RMSE below <code>125</code></li>
@@ -371,22 +372,8 @@ get_loocv_rmse(mod_a)</code></pre>
 <li>Use fewer than 25 <span class="math inline">\(\beta\)</span> parameters</li>
 </ul>
 <p>Store your model in a variable called <code>mod_b</code>. Run the two given chunks to verify your model meets the requested criteria. If you cannot find a model that meets all criteria, partial credit will be given for meeting at least some of the criteria.</p>
-<pre class="r"><code>mod_b = lm(Balance ~ Income + Limit + Age + 
-    Education + Student + Ethnicity + Income:Rating + Income:Cards + Income:Age + Income:Education + 
-    Income:Gender + Income:Student + Income:Married + Income:Ethnicity + 
-    Limit:Rating + Limit:Cards + Limit:Age + Limit:Education + 
-    Limit:Married + Limit:Ethnicity + Rating:Age + Rating:Education + Rating:Gender + 
-    Rating:Student +  Cards:Education + Cards:Student + Age:Student + 
-    Age:Married + Age:Ethnicity + Education:Student + 
-    Student:Married + Student:Ethnicity + Income:Limit:Gender + Income:Limit:Married + Income:Limit:Ethnicity + 
-    Income:Rating:Cards + Income:Rating:Gender + Income:Rating:Student + 
-    Income:Rating:Married + Income:Rating:Ethnicity + Income:Cards:Education + 
-    Income:Cards:Gender + Income:Cards:Student + Income:Age:Student + 
-    Income:Age:Married + Income:Education:Gender + Income:Education:Married + 
-    Income:Gender:Married + Income:Gender:Ethnicity + 
-    Limit:Rating:Age + Limit:Rating:Gender + Limit:Rating:Student + 
-    Limit:Student:Ethnicity, 
-    data = Credit)</code></pre>
+<pre class="r"><code>mod_b = lm(Balance ~ log(Income) + Limit + Cards + Age + Gender + Student +
+                           I(log(Income)^2) + I(Limit^2), data = Credit)</code></pre>
 <pre class="r"><code>library(lmtest)
 
 get_bp_decision = function(model, alpha) {
@@ -410,10 +397,14 @@ get_loocv_rmse = function(model) {
 get_adj_r2 = function(model) {
   summary(model)$adj.r.squared
 }</code></pre>
-<pre class="r"><code>get_loocv_rmse(mod_b)
-get_adj_r2(mod_b)
-get_sw_decision(mod_b, alpha = 0.01)
-get_num_params(mod_b)</code></pre>
+<pre class="r"><code>get_loocv_rmse(mod_b)</code></pre>
+<pre><code>## [1] 92.79</code></pre>
+<pre class="r"><code>get_adj_r2(mod_b)</code></pre>
+<pre><code>## [1] 0.9612</code></pre>
+<pre class="r"><code>get_sw_decision(mod_b, alpha = 0.01)</code></pre>
+<pre><code>## [1] &quot;Fail to Reject&quot;</code></pre>
+<pre class="r"><code>get_num_params(mod_b)</code></pre>
+<pre><code>## [1] 9</code></pre>
 <hr />
 </div>
 <div id="exercise-3-sacramento-housing-data" class="section level2">
@@ -578,6 +569,8 @@ names(coef(fit)) %in% not_sig</code></pre>
 <li>Calculate and store the number of false positives for the models chosen by AIC and BIC.</li>
 </ul>
 <p>Calculate the rate of false positives and negatives for both AIC and BIC. Compare the rates between the two methods. Arrange your results in a well formatted table.</p>
+<div id="run-the-simulations-fitting-the-model-calculate-the-aic-and-bic" class="section level6">
+<h6>Run the Simulations, fitting the model, calculate the AIC and BIC</h6>
 <pre class="r"><code>library(knitr)
 birthday = 19770411
 set.seed(birthday)
@@ -603,25 +596,31 @@ for(i in 1:num_sim){
   mod1_false_negative_bic = mod1_false_negative_bic + sum(!(signif %in% names(coef(mod1_fit_add_bic_back)))) # which are false negatives?
   mod1_false_postive_bic = mod1_false_postive_bic + sum(names(coef(mod1_fit_add_bic_back)) %in% not_sig) # which are false positives?
 }</code></pre>
+</div>
+<div id="derive-the-rate-of-the-aic-and-bic-for-false-negetive-false-positive" class="section level6">
+<h6>Derive the Rate of the AIC and BIC for False Negetive, False Positive</h6>
 <pre class="r"><code>mod1_rate_false_negative_aic = mod1_false_negative_aic / num_sim
 mod1_rate_false_postive_aic = mod1_false_postive_aic / num_sim
   
 mod1_rate_false_negative_bic = mod1_false_negative_bic / num_sim
 mod1_rate_false_postive_bic = mod1_false_postive_bic / num_sim
 
-results = data.frame(
+mod1_results = data.frame(
   FN = c(mod1_rate_false_negative_aic,mod1_rate_false_negative_bic),
   FP = c(mod1_rate_false_postive_aic,mod1_rate_false_postive_bic)
 )
-rownames(results) = c(&quot;AIC&quot;, &quot;BIC&quot;)
+rownames(mod1_results) = c(&quot;AIC&quot;, &quot;BIC&quot;)
 
-results</code></pre>
+mod1_results</code></pre>
 <pre><code>##     FN     FP
 ## AIC  0 0.9433
 ## BIC  0 0.1833</code></pre>
-<pre class="r"><code>kable(results, format = &quot;pandoc&quot;,padding = 2,caption = &quot;Compare AIC BIC against False Positive (FP), False negative(FN)&quot;)</code></pre>
+</div>
+<div id="results-of-the-aic-bic-in-the-form-of-a-table-for-model-1" class="section level6">
+<h6>Results of the AIC, BIC in the form of a table for Model 1</h6>
+<pre class="r"><code>kable(mod1_results, format = &quot;pandoc&quot;,padding = 2,caption = &quot;Model 1 - Compare AIC BIC against False Positive (FP), False negative(FN)&quot;)</code></pre>
 <table>
-<caption>Compare AIC BIC against False Positive (FP), False negative(FN)</caption>
+<caption>Model 1 - Compare AIC BIC against False Positive (FP), False negative(FN)</caption>
 <thead>
 <tr class="header">
 <th></th>
@@ -667,25 +666,18 @@ sim_data_2 = data.frame(x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10,
   y = beta_0 + beta_1 * x_1 + beta_2 * x_2 + beta_3 * x_3 + beta_4 * x_4 + 
       beta_5 * x_5 + rnorm(n, 0 , sigma)
 )</code></pre>
+</div>
+<div id="run-the-simulations-fitting-the-model-calculate-the-aic-and-bic-1" class="section level6">
+<h6>Run the Simulations, fitting the model, calculate the AIC and BIC</h6>
 <pre class="r"><code>library(knitr)
 birthday = 19770411
 set.seed(birthday)
 num_sim = 300
-num_sims = 300
 
 mod2_false_negative_aic = 0 
 mod2_false_postive_aic = 0
 mod2_false_negative_bic = 0
 mod2_false_postive_bic = 0
-mod2_rate_false_negative_aic = 0
-mod2_rate_false_postive_aic = 0
-mod2_rate_false_negative_bic = 0 
-mod2_rate_false_postive_bic = 0
-
-fp_aic = rep(0,num_sims)
-fn_aic = rep(0,num_sims)
-fp_bic = rep(0,num_sims)
-fn_bic = rep(0,num_sims)
 
 
 for(i in 1:num_sim){
@@ -703,42 +695,90 @@ for(i in 1:num_sim){
   mod2_fit_add_bic_back = step(mod2_fit_add, direction = &quot;backward&quot;, k = log(n),trace=0)
   mod2_false_negative_bic = mod2_false_negative_bic + sum(!(signif %in% names(coef(mod2_fit_add_bic_back)))) # which are false negatives?
   mod2_false_postive_bic = mod2_false_postive_bic + sum(names(coef(mod2_fit_add_bic_back)) %in% not_sig) # which are false positives?
-}
-
-mod2_rate_false_negative_aic = mod2_false_negative_aic / num_sim
+}</code></pre>
+</div>
+<div id="derive-the-rate-of-the-aic-and-bic-for-false-negetive-false-positive-1" class="section level6">
+<h6>Derive the Rate of the AIC and BIC for False Negetive, False Positive</h6>
+<pre class="r"><code>mod2_rate_false_negative_aic = mod2_false_negative_aic / num_sim
 mod2_rate_false_postive_aic = mod2_false_postive_aic / num_sim
   
 mod2_rate_false_negative_bic = mod2_false_negative_bic / num_sim
-mod2_rate_false_postive_bic = mod2_false_postive_bic / num_sim</code></pre>
-<pre class="r"><code>compare_aic_bic = data.frame(
-  Attribute = c(&quot;AIC&quot;,&quot;BIC&quot;),
-  Model_1_FN = c(mod1_rate_false_negative_aic,mod1_rate_false_negative_bic),
-  Model_2_FN = c(mod2_rate_false_negative_aic,mod2_rate_false_negative_bic),
-  Model_1_FP = c(mod1_rate_false_postive_aic,mod1_rate_false_postive_bic),
-  Model_2_FP = c(mod2_rate_false_postive_aic,mod2_rate_false_postive_bic)
+mod2_rate_false_postive_bic = mod2_false_postive_bic / num_sim
+
+mod2_results = data.frame(
+  FN = c(mod2_rate_false_negative_aic,mod2_rate_false_negative_bic),
+  FP = c(mod2_rate_false_postive_aic,mod2_rate_false_postive_bic)
 )
-kable(compare_aic_bic, format = &quot;pandoc&quot;,padding = 2,caption = &quot;Compare AIC BIC against False Positive (FP), False negative(FN)&quot;)</code></pre>
+rownames(mod2_results) = c(&quot;AIC&quot;, &quot;BIC&quot;)
+mod2_results</code></pre>
+<pre><code>##         FN   FP
+## AIC 0.7967 1.58
+## BIC 0.8667 1.02</code></pre>
+</div>
+<div id="results-of-the-aic-bic-in-the-form-of-a-table-for-model-2" class="section level6">
+<h6>Results of the AIC, BIC in the form of a table for Model 2</h6>
+<pre class="r"><code>kable(mod2_results, format = &quot;pandoc&quot;,padding = 2,caption = &quot;Model 2 - Compare AIC BIC against False Positive (FP), False negative(FN)&quot;)</code></pre>
 <table>
-<caption>Compare AIC BIC against False Positive (FP), False negative(FN)</caption>
+<caption>Model 2 - Compare AIC BIC against False Positive (FP), False negative(FN)</caption>
 <thead>
 <tr class="header">
-<th align="left">Attribute</th>
-<th align="right">Model_1_FN</th>
-<th align="right">Model_2_FN</th>
-<th align="right">Model_1_FP</th>
-<th align="right">Model_2_FP</th>
+<th></th>
+<th align="right">FN</th>
+<th align="right">FP</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">AIC</td>
+<td>AIC</td>
+<td align="right">0.7967</td>
+<td align="right">1.58</td>
+</tr>
+<tr class="even">
+<td>BIC</td>
+<td align="right">0.8667</td>
+<td align="right">1.02</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="creating-data-frame-of-the-output-of-the-model-1-and-model-2" class="section level6">
+<h6>Creating data frame of the output of the Model 1 and Model 2</h6>
+<pre class="r"><code>final_Results = data.frame(
+  Model1_FN = c(mod1_rate_false_negative_aic,mod1_rate_false_negative_bic),
+  Model2_FN = c(mod2_rate_false_negative_aic,mod2_rate_false_negative_bic),
+  Model1_FP = c(mod1_rate_false_postive_aic,mod1_rate_false_postive_bic),  
+  Model2_FP = c(mod2_rate_false_postive_aic,mod2_rate_false_postive_bic)
+)
+rownames(final_Results) = c(&quot;AIC&quot;,&quot;BIC&quot;)
+final_Results</code></pre>
+<pre><code>##     Model1_FN Model2_FN Model1_FP Model2_FP
+## AIC         0    0.7967    0.9433      1.58
+## BIC         0    0.8667    0.1833      1.02</code></pre>
+</div>
+<div id="results-of-the-aic-bic-in-the-form-of-a-table-for-model-1-model-2" class="section level6">
+<h6>Results of the AIC, BIC in the form of a table for Model 1 &amp; Model 2</h6>
+<pre class="r"><code>kable(final_Results, format = &quot;pandoc&quot;,padding = 2,caption = &quot;Model 1 &amp; Model 2 Compare AIC BIC against False Positive (FP), False negative(FN)&quot;)</code></pre>
+<table>
+<caption>Model 1 &amp; Model 2 Compare AIC BIC against False Positive (FP), False negative(FN)</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Model1_FN</th>
+<th align="right">Model2_FN</th>
+<th align="right">Model1_FP</th>
+<th align="right">Model2_FP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AIC</td>
 <td align="right">0</td>
 <td align="right">0.7967</td>
 <td align="right">0.9433</td>
 <td align="right">1.58</td>
 </tr>
 <tr class="even">
-<td align="left">BIC</td>
+<td>BIC</td>
 <td align="right">0</td>
 <td align="right">0.8667</td>
 <td align="right">0.1833</td>
@@ -746,6 +786,7 @@ kable(compare_aic_bic, format = &quot;pandoc&quot;,padding = 2,caption = &quot;C
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 
 

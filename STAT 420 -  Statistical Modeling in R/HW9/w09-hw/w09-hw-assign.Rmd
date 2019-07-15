@@ -180,7 +180,8 @@ Use `?Credit` to learn about this dataset.
 Store your model in a variable called `mod_a`. Run the two given chunks to verify your model meets the requested criteria. If you cannot find a model that meets all criteria, partial credit will be given for meeting at least some of the criteria.
 
 ```{r}
-mod_a = lm(formula = Balance ~ Income + Limit + Student, data = Credit)
+mod_a = lm(Balance ~ log(Income) + Limit + Cards + Age + Gender + 
+                   Student, data = Credit)
 ```
 
 
@@ -231,22 +232,8 @@ get_num_params(mod_a)
 Store your model in a variable called `mod_b`. Run the two given chunks to verify your model meets the requested criteria. If you cannot find a model that meets all criteria, partial credit will be given for meeting at least some of the criteria.
 
 ```{r}
-mod_b = lm(Balance ~ Income + Limit + Age + 
-    Education + Student + Ethnicity + Income:Rating + Income:Cards + Income:Age + Income:Education + 
-    Income:Gender + Income:Student + Income:Married + Income:Ethnicity + 
-    Limit:Rating + Limit:Cards + Limit:Age + Limit:Education + 
-    Limit:Married + Limit:Ethnicity + Rating:Age + Rating:Education + Rating:Gender + 
-    Rating:Student +  Cards:Education + Cards:Student + Age:Student + 
-    Age:Married + Age:Ethnicity + Education:Student + 
-    Student:Married + Student:Ethnicity + Income:Limit:Gender + Income:Limit:Married + Income:Limit:Ethnicity + 
-    Income:Rating:Cards + Income:Rating:Gender + Income:Rating:Student + 
-    Income:Rating:Married + Income:Rating:Ethnicity + Income:Cards:Education + 
-    Income:Cards:Gender + Income:Cards:Student + Income:Age:Student + 
-    Income:Age:Married + Income:Education:Gender + Income:Education:Married + 
-    Income:Gender:Married + Income:Gender:Ethnicity + 
-    Limit:Rating:Age + Limit:Rating:Gender + Limit:Rating:Student + 
-    Limit:Student:Ethnicity, 
-    data = Credit)
+mod_b = lm(Balance ~ log(Income) + Limit + Cards + Age + Gender + Student +
+                           I(log(Income)^2) + I(Limit^2), data = Credit)
 ```
 
 
@@ -276,7 +263,7 @@ get_adj_r2 = function(model) {
 }
 ```
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 get_loocv_rmse(mod_b)
 get_adj_r2(mod_b)
 get_sw_decision(mod_b, alpha = 0.01)
@@ -475,7 +462,7 @@ Note that in both cases, you could `sum()` the result to obtain the number of fa
 
 Calculate the rate of false positives and negatives for both AIC and BIC. Compare the rates between the two methods. Arrange your results in a well formatted table.
 
-
+######Run the Simulations, fitting the model, calculate the AIC and BIC
 ```{r message=FALSE, warning=TRUE}
 library(knitr)
 birthday = 19770411
@@ -504,7 +491,7 @@ for(i in 1:num_sim){
 }
 ```
 
-
+######Derive the Rate of the AIC and BIC for False Negetive, False Positive
 ```{r}
 mod1_rate_false_negative_aic = mod1_false_negative_aic / num_sim
 mod1_rate_false_postive_aic = mod1_false_postive_aic / num_sim
@@ -520,9 +507,9 @@ rownames(mod1_results) = c("AIC", "BIC")
 
 mod1_results
 ```
-
+######Results of the AIC, BIC in the form of a table for Model 1
 ```{r}
-kable(mod1_results, format = "pandoc",padding = 2,caption = "Compare AIC BIC against False Positive (FP), False negative(FN)")
+kable(mod1_results, format = "pandoc",padding = 2,caption = "Model 1 - Compare AIC BIC against False Positive (FP), False negative(FN)")
 ```
 
 
@@ -556,7 +543,7 @@ sim_data_2 = data.frame(x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10,
 )
 ```
 
-
+######Run the Simulations, fitting the model, calculate the AIC and BIC
 ```{r}
 library(knitr)
 birthday = 19770411
@@ -588,6 +575,7 @@ for(i in 1:num_sim){
 
 ```
 
+######Derive the Rate of the AIC and BIC for False Negetive, False Positive
 ```{r}
 mod2_rate_false_negative_aic = mod2_false_negative_aic / num_sim
 mod2_rate_false_postive_aic = mod2_false_postive_aic / num_sim
@@ -602,15 +590,29 @@ mod2_results = data.frame(
 rownames(mod2_results) = c("AIC", "BIC")
 mod2_results
 ```
-
+######Results of the AIC, BIC in the form of a table for Model 2
 ```{r}
-kable(mod2_results, format = "pandoc",padding = 2,caption = "Model 2 Compare AIC BIC against False Positive (FP), False negative(FN)")
+kable(mod2_results, format = "pandoc",padding = 2,caption = "Model 2 - Compare AIC BIC against False Positive (FP), False negative(FN)")
 ```
 
-
+######Creating data frame of the output of the Model 1 and Model 2
 ```{r}
-kable(mod1_results, mod2_results, format = "pandoc",padding = 2,caption = "Compare AIC BIC against False Positive (FP), False negative(FN)")
+
+final_Results = data.frame(
+  Model1_FN = c(mod1_rate_false_negative_aic,mod1_rate_false_negative_bic),
+  Model2_FN = c(mod2_rate_false_negative_aic,mod2_rate_false_negative_bic),
+  Model1_FP = c(mod1_rate_false_postive_aic,mod1_rate_false_postive_bic),  
+  Model2_FP = c(mod2_rate_false_postive_aic,mod2_rate_false_postive_bic)
+)
+rownames(final_Results) = c("AIC","BIC")
+final_Results
+
 ```
+######Results of the AIC, BIC in the form of a table for Model 1 & Model 2
+```{r}
+kable(final_Results, format = "pandoc",padding = 2,caption = "Model 1 & Model 2 Compare AIC BIC against False Positive (FP), False negative(FN)")
+```
+
 
 
 
