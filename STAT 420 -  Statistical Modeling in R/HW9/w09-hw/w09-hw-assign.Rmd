@@ -549,7 +549,7 @@ sim_data_2 = data.frame(x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10,
 ```
 
 
-```{r message=FALSE, warning=TRUE}
+```{r}
 library(knitr)
 birthday = 19770411
 set.seed(birthday)
@@ -569,11 +569,11 @@ for(i in 1:num_sim){
   )
   fit_add = lm(y ~ ., data = sim_data_2)
   
-  fit_add_aic_back = step(fit_add, direction = "backward")
+  fit_add_aic_back = step(fit_add, direction = "backward", Trace=0)
   false_negative_aic = false_negative_aic + sum(!(signif %in% names(coef(fit_add_aic_back)))) # which are false negatives?
   false_postive_aic = false_postive_aic + sum(names(coef(fit_add_aic_back)) %in% not_sig) # which are false positives?
   
-  fit_add_bic_back = step(fit_add, direction = "backward", k = log(n))
+  fit_add_bic_back = step(fit_add, direction = "backward", k = log(n), Trace=0)
   false_negative_bic = false_negative_bic + sum(!(signif %in% names(coef(fit_add_bic_back)))) # which are false negatives?
   false_postive_bic = false_postive_bic + sum(names(coef(fit_add_bic_back)) %in% not_sig) # which are false positives?
 }

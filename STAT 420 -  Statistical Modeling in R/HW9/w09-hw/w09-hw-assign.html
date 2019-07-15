@@ -44856,11 +44856,11 @@ for(i in 1:num_sim){
   )
   fit_add = lm(y ~ ., data = sim_data_2)
   
-  fit_add_aic_back = step(fit_add, direction = &quot;backward&quot;)
+  fit_add_aic_back = step(fit_add, direction = &quot;backward&quot;, Trace=0)
   false_negative_aic = false_negative_aic + sum(!(signif %in% names(coef(fit_add_aic_back)))) # which are false negatives?
   false_postive_aic = false_postive_aic + sum(names(coef(fit_add_aic_back)) %in% not_sig) # which are false positives?
   
-  fit_add_bic_back = step(fit_add, direction = &quot;backward&quot;, k = log(n))
+  fit_add_bic_back = step(fit_add, direction = &quot;backward&quot;, k = log(n), Trace=0)
   false_negative_bic = false_negative_bic + sum(!(signif %in% names(coef(fit_add_bic_back)))) # which are false negatives?
   false_postive_bic = false_postive_bic + sum(names(coef(fit_add_bic_back)) %in% not_sig) # which are false positives?
 }</code></pre>
