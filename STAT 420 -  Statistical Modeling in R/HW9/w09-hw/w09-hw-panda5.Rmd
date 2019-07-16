@@ -216,6 +216,7 @@ Store your model in a variable called `mod_a`. Run the two given chunks to verif
 ```{r}
 mod_a = lm(Balance ~ log(Income) + Limit + Cards + Age + Gender + 
                    Student, data = Credit)
+summary(mod_a)
 ```
 
 
@@ -272,6 +273,7 @@ Store your model in a variable called `mod_b`. Run the two given chunks to verif
 ```{r}
 mod_b = lm(Balance ~ log(Income) + Limit + Cards + Age + Gender + Student +
                            I(log(Income)^2) + I(Limit^2), data = Credit)
+summary(mod_b)
 ```
 
 
@@ -357,18 +359,23 @@ The training data should be used for all model fitting. Our goal is to find a mo
 
 **(a)** Find a "good" model for `price`. Use any methods seen in class. The model should reach a LOOCV-RMSE below 77,500 in the training data. Do not use any transformations of the response variable.
 
+**Finding the good model**
 ```{r}
 good_model = lm(price ~ beds + baths + sqft + type + latitude + 
     longitude + limits + beds:sqft + beds:longitude + baths:limits + 
     sqft:longitude + sqft:limits + type:latitude + latitude:longitude + 
     longitude:limits, data = sac_trn_data)
-good_model
+summary(good_model)
+```
+
+**The LOOCV-RMSE for the model on the training data**
+```
 sqrt(mean((resid(good_model) / (1 - hatvalues(good_model)))^2))
 ```
 
 The LOOCV-RMSE is **`r sqrt(mean((resid(good_model) / (1 - hatvalues(good_model)))^2))`**
 
-
+**Checking the LOOCV-RMSE less than 77500**
 ```{r}
 sqrt(mean((resid(good_model) / (1 - hatvalues(good_model)))^2)) < 77500
 ```
@@ -393,14 +400,13 @@ The average percent error is around **`r average_percent_error`**
 - Plot the predicted versus the actual values and add the line $y = x$.
 
 ```{r}
-xplot = seq(0,10,by=0.1)
-plot(predict_price~sac_tst_data$price, col = "dodgerblue", xlim=c(0,700000), ylim=c(0,700000),pch = 1, cex = 1, xlab = "Actual Price", ylab = "Predicted Price", main = "Actual Price Versus Predicted Price")
+plot(predict_price~sac_tst_data$price, col = "dodgerblue", xlim=c(0,900000), ylim=c(0,900000),pch = 1, cex = 1, xlab = "Actual Price", ylab = "Predicted Price", main = "Actual Price Versus Predicted Price")
 abline(a = 0, b = 1, col = "darkorange", lwd = 2)
 ```
 
 Based on all of this information, argue whether or not this model is useful.
 
-The model seems to be usefull for lower price value, howver not that great, but is not at all usefull for higher price value. The reason because of the fact that, the Total Percent of error is around 23% and from the above plots it also sees that, the predicted price is not close to the orange line (where the predicted value should match with the actual value) for the lower value. As the price goes high, the difference between the predicted price versus actual price seems wider.
+The model seems to be usefull for lower price value, howver not that great, but is not at all usefull for higher price value. This because of the fact that, the Total Percent of error is around 23%, though the error is not that low, however for the higher price it doen't do well, where the predicted price is far from the orange line (where the predicted value should match with the actual value). As for the higher price, the difference between the predicted price versus actual price seems wider, for the higher price over 800,000, the predicted price is very low between 200,000, same as for other higher price (**which is not at all good**)
 
 ***
 
