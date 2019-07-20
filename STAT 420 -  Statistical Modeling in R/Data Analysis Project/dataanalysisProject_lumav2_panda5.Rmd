@@ -30,12 +30,12 @@ Forced Expiratory Volume (FEV) prediction for Childhood Respiratory Disease
 Forced Expiratory Volume (FEV) is an index of pulmonary function that measures the volume of the air expelled after one second of constant effort. The data contains the determinations of FEB on 654 children ages 6 – 22 who are seen in childhood respiratory disease study in 1980 in East Boston, Massachusetts. The data are part of a larger study to follow the change in pulmonary function over time in children.
 
 
-##Dataset Link: 
+#####Dataset Link: 
 
 http://www.statsci.org/data/general/fev.html
 
 
-**Below are the all variables in the dataset**
+#####Variables in the Dataset: 
 
 ```{r include=FALSE}
 Variable = data.frame(
@@ -45,9 +45,10 @@ Variable = data.frame(
 )
 ```
 
+
 ```{r echo=FALSE}
 library(knitr)
-kable(Variable, format = "pandoc",padding = 2,caption = "Team Name - STAT 420 - Data Analysis Project")
+kable(Variable, format = "pandoc",padding = 2)
 ```
 
 ##Background information of the dataset:

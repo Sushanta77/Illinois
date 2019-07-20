@@ -9,11 +9,6 @@ output:
 urlcolor: cyan
 ---
 
-# Directions
-
-- Be sure to remove this section if you use this `.Rmd` file as a template.
-- You may leave the questions in your final document.
-
 ***
 
 ```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
@@ -225,6 +220,9 @@ Fit this model to the training data and report its deviance.
 model = glm(survived ~ pclass + sex + age, data = ptitanic_trn, family = binomial)
 summary(model)
 ```
+
+The deviance is: **`r summary(model)$deviance`**
+
 **(b)** Use the model fit in **(a)** and an appropriate statistical test to determine if class played a significant role in surviving on the Titanic. Use $\alpha = 0.01$. Report:
 
 - The null hypothesis of the test
@@ -235,6 +233,8 @@ $$
 - The test statistic of the test
 
 ```{r}
+full_model = glm(survived ~ pclass + sex + age, data = ptitanic_trn, family = binomial)
+
 model = glm(survived ~ pclass, data = ptitanic_trn, family = binomial)
 summary(model)
 ```
@@ -276,15 +276,60 @@ For this exercise we will use data found in [`wisc-train.csv`](wisc-train.csv) a
 - [UCI Page](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic))
 - [Data Detail](https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.names)
 
+```{r}
+wisc_train = read.csv("wisc-train.csv")
+wisc_test = read.csv("wisc-test.csv")
+```
+
 You should consider coercing the response to be a factor variable if it is not stored as one after importing the data.
 
 **(a)** The response variable `class` has two levels: `M` if a tumor is malignant, and `B` if a tumor is benign. Fit three models to the training data.
 
 - An additive model that uses `radius`, `smoothness`, and `texture` as predictors
+
+```{r}
+model1 = glm(class ~ radius + smoothness + texture, data = wisc_train, family = binomial)
+```
+
 - An additive model that uses all available predictors
+
+```{r}
+model2 = glm(class ~ ., data = wisc_train, family = binomial)
+```
+
+
 - A model chosen via backwards selection using AIC. Use a model that considers all available predictors as well as their two-way interactions for the start of the search.
 
+```{r warning=FALSE}
+model = glm(class ~ . + . ^ 2, data = wisc_train, family = binomial)
+model3 = step(model, direction = "backward", trace = 0)
+```
+
 For each, obtain a 5-fold cross-validated misclassification rate using the model as a classifier that seeks to minimize the misclassification rate. Based on this, which model is best? Relative to the best, are the other two underfitting or over fitting? Report the test misclassification rate for the model you picked as the best.
+
+```{r}
+#training mis-classification rate
+mean(ifelse(predict(model1,wisc_train) > 0 , "M", "B") != wisc_train$class)
+mean(ifelse(predict(model2,wisc_train) > 0 , "M", "B") != wisc_train$class)
+mean(ifelse(predict(model3,wisc_train) > 0 , "M", "B") != wisc_train$class)
+```
+
+```{r warning=FALSE}
+#Cross-Validation
+library(boot)
+cv.glm(wisc_train,model1, K = 5)$delta[1]
+cv.glm(wisc_train,model2, K = 5)$delta[1]
+cv.glm(wisc_train,model3, K = 5)$delta[1]
+```
+
+From the above, it seems that the best model is **`model 1`** that is the additive model that uses `radius`, `smoothness`, and `texture` as predictors, because the 5 fold cross validation mis-classification error rate is **`r cv.glm(wisc_train,model1, K = 5)$delta[1]`**
+
+
+```{r warning=FALSE}
+mean(ifelse(predict(model1,wisc_test) > 0 , "M", "B") != wisc_test$class)
+```
+
+The best model Test Misclassification rate is **`r mean(ifelse(predict(model1,wisc_test) > 0 , "M", "B") != wisc_test$class)`**
 
 **(b)** In this situation, simply minimizing misclassifications might be a bad goal since false positives and false negatives carry very different consequences. Consider the `M` class as the "positive" label. Consider each of the probabilities stored in `cutoffs` in the creation of a classifier using the **additive** model fit in **(a)**.
 
@@ -294,6 +339,25 @@ cutoffs = seq(0.01, 0.99, by = 0.01)
 
 That is, consider each of the values stored in `cutoffs` as $c$. Obtain the sensitivity and specificity in the test set for each of these classifiers. Using a single graphic, plot both sensitivity and specificity as a function of the cutoff used to create the classifier. Based on this plot, which cutoff would you use? (0 and 1 have not been considered for coding simplicity. If you like, you can instead consider these two values.)
 
+
+**Function for Confusion Matrix, Sensitivity, Specificity
+```{r}
+#Confustion matrix creation
+make_conf_mat = function(predicted, actual){
+  table(predicted = predicted, actual = actual)
+}
+
+#Sensitivity Function
+get_sens = function(conf_mat){
+  conf_mat[2, 2] / sum(conf_mat[, 2])
+}
+
+#Specificity Function
+get_spec = function(conf_mat){
+  conf_mat[1, 1] / sum(conf_mat[, 1])
+}
+```
+
 $$
 \hat{C}(\bf x) = 
 \begin{cases} 
@@ -301,4 +365,30 @@ $$
       0 & \hat{p}({\bf x}) \leq c 
 \end{cases}
 $$
+
+**Additive Model**
+```{r}
+model_add = glm(class ~ ., data = wisc_train, family = binomial)
+```
+
+```{r}
+sens_99 = seq(1,length(cutoffs))
+spec_99 = seq(1,length(cutoffs))
+for(i in (1:length(cutoffs))){
+  test_predict = ifelse(predict(model_add, wisc_test, type = "response") > cutoffs[i] , "M", "B")
+  conf_mat_predict = make_conf_mat(predicted = test_predict, actual = wisc_test$class)
+  sens_99[i] = get_sens(conf_mat_predict)
+  spec_99[i] = get_spec(conf_mat_predict)
+}
+```
+
+Plot all Specificity and all Sensitivity for all Thresholds Value
+
+```{r}
+plot(sens_99~cutoffs,type = "l",col = "darkorange", lwd = 2, lty = 1, xlab = "Threshold - Cutoffs", ylab = "Sensitivity / Specificity")
+lines(spec_99~cutoffs,type = "l",col = "dodgerblue", lwd = 2, lty = 1)
+legend("topright", legend = c("Sensitivity", "Specificity"), col=c("darkorange","dodgerblue"),lty = c(1,1))
+```
+
+Based on the above plot, it seems that the best threshold to clasify the Model is **0.81**, where the Sensitivity crossed the Specificitiy)
 
