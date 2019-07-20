@@ -1,6 +1,6 @@
 ---
-title: "Forced Expiratory Volume (FEV) prediction for Childhood Respiratory Disease"
-author: "Luma Vasiljevic, Sushanta Panda"
+title: "STAT 420 - Data Analysis Project Proposal"
+author: "Luma Vasiljevic(lumav2), Sushanta Panda(panda5)"
 date: "7/20/2019"
 output: html_document
 ---
@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
+##Team Name
 ```{r include=FALSE}
 TeamName = data.frame(
   Name = c("Luma Vasiljevic","Sushanta Panda"),
@@ -19,12 +19,11 @@ TeamName = data.frame(
 
 ```{r echo=FALSE}
 library(knitr)
-kable(TeamName, format = "pandoc",padding = 2,caption = "Team Name - STAT 420 - Data Analysis Project")
+kable(TeamName, format = "pandoc",padding = 2)
 ```
 
 ##Title of the Project
 Forced Expiratory Volume (FEV) prediction for Childhood Respiratory Disease
-
 
 
 ##Description of the dataset:
