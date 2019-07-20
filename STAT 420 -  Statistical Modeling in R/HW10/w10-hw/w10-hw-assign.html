@@ -524,6 +524,10 @@ for(i in (1:length(cutoffs))){
   sens_99[i] = get_sens(conf_mat_predict)
   spec_99[i] = get_spec(conf_mat_predict)
 }</code></pre>
+<pre class="r"><code>head(sens_99, 10)</code></pre>
+<pre><code>##  [1] 1.0000 1.0000 1.0000 1.0000 0.9942 0.9884 0.9884 0.9884 0.9884 0.9884</code></pre>
+<pre class="r"><code>head(spec_99, 10)</code></pre>
+<pre><code>##  [1] 0.5758 0.6296 0.6700 0.6869 0.7104 0.7273 0.7306 0.7340 0.7374 0.7475</code></pre>
 <p>Plot all Specificity and all Sensitivity for all Thresholds Value</p>
 <pre class="r"><code>plot(sens_99~cutoffs,type = &quot;l&quot;,col = &quot;darkorange&quot;, lwd = 2, lty = 1, xlab = &quot;Threshold - Cutoffs&quot;, ylab = &quot;Sensitivity / Specificity&quot;)
 lines(spec_99~cutoffs,type = &quot;l&quot;,col = &quot;dodgerblue&quot;, lwd = 2, lty = 1)

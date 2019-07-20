@@ -340,7 +340,7 @@ cutoffs = seq(0.01, 0.99, by = 0.01)
 That is, consider each of the values stored in `cutoffs` as $c$. Obtain the sensitivity and specificity in the test set for each of these classifiers. Using a single graphic, plot both sensitivity and specificity as a function of the cutoff used to create the classifier. Based on this plot, which cutoff would you use? (0 and 1 have not been considered for coding simplicity. If you like, you can instead consider these two values.)
 
 
-**Function for Confusion Matrix, Sensitivity, Specificity
+**Function for Confusion Matrix, Sensitivity, Specificity**
 ```{r}
 #Confustion matrix creation
 make_conf_mat = function(predicted, actual){
@@ -380,6 +380,11 @@ for(i in (1:length(cutoffs))){
   sens_99[i] = get_sens(conf_mat_predict)
   spec_99[i] = get_spec(conf_mat_predict)
 }
+```
+
+```{r}
+head(sens_99, 10)
+head(spec_99, 10)
 ```
 
 Plot all Specificity and all Sensitivity for all Thresholds Value
