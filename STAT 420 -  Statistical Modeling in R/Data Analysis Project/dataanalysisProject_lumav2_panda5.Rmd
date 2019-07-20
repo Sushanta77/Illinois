@@ -1,0 +1,84 @@
+---
+title: "Forced Expiratory Volume (FEV) prediction for Childhood Respiratory Disease"
+author: "Luma Vasiljevic, Sushanta Panda"
+date: "7/20/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r include=FALSE}
+TeamName = data.frame(
+  Name = c("Luma Vasiljevic","Sushanta Panda"),
+  Alias = c("lumav2","Panda5")
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(TeamName, format = "pandoc",padding = 2,caption = "Team Name - STAT 420 - Data Analysis Project")
+```
+
+##Title of the Project
+Forced Expiratory Volume (FEV) prediction for Childhood Respiratory Disease
+
+
+
+##Description of the dataset:
+Forced Expiratory Volume (FEV) is an index of pulmonary function that measures the volume of the air expelled after one second of constant effort. The data contains the determinations of FEB on 654 children ages 6 – 22 who are seen in childhood respiratory disease study in 1980 in East Boston, Massachusetts. The data are part of a larger study to follow the change in pulmonary function over time in children.
+
+
+##Dataset Link: 
+
+http://www.statsci.org/data/general/fev.html
+
+
+**Below are the all variables in the dataset**
+
+```{r include=FALSE}
+Variable = data.frame(
+  VariableName = c("ID","Age", "Height", "Sex", "Smoker", "FEV"),
+  Category = c("Numeric","Numeric", "Numeric", "Categorical", "Categorical", "Numeric"),
+  Description = c("Uniquely Identified Row","Age of the child", "Height of the child in inches", "Sex of the child ", "Whether the child is a non-smoker or current smoker", "FEV of the child in litres")
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(Variable, format = "pandoc",padding = 2,caption = "Team Name - STAT 420 - Data Analysis Project")
+```
+
+##Background information of the dataset:
+
+The data contains the determinations of FEB on 654 children ages 6 – 22 who are seen in childhood respiratory disease study in 1980 in East Boston, Massachusetts. The data are part of a larger study to follow the change in pulmonary function over time in children
+
+Note: No citation required for this source (http://www.statsci.org/data/general/fev.html)
+
+
+##Interest in dataset hope to explore:
+This dataset has chosen by us because of personal interests, whether we can predict the child’s FEV with the help of the available predictor, rather going for a Pulmonary Function Test, which will identify any pulmonary disease of a child. And secondly, to do statistical analysis on what are the predictors responsible to increase / decrease the pulmonary function of the child and try to find answer on these lines.
+
+##Evidence that the data can be loaded into R:
+Below is the evidence the data is loaded from the URL (http://www.statsci.org/data/general/fev.txt)  into the R data frame, with data types and number of rows loaded into it
+
+```{r}
+childfev = read.csv("http://www.statsci.org/data/general/fev.txt",
+                    sep = "\t",
+                    quote = "\"",
+                    comment.char = "",
+                    stringsAsFactors = FALSE)
+childfev$Sex = as.factor(childfev$Sex)
+childfev$Smoker = as.factor(childfev$Smoker)
+str(childfev)
+dim(childfev)
+```
+
+**First few rows of the response variable**
+```{r}
+head(childfev$FEV,10)
+```
+
+
