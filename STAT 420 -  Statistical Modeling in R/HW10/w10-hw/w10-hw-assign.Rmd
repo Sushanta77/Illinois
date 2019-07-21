@@ -217,7 +217,7 @@ is the probability that a certain passenger survives given their attributes and
 Fit this model to the training data and report its deviance.
 
 ```{r}
-model = glm(survived ~ pclass + sex + age, data = ptitanic_trn, family = binomial)
+model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = binomial)
 summary(model)
 ```
 
@@ -227,43 +227,72 @@ The deviance is: **`r summary(model)$deviance`**
 
 - The null hypothesis of the test
 $$
-H_0 : \beta_{pclass} = 0
+H_0 : \beta_1 = \beta_2 = 0
 $$
 
 - The test statistic of the test
 
-```{r}
-full_model = glm(survived ~ pclass + sex + age, data = ptitanic_trn, family = binomial)
+    Since there are 2 parameters in the null hypothesis, we will do the **likelihood ratio test statistic** by creating the null and full model as below 
 
-model = glm(survived ~ pclass, data = ptitanic_trn, family = binomial)
-summary(model)
-```
-
+    **Full and null model**
+    ```{r}
+    full_model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = binomial)
+    null_model = glm(survived ~ sex + age + sex:age, data = ptitanic_trn, family = binomial)
+    ```
+    
+    **Likelihood Ratio Test Statistics**
+    ```{r}
+    anova(null_model, full_model, test = "LRT")
+    ```
 
 - The p-value of the test
 
+    ```{r}
+    anova(null_model, full_model, test = "LRT")[,'Pr(>Chi)'][2]
+    ```
+
+    The p-value of the **Likelihood Ratio Test Statistics** is : **`r anova(null_model, full_model, test = "LRT")[,'Pr(>Chi)'][2]`**
 
 - A statistical decision
 
+    ```{r}
+    anova(null_model, full_model, test = "LRT")[,'Pr(>Chi)'][2] > 0.01
+    ```
+
+    Since the P value of the Likelihood Ratio Test Statistics is  `r anova(null_model, full_model, test = "LRT")[,'Pr(>Chi)'][2]` **< 0.01 ($\alpha$)**, we **reject the null hypothesis**, we reject the hypothesis that $H_0 : \beta_1 = \beta_2 = 0$
 
 - A practical conclusion
 
+    Since we **reject the null hypothesis** from the Likelihood Ratio Test Statistics, hence class played a significant role in surviving on the Titanic
 
 
 **(c)** Use the model fit in **(a)** and an appropriate statistical test to determine if an interaction between age and sex played a significant role in surviving on the Titanic. Use $\alpha = 0.01$. Report:
 
 - The null hypothesis of the test
 
+$$
+H_0 : \beta_5 = 0
+$$
 
 - The test statistic of the test
-```{r}
-model_age_sex_int = glm(survived ~ age:sex, data = ptitanic_trn, family = binomial)
-summary(model_age_sex_int)
-```
+
+    The logistic regression summary, we can see the significance of the interaction between age and sex
+
+    ```{r}
+    model_age_sex_int = glm(survived ~ age:sex, data = ptitanic_trn, family = binomial)
+    summary(model_age_sex_int)
+    ```
 
 - The p-value of the test
+
+```{r}
+
+```
+
 - A statistical decision
+
 - A practical conclusion
+
 
 **(d)** Use the model fit in **(a)** as a classifier that seeks to minimize the misclassification rate. Classify each of the passengers in the test dataset. Report the misclassification rate, the sensitivity, and the specificity of this classifier. (Use survived as the positive class.)
 
