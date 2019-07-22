@@ -57,6 +57,8 @@ Each time, fit the model:
 $$
 \log\left(\frac{p({\bf x})}{1 - p({\bf x})}\right) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3
 $$
+
+
 ```{r}
 beta_0 = 0.4
 beta_1 = -0.35
@@ -74,20 +76,42 @@ for(i in (1:2500)){
 }
 ```
 
+##Alternative Way
+```{r}
+beta_0 = 0.4
+beta_1 = -0.35
+  
+beta_2_z_val = rep(0,2500)
+liklihood_test = rep(0,2500)
+for(i in (1:2500)){
+  y = rep(0,150)
+  for(j in (1:150)){
+    eta = beta_0 + beta_1 * x1[j] #simulate from this model
+    p = ( 1/(1+exp(-eta)) )
+    y[j] = rbinom(n = 1, size = 1, p)
+  }
+  model_full = glm(y ~ x1 + x2 + x3, family = binomial)
+  model_x1 = glm(y ~ x1, family = binomial)
+  beta_2_z_val[i] = summary(model_full)$coefficient[3,3]
+  liklihood_test[i] = anova(model_x1,model_full,test="LRT")[2,4]
+}
+```
+
+
 
 Store the test statistics for two tests:
 
 - The Wald test for $H_0: \beta_2 = 0$, which we say follows a standard normal distribution for "large" samples
 
-```{r}
-head(beta_2_z_val,10)
-```
+    ```{r}
+    head(beta_2_z_val,10)
+    ```
 
 - The likelihood ratio test for $H_0: \beta_2 = \beta_3 = 0$, which we say follows a $\chi^2$ distribution (with some degrees of freedom) for "large" samples
 
-```{r}
-head(liklihood_test,10)
-```
+    ```{r}
+    head(liklihood_test,10)
+    ```
 
 **(b)** Plot a histogram of the empirical values for the Wald test statistic. Overlay the density of the true distribution assuming a large sample.
 
@@ -98,20 +122,24 @@ sample_data_norm = dnorm(sample_data)
 
 ```{r}
 x = seq(-4,4,length = 1000)
+
 hist(beta_2_z_val,
      probability = TRUE,
      xlim = c(-4,4) , 
      ylim = c(0,0.4) ,
+     xlab = "z value" ,
      col="white",
      border="darkgrey",
      lwd = 2,
-     main = "Histogram of Z value of beta_2"
+     main = "Histogram of Wald Test"
      )
+
 curve(dnorm(x),
       lwd=2,
       col = "dodgerblue",
       add = TRUE)
 ```
+
 
 **(c)** Use the empirical results for the Wald test statistic to estimate the probability of observing a test statistic larger than 1. Also report this probability using the true distribution of the test statistic assuming a large sample.
 
@@ -131,17 +159,21 @@ The probability using the true distribution of the test statistic assuming a lar
 
 
 **(d)** Plot a histogram of the empirical values for the likelihood ratio test statistic. Overlay the density of the true distribution assuming a large sample.
+
 ```{r}
 x = seq(-4, 4 , length = 1000)
+
 hist(liklihood_test,
      xlim = c(-1,12) ,
+     xlab = "Likelihood Ration Test" ,
      ylim = c(0,0.5) ,
      probability = TRUE,
      col="white",
      border="darkgrey",
      lwd = 2,
-     main = "Histogram of likelihood ratio"
+     main = "Histogram of Likelihood Ratio Test"
      )
+
 curve(dchisq(x, df = 2),
       lwd=2,
       col = "dodgerblue",
@@ -170,6 +202,71 @@ x1 = rnorm(n = sample_size)
 x2 = rnorm(n = sample_size)
 x3 = rnorm(n = sample_size)
 ```
+
+**Simulate for sample size = 10**
+```{r warning=FALSE}
+
+beta_0 = 0.4
+beta_1 = -0.35
+  
+beta_2_z_val = rep(0,2500)
+liklihood_test = rep(0,2500)
+for(i in (1:2500)){
+  eta = beta_0 + beta_1 * x1 #simulate from this model
+  p = ( 1/(1+exp(-eta)) )
+  y = rbinom(n = sample_size, size = 1, p)
+  model_full = glm(y ~ x1 + x2 + x3, family = binomial)
+  beta_2_z_val[i] = summary(model_full)$coefficient[3,3]
+  model_x1 = glm(y ~ x1, family = binomial) 
+  liklihood_test[i] = anova(model_x1,model_full,test="LRT")[2,4]
+}
+```
+
+**z distribution and Likelihood Ratio Test**
+```{r fig.height=5, fig.width=10}
+x = seq(-4,4,length = 1000)
+
+par(mfrow = c(1,2))
+
+hist(beta_2_z_val,
+     probability = TRUE,
+     xlim = c(-4,4) , 
+     ylim = c(0,0.4) ,
+     xlab = "z value" ,
+     col="white",
+     border="darkgrey",
+     lwd = 2,
+     main = "Histogram of Wald Test"
+     )
+
+curve(dnorm(x),
+      lwd=2,
+      col = "dodgerblue",
+      add = TRUE)
+
+hist(liklihood_test,
+     xlim = c(-1,12) ,
+     xlab = "Likelihood Ratio - Deviance Val" ,
+     ylim = c(0,0.5) ,
+     probability = TRUE,
+     col="white",
+     border="darkgrey",
+     lwd = 2,
+     main = "Histogram of Likelihood Ratio Test"
+     )
+
+curve(dchisq(x, df = 2),
+      lwd=2,
+      col = "dodgerblue",
+      add = TRUE)
+
+```
+
+
+It seems with lower the sample size, the wald test statistics distribution **doesn't follow a normal distribution**. This is because of the fact that, lower the number of sample size is not enough to produce the correct empirical distribution of the wald test distribution.
+
+In the same way, the Likelihood Ratio test statistics distribution **doesn't follow a χ2 distribution**. This is because of the fact that, lower the number of sample size is not enough to produce the correct empirical distribution of the Likelihood test distribution.
+
 
 ***
 
@@ -263,7 +360,7 @@ $$
 
 - A practical conclusion
 
-    Since we **reject the null hypothesis** from the Likelihood Ratio Test Statistics, hence class played a significant role in surviving on the Titanic
+    Since we **reject the null hypothesis** from the Likelihood Ratio Test Statistics, hence class played a **significant role** in surviving on the Titanic, hence we will keep the class in the model which helps to predict the survival of the people
 
 
 **(c)** Use the model fit in **(a)** and an appropriate statistical test to determine if an interaction between age and sex played a significant role in surviving on the Titanic. Use $\alpha = 0.01$. Report:
@@ -276,25 +373,80 @@ $$
 
 - The test statistic of the test
 
-    The logistic regression summary, we can see the significance of the interaction between age and sex
+    Since, it's a single predictor which significance needs to evaluate, we will test the **Wald test** to test the significance of the interaction between age and sex
 
     ```{r}
-    model_age_sex_int = glm(survived ~ age:sex, data = ptitanic_trn, family = binomial)
-    summary(model_age_sex_int)
+    full_model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = binomial)
+    summary(full_model)
     ```
 
 - The p-value of the test
 
-```{r}
+    ```{r}
+    summary(full_model)$coefficient['sexmale:age','Pr(>|z|)']
+    ```
 
-```
+    The p-value of the **Wald Test** is : **`r summary(full_model)$coefficient['sexmale:age','Pr(>|z|)']`**
 
 - A statistical decision
 
+    Since the p-value from the **wald test** is **`r summary(full_model)$coefficient['sexmale:age','Pr(>|z|)']`** > 0.01 ($\alpha$), we **failed to reject the significance of interaction between age & sex**, means we keep $\beta_5 = 0$
+
 - A practical conclusion
+    Since we **failed to reject** $\beta_5 = 0$, the interaction of age and sex is not significance to predict the survival of the people, and hence shouldn't be included in the model
 
 
 **(d)** Use the model fit in **(a)** as a classifier that seeks to minimize the misclassification rate. Classify each of the passengers in the test dataset. Report the misclassification rate, the sensitivity, and the specificity of this classifier. (Use survived as the positive class.)
+
+**Fitting the Model from point (a)**
+```{r}
+model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = binomial)
+```
+
+**Mis-classification rate from PTitanic Test Dataset**
+```{r}
+#testing mis-classification rate
+mean(ifelse(predict(model,ptitanic_tst) > 0 , "survived", "died") != ptitanic_tst$survived)
+```
+
+The mis-classification rate from the ptitanic test datset is : **`r mean(ifelse(predict(model,ptitanic_tst) > 0 , "survived", "died") != ptitanic_tst$survived)`**
+
+**Function for Confusion matrix, Sensitivity and Specificity
+```{r}
+#Confusion matrix creation
+make_conf_mat = function(predicted, actual){
+  table(predicted = predicted, actual = actual)
+}
+
+#Sensitivity Function
+get_sens = function(conf_mat){
+  conf_mat[2, 2] / sum(conf_mat[, 2])
+}
+
+#Specificity Function
+get_spec = function(conf_mat){
+  conf_mat[1, 1] / sum(conf_mat[, 1])
+}
+```
+
+
+**Sensitivity from PTitanic Test Dataset**
+```{r}
+test_predict = ifelse(predict(model, ptitanic_tst, type = "response") > 0.5 , "survived", "died")
+conf_mat_predict = make_conf_mat(predicted = test_predict, actual = ptitanic_tst$survived)
+get_sens(conf_mat_predict)
+```
+
+The sensitivity of the Test dataset is : **`r get_sens(conf_mat_predict)`**
+
+**Specificity from PTitanic Test Dataset**
+```{r}
+test_predict = ifelse(predict(model, ptitanic_tst, type = "response") > 0.5 , "survived", "died")
+conf_mat_predict = make_conf_mat(predicted = test_predict, actual = ptitanic_tst$survived)
+get_spec(conf_mat_predict)
+```
+
+The specificity of the Test dataset is : **`r get_spec(conf_mat_predict)`**
 
 ***
 
