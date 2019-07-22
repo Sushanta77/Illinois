@@ -63,40 +63,18 @@ $$
 beta_0 = 0.4
 beta_1 = -0.35
   
-beta_2_z_val = rep(0,2500)
+wald_test = rep(0,2500)
 liklihood_test = rep(0,2500)
 for(i in (1:2500)){
   eta = beta_0 + beta_1 * x1 #simulate from this model
   p = ( 1/(1+exp(-eta)) )
   y = rbinom(n = sample_size, size = 1, p)
   model_full = glm(y ~ x1 + x2 + x3, family = binomial)
-  beta_2_z_val[i] = summary(model_full)$coefficient[3,3]
-  model_x1 = glm(y ~ x1, family = binomial) 
+  model_x1 = glm(y ~ x1, family = binomial)   
+  wald_test[i] = summary(model_full)$coefficient[3,3]
   liklihood_test[i] = anova(model_x1,model_full,test="LRT")[2,4]
 }
 ```
-
-##Alternative Way
-```{r}
-beta_0 = 0.4
-beta_1 = -0.35
-  
-beta_2_z_val = rep(0,2500)
-liklihood_test = rep(0,2500)
-for(i in (1:2500)){
-  y = rep(0,150)
-  for(j in (1:150)){
-    eta = beta_0 + beta_1 * x1[j] #simulate from this model
-    p = ( 1/(1+exp(-eta)) )
-    y[j] = rbinom(n = 1, size = 1, p)
-  }
-  model_full = glm(y ~ x1 + x2 + x3, family = binomial)
-  model_x1 = glm(y ~ x1, family = binomial)
-  beta_2_z_val[i] = summary(model_full)$coefficient[3,3]
-  liklihood_test[i] = anova(model_x1,model_full,test="LRT")[2,4]
-}
-```
-
 
 
 Store the test statistics for two tests:
@@ -104,7 +82,7 @@ Store the test statistics for two tests:
 - The Wald test for $H_0: \beta_2 = 0$, which we say follows a standard normal distribution for "large" samples
 
     ```{r}
-    head(beta_2_z_val,10)
+    head(wald_test,10)
     ```
 
 - The likelihood ratio test for $H_0: \beta_2 = \beta_3 = 0$, which we say follows a $\chi^2$ distribution (with some degrees of freedom) for "large" samples
@@ -118,12 +96,10 @@ Store the test statistics for two tests:
 ```{r}
 sample_data = seq(-4,4,length = 1000)
 sample_data_norm = dnorm(sample_data)
-```
 
-```{r}
 x = seq(-4,4,length = 1000)
 
-hist(beta_2_z_val,
+hist(wald_test,
      probability = TRUE,
      xlim = c(-4,4) , 
      ylim = c(0,0.4) ,
@@ -131,7 +107,7 @@ hist(beta_2_z_val,
      col="white",
      border="darkgrey",
      lwd = 2,
-     main = "Histogram of Wald Test"
+     main = "Empirical Distribution of Wald Test"
      )
 
 curve(dnorm(x),
@@ -146,16 +122,16 @@ curve(dnorm(x),
 
 ** **
 ```{r}
-mean (beta_2_z_val > 1)
+mean (wald_test > 1)
 ```
 
-The empirical results for the Wald test statistic to estimate the probability of observing a test statistic larger than 1 is **`r mean (beta_2_z_val > 1)`**
+The empirical results for the Wald test statistic to estimate the probability of observing a test statistic larger than 1 is **`r mean (wald_test > 1)`**
 
 ```{r}
 pnorm(1, mean = 0, sd = 1, lower.tail = FALSE)
 ```
 
-The probability using the true distribution of the test statistic assuming a large sample **`r pnorm(1, mean = 0, sd = 1, lower.tail = FALSE)`**
+The probability using the true distribution of the **wald test** statistic assuming a large sample is : **`r pnorm(1, mean = 0, sd = 1, lower.tail = FALSE)`**
 
 
 **(d)** Plot a histogram of the empirical values for the likelihood ratio test statistic. Overlay the density of the true distribution assuming a large sample.
@@ -165,13 +141,13 @@ x = seq(-4, 4 , length = 1000)
 
 hist(liklihood_test,
      xlim = c(-1,12) ,
-     xlab = "Likelihood Ration Test" ,
+     xlab = "Likelihood Ratio Test" ,
      ylim = c(0,0.5) ,
      probability = TRUE,
      col="white",
      border="darkgrey",
      lwd = 2,
-     main = "Histogram of Likelihood Ratio Test"
+     main = "Empirical Distribution of Likelihood Ratio Test"
      )
 
 curve(dchisq(x, df = 2),
@@ -179,6 +155,7 @@ curve(dchisq(x, df = 2),
       col = "dodgerblue",
       add = TRUE)
 ```
+
 **(e)** Use the empirical results for the likelihood ratio test statistic to estimate the probability of observing a test statistic larger than 5. Also report this probability using the true distribution of the test statistic assuming a large sample.
 
 
@@ -186,12 +163,14 @@ curve(dchisq(x, df = 2),
 mean (liklihood_test > 5)
 ```
 
-The empirical results for the likelihood ratio test statistic to estimate the probability of observing a test statistic larger than 5 is **`r pchisq(5, df = 2, ncp = 0, lower.tail = FALSE, log.p = FALSE)`**
+The empirical results for the **likelihood ratio test statistic** to estimate the probability of observing a test statistic larger than 5 is **`r pchisq(5, df = 2, ncp = 0, lower.tail = FALSE, log.p = FALSE)`**
 
 
 ```{r}
 pchisq(5, df = 2, ncp = 0, lower.tail = FALSE, log.p = FALSE)
 ```
+
+The probability using the true distribution of the **likelihood ratio test statistic** statistic assuming a large sample is : **`r pchisq(5, df = 2, ncp = 0, lower.tail = FALSE, log.p = FALSE)`**
 
 **(f)** Repeat **(a)**-**(e)** but with simulation using a smaller sample size of 10. Based on these results, is this sample size large enough to use the standard normal and $\chi^2$ distributions in this situation? Explain.
 
@@ -203,71 +182,132 @@ x2 = rnorm(n = sample_size)
 x3 = rnorm(n = sample_size)
 ```
 
-**Simulate for sample size = 10**
+**Simulate, for sample size = 10**
 ```{r warning=FALSE}
 
 beta_0 = 0.4
 beta_1 = -0.35
   
-beta_2_z_val = rep(0,2500)
+wald_test = rep(0,2500)
 liklihood_test = rep(0,2500)
 for(i in (1:2500)){
   eta = beta_0 + beta_1 * x1 #simulate from this model
   p = ( 1/(1+exp(-eta)) )
   y = rbinom(n = sample_size, size = 1, p)
   model_full = glm(y ~ x1 + x2 + x3, family = binomial)
-  beta_2_z_val[i] = summary(model_full)$coefficient[3,3]
-  model_x1 = glm(y ~ x1, family = binomial) 
+  model_x1 = glm(y ~ x1, family = binomial)   
+  wald_test[i] = summary(model_full)$coefficient[3,3]
   liklihood_test[i] = anova(model_x1,model_full,test="LRT")[2,4]
 }
 ```
 
-**z distribution and Likelihood Ratio Test**
-```{r fig.height=5, fig.width=10}
+
+Store the test statistics for two tests:
+
+- The Wald test for $H_0: \beta_2 = 0$, which we say follows a standard normal distribution for "small" samples (Size = 10)
+
+    ```{r}
+    head(wald_test,10)
+    ```
+
+- The likelihood ratio test for $H_0: \beta_2 = \beta_3 = 0$, which we say follows a $\chi^2$ distribution (with some degrees of freedom) for "small" samples (Size = 10)
+
+    ```{r}
+    head(liklihood_test,10)
+    ```
+
+**Plot a histogram of the empirical values for the Wald test statistic. Overlay the density of the true distribution assuming a small sample (Size = 10)**
+
+```{r}
+sample_data = seq(-4,4,length = 1000)
+sample_data_norm = dnorm(sample_data)
+
 x = seq(-4,4,length = 1000)
 
-par(mfrow = c(1,2))
-
-hist(beta_2_z_val,
+hist(wald_test,
      probability = TRUE,
-     xlim = c(-4,4) , 
-     ylim = c(0,0.4) ,
+     xlim = c(-2,2) , 
+     #ylim = c(0,0.4) ,
      xlab = "z value" ,
      col="white",
      border="darkgrey",
      lwd = 2,
-     main = "Histogram of Wald Test"
+     main = "Empirical Distribution of Wald Test"
      )
 
 curve(dnorm(x),
       lwd=2,
       col = "dodgerblue",
       add = TRUE)
+```
+
+
+**Comments**
+
+It seems with lower the sample size, the wald test statistics distribution **doesn't follow a normal distribution**. This is because of the fact that, lower the number of sample size is not enough to produce the correct empirical distribution of the wald test distribution.
+
+
+**Empirical results for the Wald test statistic to estimate the probability of observing a test statistic larger than 1**
+
+```{r}
+mean (wald_test > 1)
+```
+
+The empirical results for the Wald test statistic to estimate the probability of observing a test statistic larger than 1 is **`r mean (wald_test > 1)`**
+
+**Report the probability using the true distribution of the test statistic assuming a small sample (Size = 10)**
+
+```{r}
+pnorm(1, mean = 0, sd = 1, lower.tail = FALSE)
+```
+
+The probability using the true distribution of the **wald test** statistic assuming a large sample is : **`r pnorm(1, mean = 0, sd = 1, lower.tail = FALSE)`**
+
+
+**Plot a histogram of the empirical values for the likelihood ratio test statistic. Overlay the density of the true distribution assuming a small sample (Size = 10)**
+
+```{r}
+x = seq(-4, 4 , length = 1000)
 
 hist(liklihood_test,
      xlim = c(-1,12) ,
-     xlab = "Likelihood Ratio - Deviance Val" ,
+     xlab = "Likelihood Ratio Test" ,
      ylim = c(0,0.5) ,
      probability = TRUE,
      col="white",
      border="darkgrey",
      lwd = 2,
-     main = "Histogram of Likelihood Ratio Test"
+     main = "Empirical Distribution of Likelihood Ratio Test"
      )
 
 curve(dchisq(x, df = 2),
       lwd=2,
       col = "dodgerblue",
       add = TRUE)
-
 ```
 
-
-It seems with lower the sample size, the wald test statistics distribution **doesn't follow a normal distribution**. This is because of the fact that, lower the number of sample size is not enough to produce the correct empirical distribution of the wald test distribution.
+**Comments**
 
 In the same way, the Likelihood Ratio test statistics distribution **doesn't follow a χ2 distribution**. This is because of the fact that, lower the number of sample size is not enough to produce the correct empirical distribution of the Likelihood test distribution.
 
 
+**Empirical results for the likelihood ratio test statistic to estimate the probability of observing a test statistic larger than 5**
+
+```{r}
+mean (liklihood_test > 5)
+```
+
+The empirical results for the **likelihood ratio test statistic** to estimate the probability of observing a test statistic larger than 5 is **`r pchisq(5, df = 2, ncp = 0, lower.tail = FALSE, log.p = FALSE)`**
+
+
+**Report this probability using the true distribution of the test statistic assuming a small sample (Size = 10)**
+
+```{r}
+pchisq(5, df = 2, ncp = 0, lower.tail = FALSE, log.p = FALSE)
+```
+
+The probability using the true distribution of the **likelihood ratio test statistic** statistic assuming a large sample is : **`r pchisq(5, df = 2, ncp = 0, lower.tail = FALSE, log.p = FALSE)`**
+ 
 ***
 
 ## Exercise 2 (Surviving the Titanic)
@@ -329,12 +369,14 @@ $$
 
 - The test statistic of the test
 
-    Since there are 2 parameters in the null hypothesis, we will do the **likelihood ratio test statistic** by creating the null and full model as below 
+    Since there are 2 parameters to test the significance and are nested, we will do the **likelihood ratio test statistic** by creating the null and full model as below 
 
     **Full and null model**
     ```{r}
     full_model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = binomial)
+    full_model
     null_model = glm(survived ~ sex + age + sex:age, data = ptitanic_trn, family = binomial)
+    null_model
     ```
     
     **Likelihood Ratio Test Statistics**
@@ -356,11 +398,11 @@ $$
     anova(null_model, full_model, test = "LRT")[,'Pr(>Chi)'][2] > 0.01
     ```
 
-    Since the P value of the Likelihood Ratio Test Statistics is  `r anova(null_model, full_model, test = "LRT")[,'Pr(>Chi)'][2]` **< 0.01 ($\alpha$)**, we **reject the null hypothesis**, we reject the hypothesis that $H_0 : \beta_1 = \beta_2 = 0$
+    Since the P value of the Likelihood Ratio Test Statistics is  very very small `r anova(null_model, full_model, test = "LRT")[,'Pr(>Chi)'][2]` **< 0.01 ($\alpha$)**, we **reject the null hypothesis**, we reject the hypothesis that $\beta_1 = \beta_2 = 0$
 
 - A practical conclusion
 
-    Since we **reject the null hypothesis** from the Likelihood Ratio Test Statistics, hence class played a **significant role** in surviving on the Titanic, hence we will keep the class in the model which helps to predict the survival of the people
+    Since we **reject the null hypothesis** from the Likelihood Ratio Test Statistics, hence class played a **significant role** for surviving people on the Titanic, hence we will keep the class in the model which helps to predict the survival of the people
 
 
 **(c)** Use the model fit in **(a)** and an appropriate statistical test to determine if an interaction between age and sex played a significant role in surviving on the Titanic. Use $\alpha = 0.01$. Report:
@@ -393,7 +435,8 @@ $$
     Since the p-value from the **wald test** is **`r summary(full_model)$coefficient['sexmale:age','Pr(>|z|)']`** > 0.01 ($\alpha$), we **failed to reject the significance of interaction between age & sex**, means we keep $\beta_5 = 0$
 
 - A practical conclusion
-    Since we **failed to reject** $\beta_5 = 0$, the interaction of age and sex is not significance to predict the survival of the people, and hence shouldn't be included in the model
+
+    Since we **failed to reject** $\beta_5 = 0$, the interaction of age and sex is not significance, hence the interaction between Age and Sex is ** not significant role** for surviving people on the Titanic, should excluded from the model
 
 
 **(d)** Use the model fit in **(a)** as a classifier that seeks to minimize the misclassification rate. Classify each of the passengers in the test dataset. Report the misclassification rate, the sensitivity, and the specificity of this classifier. (Use survived as the positive class.)
@@ -403,15 +446,21 @@ $$
 model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = binomial)
 ```
 
+**Clasify each passenger in the PTitanic Test Dataset**
+```{r}
+test_predict = ifelse(predict(model,ptitanic_tst) > 0 , "survived", "died")
+head(test_predict,10)
+```
+
 **Mis-classification rate from PTitanic Test Dataset**
 ```{r}
 #testing mis-classification rate
-mean(ifelse(predict(model,ptitanic_tst) > 0 , "survived", "died") != ptitanic_tst$survived)
+mean(test_predict != ptitanic_tst$survived)
 ```
 
-The mis-classification rate from the ptitanic test datset is : **`r mean(ifelse(predict(model,ptitanic_tst) > 0 , "survived", "died") != ptitanic_tst$survived)`**
+The mis-classification rate from the ptitanic test datset is : **`r mean(test_predict != ptitanic_tst$survived)`**
 
-**Function for Confusion matrix, Sensitivity and Specificity
+**Function for Confusion matrix, Sensitivity and Specificity**
 ```{r}
 #Confusion matrix creation
 make_conf_mat = function(predicted, actual){
@@ -432,7 +481,6 @@ get_spec = function(conf_mat){
 
 **Sensitivity from PTitanic Test Dataset**
 ```{r}
-test_predict = ifelse(predict(model, ptitanic_tst, type = "response") > 0.5 , "survived", "died")
 conf_mat_predict = make_conf_mat(predicted = test_predict, actual = ptitanic_tst$survived)
 get_sens(conf_mat_predict)
 ```
@@ -441,7 +489,6 @@ The sensitivity of the Test dataset is : **`r get_sens(conf_mat_predict)`**
 
 **Specificity from PTitanic Test Dataset**
 ```{r}
-test_predict = ifelse(predict(model, ptitanic_tst, type = "response") > 0.5 , "survived", "died")
 conf_mat_predict = make_conf_mat(predicted = test_predict, actual = ptitanic_tst$survived)
 get_spec(conf_mat_predict)
 ```
@@ -457,10 +504,10 @@ For this exercise we will use data found in [`wisc-train.csv`](wisc-train.csv) a
 - [UCI Page](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic))
 - [Data Detail](https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.names)
 
-```{r}
-wisc_train = read.csv("wisc-train.csv")
-wisc_test = read.csv("wisc-test.csv")
-```
+    ```{r}
+    wisc_train = read.csv("wisc-train.csv")
+    wisc_test = read.csv("wisc-test.csv")
+    ```
 
 You should consider coercing the response to be a factor variable if it is not stored as one after importing the data.
 
@@ -468,49 +515,63 @@ You should consider coercing the response to be a factor variable if it is not s
 
 - An additive model that uses `radius`, `smoothness`, and `texture` as predictors
 
-```{r}
-model1 = glm(class ~ radius + smoothness + texture, data = wisc_train, family = binomial)
-```
+    ```{r}
+    model1 = glm(class ~ radius + smoothness + texture, data = wisc_train, family = binomial)
+    model1
+    ```
 
 - An additive model that uses all available predictors
 
-```{r}
-model2 = glm(class ~ ., data = wisc_train, family = binomial)
-```
+    ```{r}
+    model2 = glm(class ~ ., data = wisc_train, family = binomial)
+    model2
+    ```
 
 
 - A model chosen via backwards selection using AIC. Use a model that considers all available predictors as well as their two-way interactions for the start of the search.
 
-```{r warning=FALSE}
-model = glm(class ~ . + . ^ 2, data = wisc_train, family = binomial)
-model3 = step(model, direction = "backward", trace = 0)
-```
+    ```{r warning=FALSE}
+    model = glm(class ~ . + . ^ 2, data = wisc_train, family = binomial)
+    model3 = step(model, direction = "backward", trace = 0)
+    model3
+    ```
 
 For each, obtain a 5-fold cross-validated misclassification rate using the model as a classifier that seeks to minimize the misclassification rate. Based on this, which model is best? Relative to the best, are the other two underfitting or over fitting? Report the test misclassification rate for the model you picked as the best.
-
-```{r}
-#training mis-classification rate
-mean(ifelse(predict(model1,wisc_train) > 0 , "M", "B") != wisc_train$class)
-mean(ifelse(predict(model2,wisc_train) > 0 , "M", "B") != wisc_train$class)
-mean(ifelse(predict(model3,wisc_train) > 0 , "M", "B") != wisc_train$class)
-```
 
 ```{r warning=FALSE}
 #Cross-Validation
 library(boot)
-cv.glm(wisc_train,model1, K = 5)$delta[1]
-cv.glm(wisc_train,model2, K = 5)$delta[1]
-cv.glm(wisc_train,model3, K = 5)$delta[1]
+set.seed(42)
+cv_model1 = cv.glm(wisc_train,model1, K = 5)$delta[1]
+cv_model1
+set.seed(42)
+cv_model2 = cv.glm(wisc_train,model2, K = 5)$delta[1]
+cv_model2
+set.seed(42)
+cv_model3 = cv.glm(wisc_train,model3, K = 5)$delta[1]
+cv_model3
 ```
 
-From the above, it seems that the best model is **`model 1`** that is the additive model that uses `radius`, `smoothness`, and `texture` as predictors, because the 5 fold cross validation mis-classification error rate is **`r cv.glm(wisc_train,model1, K = 5)$delta[1]`**
+```{r}
+library(knitr)
+cv_model = data.frame(
+  Model = c("Model 1", "Model 2", "Model 3"),
+  Fold_5_CV_Score = c(cv_model1,cv_model2,cv_model3)
+)
+kable(cv_model, format = "pandoc",padding = 2)
+```
+
+From the above, it seems that the best model is **`model 1`**, that is the additive model that uses `radius`, `smoothness`, and `texture` as predictors, because the 5 fold cross validation mis-classification error rate is **`r cv_model1`** (**which is the lowest among the 3 models**)
+
+Relative to the best model (**`model 1`**), it seems both the model (**`model 2`**  and **`model 3`**) are overfitting.  The reason behind is, both the models (**`model 2`**  and **`model 3`**) have higher number of parameters (**`model 2`** number of parameters = **`r length(summary(model2)$coefficient[,1])`**, **`model 3`** number of parameters = **`r length(summary(model3)$coefficient[,1])`**) as compared to the the best model (`Model 1` number of parameter = **`r length(summary(model1)$coefficient[,1])`**), also have high 5 fold cross validation (**`model 2`** 5 fold cv score = `r cv_model2`, **`model 3`** number of parameters = `r cv_model3`) as compared to the best model **`model 1`** whose 5 fold cv score = **`r cv_model1`**.
 
 
+**Best Model (Model 1) Misclassification Rate**
 ```{r warning=FALSE}
 mean(ifelse(predict(model1,wisc_test) > 0 , "M", "B") != wisc_test$class)
 ```
 
-The best model Test Misclassification rate is **`r mean(ifelse(predict(model1,wisc_test) > 0 , "M", "B") != wisc_test$class)`**
+The best model (i.e. **`Model 1`**) Test Misclassification rate is **`r mean(ifelse(predict(model1,wisc_test) > 0 , "M", "B") != wisc_test$class)`**
 
 **(b)** In this situation, simply minimizing misclassifications might be a bad goal since false positives and false negatives carry very different consequences. Consider the `M` class as the "positive" label. Consider each of the probabilities stored in `cutoffs` in the creation of a classifier using the **additive** model fit in **(a)**.
 
@@ -576,5 +637,11 @@ lines(spec_99~cutoffs,type = "l",col = "dodgerblue", lwd = 2, lty = 1)
 legend("topright", legend = c("Sensitivity", "Specificity"), col=c("darkorange","dodgerblue"),lty = c(1,1))
 ```
 
-Based on the above plot, it seems that the best threshold to clasify the Model is **0.81**, where the Sensitivity crossed the Specificitiy)
+```{r}
+which.min(abs(sens_99 - spec_99))
+cutoffs[which.min(abs(sens_99 - spec_99))]
+```
+
+
+Based on the above plot, it seems that the best threshold to clasify the Model is **`r cutoffs[which.min(abs(sens_99 - spec_99))]`**, where the Sensitivity crossed the Specificitiy. This is point where the Sensitivity is minimum and specificity is maximum at its best
 
