@@ -163,7 +163,7 @@ curve(dchisq(x, df = 2),
 mean (liklihood_test > 5)
 ```
 
-The empirical results for the **likelihood ratio test statistic** to estimate the probability of observing a test statistic larger than 5 is **`r pchisq(5, df = 2, ncp = 0, lower.tail = FALSE, log.p = FALSE)`**
+The empirical results for the **likelihood ratio test statistic** to estimate the probability of observing a test statistic larger than 5 is **`r mean (liklihood_test > 5)`**
 
 
 ```{r}
@@ -232,7 +232,7 @@ hist(wald_test,
      col="white",
      border="darkgrey",
      lwd = 2,
-     main = "Empirical Distribution of Wald Test"
+     main = "Empirical Distribution of Wald Test (Small Sample Size = 10)"
      )
 
 curve(dnorm(x),
@@ -277,7 +277,7 @@ hist(liklihood_test,
      col="white",
      border="darkgrey",
      lwd = 2,
-     main = "Empirical Distribution of Likelihood Ratio Test"
+     main = "Empirical Distribution of Likelihood Ratio Test  (Small Sample Size = 10)"
      )
 
 curve(dchisq(x, df = 2),
@@ -297,7 +297,7 @@ In the same way, the Likelihood Ratio test statistics distribution **doesn't fol
 mean (liklihood_test > 5)
 ```
 
-The empirical results for the **likelihood ratio test statistic** to estimate the probability of observing a test statistic larger than 5 is **`r pchisq(5, df = 2, ncp = 0, lower.tail = FALSE, log.p = FALSE)`**
+The empirical results for the **likelihood ratio test statistic** to estimate the probability of observing a test statistic larger than 5 is **`r mean (liklihood_test > 5)`**
 
 
 **Report this probability using the true distribution of the test statistic assuming a small sample (Size = 10)**
@@ -371,10 +371,14 @@ $$
 
     Since there are 2 parameters to test the significance and are nested, we will do the **likelihood ratio test statistic** by creating the null and full model as below 
 
-    **Full and null model**
+    **Full model**
     ```{r}
     full_model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = binomial)
     full_model
+    ```
+    
+     **null model**
+    ```{r}
     null_model = glm(survived ~ sex + age + sex:age, data = ptitanic_trn, family = binomial)
     null_model
     ```
@@ -402,7 +406,7 @@ $$
 
 - A practical conclusion
 
-    Since we **reject the null hypothesis** from the Likelihood Ratio Test Statistics, hence class played a **significant role** for surviving people on the Titanic, hence we will keep the class in the model which helps to predict the survival of the people
+    Since we **reject the null hypothesis** from the Likelihood Ratio Test Statistics, hence class played a **significant role** for surviving people on the Titanic, hence we will keep the `class` in the model which helps to predict the survival of the people
 
 
 **(c)** Use the model fit in **(a)** and an appropriate statistical test to determine if an interaction between age and sex played a significant role in surviving on the Titanic. Use $\alpha = 0.01$. Report:
@@ -436,7 +440,7 @@ $$
 
 - A practical conclusion
 
-    Since we **failed to reject** $\beta_5 = 0$, the interaction of age and sex is not significance, hence the interaction between Age and Sex is ** not significant role** for surviving people on the Titanic, should excluded from the model
+    Since we **failed to reject** $\beta_5 = 0$, the interaction of age and sex is not significance, hence the interaction between Age and Sex is **not significant role** for surviving people on the Titanic, should excluded from the model
 
 
 **(d)** Use the model fit in **(a)** as a classifier that seeks to minimize the misclassification rate. Classify each of the passengers in the test dataset. Report the misclassification rate, the sensitivity, and the specificity of this classifier. (Use survived as the positive class.)
