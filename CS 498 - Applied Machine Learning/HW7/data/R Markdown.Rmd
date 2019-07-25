@@ -1,0 +1,37 @@
+---
+title: "My First RMarkdown Document"
+author: "Sushanta Panda"
+date: "5/17/2019"
+output: 
+  html_document: 
+    theme: journal
+    toc: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+## Creation of a Matix
+
+This is a creation of a **Matrix** Example
+```{r echo=FALSE}
+example = list(
+a = c(1,22,33,44),
+b = TRUE,
+c = c("Sushanta","Panda"),
+d = function (arg=32){ print (arg) } ,
+e = diag(5)
+)
+
+example$a
+```
+
+```{r}
+example$a
+y
+```
+
+
+
+
+
+

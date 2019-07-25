@@ -216,7 +216,7 @@ Store the test statistics for two tests:
     head(liklihood_test,10)
     ```
 
-**Plot a histogram of the empirical values for the Wald test statistic. Overlay the density of the true distribution assuming a small sample (Size = 10)**
+**Plot a histogram of the empirical values for the Wald test statistic. Overlay the density of the true distribution assuming a large sample**
 
 ```{r}
 sample_data = seq(-4,4,length = 1000)
@@ -226,6 +226,7 @@ x = seq(-4,4,length = 1000)
 
 hist(wald_test,
      probability = TRUE,
+     cex.main = 1,
      xlim = c(-2,2) , 
      #ylim = c(0,0.4) ,
      xlab = "z value" ,
@@ -255,7 +256,7 @@ mean (wald_test > 1)
 
 The empirical results for the Wald test statistic to estimate the probability of observing a test statistic larger than 1 is **`r mean (wald_test > 1)`**
 
-**Report the probability using the true distribution of the test statistic assuming a small sample (Size = 10)**
+**Report the probability using the true distribution of the test statistic assuming a large sample**
 
 ```{r}
 pnorm(1, mean = 0, sd = 1, lower.tail = FALSE)
@@ -264,13 +265,14 @@ pnorm(1, mean = 0, sd = 1, lower.tail = FALSE)
 The probability using the true distribution of the **wald test** statistic assuming a large sample is : **`r pnorm(1, mean = 0, sd = 1, lower.tail = FALSE)`**
 
 
-**Plot a histogram of the empirical values for the likelihood ratio test statistic. Overlay the density of the true distribution assuming a small sample (Size = 10)**
+**Plot a histogram of the empirical values for the likelihood ratio test statistic. Overlay the density of the true distribution assuming a large sample**
 
 ```{r}
 x = seq(-4, 4 , length = 1000)
 
 hist(liklihood_test,
-     xlim = c(-1,12) ,
+     xlim = c(-1,15) ,
+     cex.main = 1,
      xlab = "Likelihood Ratio Test" ,
      ylim = c(0,0.5) ,
      probability = TRUE,
@@ -300,7 +302,7 @@ mean (liklihood_test > 5)
 The empirical results for the **likelihood ratio test statistic** to estimate the probability of observing a test statistic larger than 5 is **`r mean (liklihood_test > 5)`**
 
 
-**Report this probability using the true distribution of the test statistic assuming a small sample (Size = 10)**
+**Report this probability using the true distribution of the test statistic assuming a large sample**
 
 ```{r}
 pchisq(5, df = 2, ncp = 0, lower.tail = FALSE, log.p = FALSE)

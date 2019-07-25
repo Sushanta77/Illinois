@@ -1,0 +1,1264 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{HW8}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{Homework 8 - Artificial Neural Networks with
+PyTorch}\label{homework-8---artificial-neural-networks-with-pytorch}
+
+    \subsection{About}\label{about}
+
+    \subsubsection{In this homework, you will get your feet wet with deep
+learning using the PyTorch deep learning platform. This will
+involve:}\label{in-this-homework-you-will-get-your-feet-wet-with-deep-learning-using-the-pytorch-deep-learning-platform.-this-will-involve}
+
+\begin{itemize}
+\tightlist
+\item
+  Preparing data
+\item
+  Learning about the components of a deep learning pipeline
+\item
+  Setting up a model, a loss function, and an optimizer
+\item
+  Setting up training and testing loops
+\item
+  Using a visualizer like tensorboard to monitor logged data
+\end{itemize}
+
+\emph{This homework is due \textbf{April 15th 2019}. Training neural
+networks takes some time, particularly on CPUs so start early.}
+
+    \subsection{Dev Environment}\label{dev-environment}
+
+\subsubsection{Working on Google Colab}\label{working-on-google-colab}
+
+You may choose to work locally or on Google Colaboratory. You have
+access to free compute through this service. 1. Visit
+https://colab.research.google.com/drive 2. Navigate to the
+\textbf{\texttt{Upload}} tab, and upload your \texttt{HW8.ipynb} 3. Now
+on the top right corner, under the \texttt{Comment} and \texttt{Share}
+options, you should see a \texttt{Connect} option. Once you are
+connected, you will have access to a VM with 12GB RAM, 50 GB disk space
+and a single GPU. The dropdown menu will allow you to connect to a local
+runtime as well.
+
+\textbf{Notes:} * \textbf{If you do not have a working setup for Python
+3, this is your best bet. It will also save you from heavy installations
+like \texttt{tensorflow} if you don't want to deal with those.} *
+\textbf{\emph{There is a downside}. You can only use this instance for a
+single 12-hour stretch, after which your data will be deleted, and you
+would have redownload all your datasets, any libraries not already on
+the VM, and regenerate your logs}.
+
+\subsubsection{Installing PyTorch and
+Dependencies}\label{installing-pytorch-and-dependencies}
+
+The instructions for installing and setting up PyTorch can be found at
+https://pytorch.org/get-started/locally/. Make sure you follow the
+instructions for your machine. For any of the remaining libraries used
+in this assignment: * We have provided a \texttt{hw8\_requirements.txt}
+file on the homework web page. * Download this file, and in the same
+directory you can run \texttt{pip3\ install\ -r\ hw8\_requirements.txt}
+
+Check that PyTorch installed correctly by running the following:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{torch}
+        \PY{n}{torch}\PY{o}{.}\PY{n}{rand}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}1}]:} tensor([[4.5023e-01, 2.1756e-01, 5.8787e-01],
+                [1.0168e-02, 4.6840e-01, 8.1920e-01],
+                [9.9459e-01, 8.3979e-01, 4.2514e-01],
+                [8.3438e-01, 3.1956e-01, 3.0030e-01],
+                [2.0281e-01, 8.4286e-01, 1.1098e-04]])
+\end{Verbatim}
+            
+    The output should look something like
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tensor([[}\FloatTok{0.3380}\NormalTok{, }\FloatTok{0.3845}\NormalTok{, }\FloatTok{0.3217}\NormalTok{],}
+\NormalTok{        [}\FloatTok{0.8337}\NormalTok{, }\FloatTok{0.9050}\NormalTok{, }\FloatTok{0.2650}\NormalTok{],}
+\NormalTok{        [}\FloatTok{0.2979}\NormalTok{, }\FloatTok{0.7141}\NormalTok{, }\FloatTok{0.9069}\NormalTok{],}
+\NormalTok{        [}\FloatTok{0.1449}\NormalTok{, }\FloatTok{0.1132}\NormalTok{, }\FloatTok{0.1375}\NormalTok{],}
+\NormalTok{        [}\FloatTok{0.4675}\NormalTok{, }\FloatTok{0.3947}\NormalTok{, }\FloatTok{0.1426}\NormalTok{]])}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Let's get started with the
+assignment.}\label{lets-get-started-with-the-assignment.}
+
+    \subsection{Instructions}\label{instructions}
+
+\subsubsection{Part 1 - Datasets and Dataloaders (10
+points)}\label{part-1---datasets-and-dataloaders-10-points}
+
+In this section we will download the MNIST dataset using PyTorch's own
+API.
+
+Helpful Resources: *
+https://pytorch.org/docs/stable/torchvision/datasets.html\#mnist *
+https://pytorch.org/docs/stable/torchvision/transforms.html *
+https://pytorch.org/tutorials/beginner/data\_loading\_tutorial.html
+
+The \texttt{torchvision} package consists of popular datasets, model
+architectures, and common image transformations for computer vision. We
+are particularly concerned with \texttt{torchvision.datasets} and
+\texttt{torchvision.transforms}. Check out the API for these modules in
+the links provided above.
+
+\textbf{Create a directory named \texttt{hw8\_data} with the following
+command}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{o}{!}mkdir hw8\PYZus{}data
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+mkdir: hw8\_data: File exists
+
+    \end{Verbatim}
+
+    \textbf{Now use \texttt{torch.datasets.MNIST} to load the Train and Test
+data into \texttt{hw8\_data}.} * ** Use the directory you created above
+as the \texttt{root} directory for your datasets\textbf{ * } Populate
+the \texttt{transformations} variable with any transformations you would
+like to perform on your data.** (Hint: You will need to do at least one)
+* \textbf{Pass your \texttt{transformations} variable to
+\texttt{torch.datasets.MNIST}. This allows you to perform arbitrary
+transformations to your data at loading time.}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{k+kn}{from} \PY{n+nn}{torchvision} \PY{k}{import} \PY{n}{datasets}\PY{p}{,} \PY{n}{transforms}
+        
+        \PY{c+c1}{\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}}
+        \PY{n}{transformations} \PY{o}{=} \PY{n}{transforms}\PY{o}{.}\PY{n}{Compose}\PY{p}{(}\PY{p}{[}\PY{n}{transforms}\PY{o}{.}\PY{n}{ToTensor}\PY{p}{(}\PY{p}{)}\PY{p}{]}\PY{p}{)}
+        \PY{n}{mnist\PYZus{}train} \PY{o}{=} \PY{n}{datasets}\PY{o}{.}\PY{n}{MNIST}\PY{p}{(}\PY{n}{root}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{./hw8\PYZus{}data}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{train}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}\PY{n}{download}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}\PY{n}{transform}\PY{o}{=}\PY{n}{transformations}\PY{p}{)} 
+        \PY{n}{mnist\PYZus{}test} \PY{o}{=} \PY{n}{datasets}\PY{o}{.}\PY{n}{MNIST}\PY{p}{(}\PY{n}{root}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{./hw8\PYZus{}data}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{train}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,}\PY{n}{download}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}\PY{n}{transform}\PY{o}{=}\PY{n}{transformations}\PY{p}{)}
+\end{Verbatim}
+
+
+    Check that your torch datasets have been successfully downloaded into
+your data directory by running the next two cells.
+
+\begin{itemize}
+\tightlist
+\item
+  Each will output some metadata about your dataset.
+\item
+  Check that the training set has 60000 datapoints and a
+  \texttt{Root\ Location:\ hw8\_data}
+\item
+  Check that the testing (\textbf{also validation in our case}) set has
+  10000 datapoints and \texttt{Root\ Location:\ hw8\_data}
+\end{itemize}
+
+    Notice that these datasets implement the python \texttt{\_\_len\_\_} and
+\texttt{\_\_getitem\_\_} functions. Each element in the dataset should
+be a 2-tuple. What does yours look like?
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{mnist\PYZus{}train}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{mnist\PYZus{}train}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+        \PY{n}{mnist\PYZus{}train}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+60000
+2
+
+    \end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}4}]:} Dataset MNIST
+            Number of datapoints: 60000
+            Split: train
+            Root Location: ./hw8\_data
+            Transforms (if any): Compose(
+                                     ToTensor()
+                                 )
+            Target Transforms (if any): None
+\end{Verbatim}
+            
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{mnist\PYZus{}test}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{mnist\PYZus{}test}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+        \PY{n}{mnist\PYZus{}test}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+10000
+2
+
+    \end{Verbatim}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}5}]:} Dataset MNIST
+            Number of datapoints: 10000
+            Split: test
+            Root Location: ./hw8\_data
+            Transforms (if any): Compose(
+                                     ToTensor()
+                                 )
+            Target Transforms (if any): None
+\end{Verbatim}
+            
+    \textbf{Any file in our dataset will now be read at runtime, and the
+specified transformations we need on it will be applied when we need
+it.}.
+
+We could iterate through these directly using a loop, but this is not
+idiomatic. PyTorch provides us with this abstraction in the form of
+\texttt{DataLoaders}. The module of interest is
+\texttt{torch.utils.data.DataLoader}.
+
+\texttt{DataLoader} allows us to do lots of useful things * Group our
+data into batches * Shuffle our data * Load the data in parallel using
+\texttt{multiprocessing} workers
+
+\textbf{Use \texttt{DataLoader} to create a loader for the training set
+and one for the testing set} * \textbf{Use a \texttt{batch\_size} of 32
+to start, you may change it if you wish.} * \textbf{Set the
+\texttt{shuffle} parameter to \texttt{True}.}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{k+kn}{from} \PY{n+nn}{torch}\PY{n+nn}{.}\PY{n+nn}{utils}\PY{n+nn}{.}\PY{n+nn}{data} \PY{k}{import} \PY{n}{DataLoader}
+        
+        \PY{c+c1}{\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}}
+        \PY{n}{train\PYZus{}loader} \PY{o}{=} \PY{n}{DataLoader}\PY{p}{(}\PY{n}{mnist\PYZus{}train}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{shuffle}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{num\PYZus{}workers}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+        \PY{n}{test\PYZus{}loader} \PY{o}{=} \PY{n}{DataLoader}\PY{p}{(}\PY{n}{mnist\PYZus{}test}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{shuffle}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{num\PYZus{}workers}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+
+
+    The following function is adapted from \texttt{show\_landmarks\_batch}
+at
+https://pytorch.org/tutorials/beginner/data\_loading\_tutorial.html\#iterating-through-the-dataset
+.
+
+Run the following cell to see that your loader provides a random
+\texttt{batch\_size} number of data points.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+        \PY{k+kn}{from} \PY{n+nn}{torchvision} \PY{k}{import} \PY{n}{utils}
+        \PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+        
+        \PY{k}{def} \PY{n+nf}{show\PYZus{}mnist\PYZus{}batch}\PY{p}{(}\PY{n}{sample\PYZus{}batched}\PY{p}{)}\PY{p}{:}
+            \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}Show images for a batch of samples.\PYZdq{}\PYZdq{}\PYZdq{}}
+            \PY{n}{images\PYZus{}batch} \PY{o}{=} \PY{n}{sample\PYZus{}batched}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+            \PY{n}{batch\PYZus{}size} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{images\PYZus{}batch}\PY{p}{)}
+            \PY{n}{im\PYZus{}size} \PY{o}{=} \PY{n}{images\PYZus{}batch}\PY{o}{.}\PY{n}{size}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+        
+            \PY{n}{grid} \PY{o}{=} \PY{n}{utils}\PY{o}{.}\PY{n}{make\PYZus{}grid}\PY{p}{(}\PY{n}{images\PYZus{}batch}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{grid}\PY{o}{.}\PY{n}{numpy}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{transpose}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+            \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Batch from DataLoader}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            
+        \PY{c+c1}{\PYZsh{} Displays the first batch of images}
+        \PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{batch} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{train\PYZus{}loader}\PY{p}{)}\PY{p}{:}
+            \PY{k}{if} \PY{n}{i}\PY{o}{==}\PY{l+m+mi}{1}\PY{p}{:}
+                \PY{k}{break}
+            \PY{n}{show\PYZus{}mnist\PYZus{}batch}\PY{p}{(}\PY{n}{batch}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_17_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{Part 2 - Models, Loss Functions and Optimizers (10
+points)}\label{part-2---models-loss-functions-and-optimizers-10-points}
+
+In this section, we will do the following: * Learn about how to build
+your deep learning model and define its parameters * Choose a loss
+function to optimize * Choose an optimization method to
+maximize/minimize the loss
+
+We'll first start with a single layer neural network to do handwritten
+digit classification. The math may ring some bells from homework 7.
+
+\texttt{torch.nn} is the module we will be using here. You can find the
+API at https://pytorch.org/docs/stable/nn.html. There is also a quick
+summary at
+https://pytorch.org/tutorials/beginner/nn\_tutorial.html\#closing\_thoughts.
+
+\paragraph{Models}\label{models}
+
+We will use the following python modules in building our one layer
+model.
+
+\begin{itemize}
+\item
+  \texttt{torch.nn.Module}: Your model will be abstracted as a python
+  class. Your python class must subclass \texttt{torch.nn.Module}. It is
+  the base class for all neural network modules in PyTorch (Do not
+  confuse python modules with PyTorch Modules). These implement the
+  \texttt{forward()} function which defines how your model handles input
+  and produces an output. Your model class can also have
+  \texttt{torch.nn.Module}s as members, allowing nested tree like
+  structures, and it is leveraging this that you are able to build
+  neural networks in PyTorch.
+\item
+  \texttt{torch.nn.Linear}: A unit of computation in neural networks are
+  \emph{Layers} and PyTorch provides abstractions for layers as
+  \texttt{nn.Modules}. These come in many forms including
+  \emph{Convolutional}, \emph{Recurrent}, and \emph{Linear}. You can
+  find the API for linear layers here
+  https://pytorch.org/docs/stable/nn.html\#linear-layers.
+\end{itemize}
+
+\textbf{Now use the information provided to define the
+\texttt{OneLayerModel} class below. The superclass constructor has been
+called for you, and this allows your subclass to access superclass
+methods and members.} * \textbf{Finish the \texttt{\_\_init\_\_()}
+function.} * \textbf{Finish the \texttt{forward()} function.} (Hint: Use
+that fact that layer modules implement their own \texttt{forward()}
+function)
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{k+kn}{from} \PY{n+nn}{torch} \PY{k}{import} \PY{n}{nn}
+        \PY{k}{class} \PY{n+nc}{OneLayerModel}\PY{p}{(}\PY{n}{nn}\PY{o}{.}\PY{n}{Module}\PY{p}{)}\PY{p}{:}
+            \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{input\PYZus{}dim}\PY{p}{,} \PY{n}{output\PYZus{}dim}\PY{p}{)}\PY{p}{:}
+                \PY{n+nb}{super}\PY{p}{(}\PY{n}{OneLayerModel}\PY{p}{,} \PY{n+nb+bp}{self}\PY{p}{)}\PY{o}{.}\PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{p}{)}
+                \PY{c+c1}{\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{layer1} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{Sequential}\PY{p}{(}
+                    \PY{n}{nn}\PY{o}{.}\PY{n}{Conv2d}\PY{p}{(}\PY{n}{in\PYZus{}channels}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{out\PYZus{}channels}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{,} \PY{n}{kernel\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{,} \PY{n}{stride}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{padding}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,}
+                    \PY{n}{nn}\PY{o}{.}\PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+                    \PY{n}{nn}\PY{o}{.}\PY{n}{MaxPool2d}\PY{p}{(}\PY{n}{kernel\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{stride}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+                \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{fc} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{Linear}\PY{p}{(}\PY{l+m+mi}{14}\PY{o}{*}\PY{l+m+mi}{14}\PY{o}{*}\PY{l+m+mi}{16}\PY{p}{,} \PY{n}{output\PYZus{}dim}\PY{p}{)}
+                
+            \PY{k}{def} \PY{n+nf}{forward}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{x}\PY{p}{)}\PY{p}{:}
+                \PY{c+c1}{\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}}
+                \PY{n}{out} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{layer1}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+                \PY{n}{out} \PY{o}{=} \PY{n}{out}\PY{o}{.}\PY{n}{view}\PY{p}{(}\PY{n}{out}\PY{o}{.}\PY{n}{size}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+                \PY{n}{out} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{fc}\PY{p}{(}\PY{n}{out}\PY{p}{)}
+                \PY{k}{return} \PY{n}{out}
+\end{Verbatim}
+
+
+    \paragraph{Loss Functions and
+Optimizers}\label{loss-functions-and-optimizers}
+
+You've defined your model but now what? It's just a black box that takes
+an input and spits out some numbers. You haven't yet defined what it
+means to be a good or bad model.
+
+A \textbf{\emph{Loss Function}} takes what your model outputs and
+compares it to what it \emph{should} have put out. It returns some
+meaningful value used to update your model parameters, and so train your
+model. Check out Section 21.2.1 of the textbook for more details about
+types of loss functions. The Loss function represents the overall goal
+of building this model, and the choice of loss function is very
+important.
+
+We must examine our model parameters and our problem instance to see
+about how to choose a loss function. * We take in a 784-dimensional
+vector and output 10 real values, giving our model 784 x 10 parameters.
+* It is natural given that our problem is an instance of
+\emph{multi-class classification} that we would want each of our output
+values to model \texttt{P(y==i\textbar{}x)}. * If we go this route, we
+get an added constraint that the sum of all 10 of our output values
+should be 1 (forming a probability mass distribution).
+
+Turns out there is a very convenient loss function for just our use case
+known as \textbf{\emph{cross-entropy loss}}. Check out this reference
+https://ml-cheatsheet.readthedocs.io/en/latest/loss\_functions.html\#cross-entropy
+for a little more intuition on this.
+
+Once again, PyTorch has abstractions built in for us in the
+\texttt{torch.nn} module, namely \texttt{torch.nn.CrossEntropyLoss}. The
+API can be found at
+https://pytorch.org/docs/stable/nn.html\#crossentropyloss.
+
+We're still not ready to train our model because while we have some
+parameters, and we have some measure of how good or bad our predictions
+are, we have no notion of how to go about updating our parameters in
+order to improve our loss.
+
+This is where \textbf{\emph{Optimizers}} come in. In general, we have
+one main way of minimizing loss functions (training our models), and
+that is through \emph{Stochastic Gradient Descent}
+https://en.wikipedia.org/wiki/Stochastic\_gradient\_descent. There are
+many variants and optimizations of this method, however, and the
+\texttt{torch.optim} package gives us abstractions for these. The API
+can be found at https://pytorch.org/docs/stable/optim.html\#.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{k+kn}{from} \PY{n+nn}{torch} \PY{k}{import} \PY{n}{optim}
+\end{Verbatim}
+
+
+    \subsubsection{Part 3 - Training and Validation (45
+points)}\label{part-3---training-and-validation-45-points}
+
+In this section we will learn how to use the concepts we've learned
+about so far to train the model we built, and validate how well it
+does.We also want to monitor how well our training is going while it is
+happening.
+
+For this we can use a package called \texttt{tensorboardX}. You will
+need to install this package using \texttt{pip} or \texttt{Anaconda},
+based on your dev environment. Additionally, we'll want to use a logging
+module called \texttt{tensorboardX.SummaryWriter}. You can consult the
+API here https://tensorboardx.readthedocs.io/en/latest/tutorial.html.
+Run the next cell to ensure that all is working well.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}10}]:} \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{} Try uncommenting these commands if you\PYZsq{}re facing issues here}
+         \PY{l+s+sd}{!pip3 install \PYZhy{}U protobuf}
+         \PY{l+s+sd}{!pip3 install \PYZhy{}U tensorflow}
+         \PY{l+s+sd}{!pip3 install \PYZhy{}U tensorboardX}
+         \PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}}
+         \PY{o}{\PYZpc{}}\PY{k}{load\PYZus{}ext} tensorboard.notebook
+         \PY{k+kn}{from} \PY{n+nn}{tensorboardX} \PY{k}{import} \PY{n}{SummaryWriter}
+\end{Verbatim}
+
+
+    We have provided the code to use \texttt{tensorboard} just before
+calling your \texttt{train} function. You don't have to change the
+top-level log directory, but you can create multiple runs (different
+parameters or versions of your code) just by creating subdirectories for
+these within your top-level directory.
+
+\textbf{Now use the information provided above to do the following:} *
+** Instantiate a \texttt{OneLayerModel} with the appropriate
+input/output parameters.\textbf{ * } Define a cross-entropy loss
+function.\textbf{ * } Define a stochastic gradient descent optimizer
+based for you model's parameters. Start with a learning rate of 0.001,
+and adjust as necessary. You can start with the vanilla
+\texttt{optim.SGD} optimizer, and change it if you wish.** *
+\textbf{Create a \texttt{SummaryWriter} object that will be responsible
+for logging our training progress into a directory called
+\texttt{logs/expt1} (Or whatever you wish your top-level directory to be
+called).}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}11}]:} \PY{c+c1}{\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}}
+         \PY{n}{model} \PY{o}{=} \PY{n}{OneLayerModel}\PY{p}{(}\PY{l+m+mi}{784}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}
+         \PY{n}{loss} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{CrossEntropyLoss}\PY{p}{(}\PY{p}{)}
+         \PY{n}{optimizer} \PY{o}{=} \PY{n}{optim}\PY{o}{.}\PY{n}{SGD}\PY{p}{(}\PY{n}{model}\PY{o}{.}\PY{n}{parameters}\PY{p}{(}\PY{p}{)}\PY{p}{,}\PY{n}{lr}\PY{o}{=}\PY{l+m+mf}{0.001}\PY{p}{)}
+         \PY{n}{writer} \PY{o}{=} \PY{n}{SummaryWriter}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{runs/expt1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    We've finally come to the point where we need to write our training set
+up. We're going to use both our training and testing (validation) sets
+for this. Note that traditionally, you would separate part of your
+training data into validation data in order to get an unbiased estimate
+of how your model performs, but here we'll just pretend that our testing
+data is our validation data.
+
+\textbf{Training a model with batches of data broadly involves the
+following steps:} 1. \textbf{One \texttt{epoch} is defined as a full
+pass of your dataset through your model. We choose the number of epochs
+we wish to train our model for.} 2. \textbf{In each epoch, set your
+model to train mode.} 3. \textbf{you feed your model
+\texttt{batch\_size} examples at a time, and receive
+\texttt{batch\_size} number of outputs until you've gotten through your
+entire dataset.} 4. \textbf{Calculate the loss function for those
+outputs given the labels for that batch.} 5. \textbf{Now calculate the
+gradients for each model parameter.} (Hint: Your loss function object
+can do this for you) 6. \textbf{Update your model parameters} (Hint: The
+optimizer comes in here) 7. \textbf{Set the gradients in your model to
+zero for the next batch.} 8. \textbf{After each epoch, set your model to
+evaluation mode.} 9. \textbf{Now evaluate your model on the validation
+data. Log the total loss and accuracy over the validation data.} (Note:
+PyTorch does automatic gradient calculations in the background through
+its \texttt{Autograd} mechanism
+https://pytorch.org/docs/stable/notes/autograd.html. Make sure to do
+evaluation in a context where this is turned off!)
+
+\textbf{Complete the \texttt{train()} function below. Try to make it as
+general as possible, so that it can be used for improved versions of you
+model. Feel free to define as many helper functions as needed.}
+\textbf{Make sure that you do the following: } * \textbf{Log the
+\emph{training loss} and \emph{training accuracy} on each batch for
+every epoch, such that it will show up on \texttt{tensorboard}.} *
+\textbf{Log the loss on the validation set and the accuracy on the
+validation set every epoch}
+
+\textbf{You will need to produce the plots for these.}
+
+You may also want to add some print statements in your training function
+to report progress in this notebook.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}12}]:} \PY{k}{def} \PY{n+nf}{train}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{train\PYZus{}loader}\PY{p}{,} \PY{n}{val\PYZus{}loader}\PY{p}{,} \PY{n}{loss\PYZus{}func}\PY{p}{,} \PY{n}{opt}\PY{p}{,}\PY{n}{num\PYZus{}epochs}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{writer}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}\PY{p}{:}
+             \PY{n}{total\PYZus{}step} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{train\PYZus{}loader}\PY{p}{)}
+             \PY{n}{iteration\PYZus{}train} \PY{o}{=} \PY{l+m+mi}{0}
+             \PY{n}{iteration\PYZus{}valid} \PY{o}{=} \PY{l+m+mi}{0}
+             \PY{n}{predicted\PYZus{}acc\PYZus{}train\PYZus{}batch}\PY{o}{=}\PY{l+m+mi}{0}
+             \PY{n}{predicted\PYZus{}acc\PYZus{}valid\PYZus{}batch}\PY{o}{=}\PY{l+m+mi}{0}
+         
+             \PY{k}{for} \PY{n}{epoch} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{num\PYZus{}epochs}\PY{p}{)}\PY{p}{:}
+                 \PY{c+c1}{\PYZsh{}Training Loss, Accuracy}
+                 \PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{p}{(}\PY{n}{image}\PY{p}{,}\PY{n}{label}\PY{p}{)} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{train\PYZus{}loader}\PY{p}{)}\PY{p}{:}
+                     \PY{n}{image} \PY{o}{=} \PY{n}{torch}\PY{o}{.}\PY{n}{autograd}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{image}\PY{o}{.}\PY{n}{float}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+                     \PY{n}{label} \PY{o}{=} \PY{n}{torch}\PY{o}{.}\PY{n}{autograd}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{label}\PY{p}{)}
+         
+                     \PY{c+c1}{\PYZsh{} Forward pass}
+                     \PY{n}{output} \PY{o}{=} \PY{n}{model}\PY{p}{(}\PY{n}{image}\PY{p}{)}
+                     \PY{n}{loss\PYZus{}epoch} \PY{o}{=} \PY{n}{loss\PYZus{}func}\PY{p}{(}\PY{n}{output}\PY{p}{,} \PY{n}{label}\PY{p}{)}
+                     
+                     \PY{c+c1}{\PYZsh{}Calculate Accuracy}
+                     \PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{predicted}\PY{o}{=}\PY{n}{torch}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{output}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+                     \PY{n}{predicted\PYZus{}acc\PYZus{}train} \PY{o}{=} \PY{p}{(}\PY{n}{predicted} \PY{o}{==} \PY{n}{label}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)}
+                     \PY{n}{predicted\PYZus{}acc\PYZus{}train\PYZus{}batch} \PY{o}{+}\PY{o}{=} \PY{n}{predicted\PYZus{}acc\PYZus{}train}
+         
+         
+                     \PY{c+c1}{\PYZsh{} Backward and optimize}
+                     \PY{n}{opt}\PY{o}{.}\PY{n}{zero\PYZus{}grad}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}Zero the Gradient}
+                     \PY{n}{loss\PYZus{}epoch}\PY{o}{.}\PY{n}{backward}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}Backward Propagation}
+                     \PY{n}{opt}\PY{o}{.}\PY{n}{step}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}Update the Optimizer Weight}
+                     
+                     \PY{n}{writer}\PY{o}{.}\PY{n}{add\PYZus{}scalar}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Train/Loss}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{loss\PYZus{}epoch}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{iteration\PYZus{}train}\PY{p}{)}
+                     \PY{n}{writer}\PY{o}{.}\PY{n}{add\PYZus{}scalar}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Train/Accuracy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{p}{(}\PY{n}{predicted} \PY{o}{==} \PY{n}{label}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{iteration\PYZus{}train}\PY{p}{)}
+         
+                     \PY{k}{if} \PY{p}{(}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{\PYZpc{}} \PY{l+m+mi}{100} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+                         \PY{n+nb}{print} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Epoch [}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{/}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{], Step [}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{/}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{], Train Loss: }\PY{l+s+si}{\PYZob{}:.4f\PYZcb{}}\PY{l+s+s1}{ Train Accuracy: }\PY{l+s+si}{\PYZob{}:.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}} 
+                                \PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{epoch}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{num\PYZus{}epochs}\PY{p}{,} \PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{total\PYZus{}step}\PY{p}{,} \PY{n}{loss\PYZus{}epoch}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)}\PY{p}{,}\PY{n}{predicted\PYZus{}acc\PYZus{}train}\PY{p}{)}\PY{p}{)}
+                     \PY{n}{iteration\PYZus{}train}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+                     
+                 \PY{c+c1}{\PYZsh{}Validation Loss, Accuracy    }
+                 \PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{p}{(}\PY{n}{image\PYZus{}val}\PY{p}{,}\PY{n}{label\PYZus{}val}\PY{p}{)} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{val\PYZus{}loader}\PY{p}{)}\PY{p}{:}
+                     \PY{n}{image\PYZus{}val} \PY{o}{=} \PY{n}{torch}\PY{o}{.}\PY{n}{autograd}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{image\PYZus{}val}\PY{o}{.}\PY{n}{float}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+                     \PY{n}{label\PYZus{}val} \PY{o}{=} \PY{n}{torch}\PY{o}{.}\PY{n}{autograd}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{label\PYZus{}val}\PY{p}{)}
+         
+                     \PY{c+c1}{\PYZsh{} Forward pass}
+                     \PY{n}{output\PYZus{}val} \PY{o}{=} \PY{n}{model}\PY{p}{(}\PY{n}{image\PYZus{}val}\PY{p}{)}
+                     \PY{n}{loss\PYZus{}epoch\PYZus{}val} \PY{o}{=} \PY{n}{loss\PYZus{}func}\PY{p}{(}\PY{n}{output\PYZus{}val}\PY{p}{,} \PY{n}{label\PYZus{}val}\PY{p}{)}
+                     
+                     \PY{c+c1}{\PYZsh{}Calculate Accuracy}
+                     \PY{n}{\PYZus{}}\PY{p}{,}\PY{n}{predicted\PYZus{}val}\PY{o}{=}\PY{n}{torch}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{n}{output\PYZus{}val}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}
+                     \PY{n}{predicted\PYZus{}acc\PYZus{}valid} \PY{o}{=} \PY{p}{(}\PY{n}{predicted} \PY{o}{==} \PY{n}{label}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)}
+                     \PY{n}{predicted\PYZus{}acc\PYZus{}valid\PYZus{}batch} \PY{o}{+}\PY{o}{=} \PY{n}{predicted\PYZus{}acc\PYZus{}valid}
+         
+         
+                     \PY{c+c1}{\PYZsh{} Backward and optimize}
+                     \PY{n}{opt}\PY{o}{.}\PY{n}{zero\PYZus{}grad}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}Zero the Gradient}
+                     \PY{n}{loss\PYZus{}epoch\PYZus{}val}\PY{o}{.}\PY{n}{backward}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}Backward Propagation}
+                     \PY{n}{opt}\PY{o}{.}\PY{n}{step}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}Update the Optimizer Weight}
+                     
+                     \PY{k}{if} \PY{p}{(}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{o}{\PYZpc{}} \PY{l+m+mi}{100} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+                         \PY{n+nb}{print} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Epoch [}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{/}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{], Step [}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{/}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s1}{], Valid Loss: }\PY{l+s+si}{\PYZob{}:.4f\PYZcb{}}\PY{l+s+s1}{ Valid Accuracy: }\PY{l+s+si}{\PYZob{}:.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}} 
+                                \PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{epoch}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{num\PYZus{}epochs}\PY{p}{,} \PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{total\PYZus{}step}\PY{p}{,} \PY{n}{loss\PYZus{}epoch\PYZus{}val}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)}\PY{p}{,}\PY{n}{predicted\PYZus{}acc\PYZus{}valid}\PY{p}{)}\PY{p}{)}
+                         
+                 \PY{n}{writer}\PY{o}{.}\PY{n}{add\PYZus{}scalar}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Validation/Loss}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{loss\PYZus{}epoch\PYZus{}val}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{epoch}\PY{p}{)}
+                 \PY{n}{writer}\PY{o}{.}\PY{n}{add\PYZus{}scalar}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Validation/Accuracy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{p}{(}\PY{n}{predicted\PYZus{}val} \PY{o}{==} \PY{n}{label\PYZus{}val}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{epoch}\PY{p}{)}
+                 
+             \PY{n+nb}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Train \PYZhy{} Average Accuracy:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{predicted\PYZus{}acc\PYZus{}train\PYZus{}batch}\PY{o}{/}\PY{p}{(}\PY{n}{num\PYZus{}epochs}\PY{o}{*}\PY{n+nb}{len}\PY{p}{(}\PY{n}{train\PYZus{}loader}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+             \PY{n+nb}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Test \PYZhy{} Average Accuracy:}\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{predicted\PYZus{}acc\PYZus{}valid\PYZus{}batch}\PY{o}{/}\PY{p}{(}\PY{n}{num\PYZus{}epochs}\PY{o}{*}\PY{n+nb}{len}\PY{p}{(}\PY{n}{val\PYZus{}loader}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+    Finally call \texttt{train} with the relevant parameters. Run the
+tensorboard command on your top-level logs directory to monitor
+training. If there is logging data from a previous run, just delete the
+directory for the run, and reinstantiate the \texttt{SummaryWriter} for
+that run. (You may want to reinstantiate the model itself if you want to
+clear the model parameters too).
+
+Note : This function may take a while to complete if you're training for
+many epochs on a cpu. This is where it comes in handy to be running on
+Google Colab, or just have a GPU on hand.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{c+c1}{\PYZsh{}\PYZpc{}tensorboard \PYZhy{}\PYZhy{}logdir=runs}
+         \PY{n}{train}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{train\PYZus{}loader}\PY{p}{,} \PY{n}{test\PYZus{}loader}\PY{p}{,} \PY{n}{loss}\PY{p}{,} \PY{n}{optimizer}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{,} \PY{n}{writer}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch [1/15], Step [100/600], Train Loss: 2.2235 Train Accuracy: 37.00
+Epoch [1/15], Step [200/600], Train Loss: 2.1442 Train Accuracy: 57.00
+Epoch [1/15], Step [300/600], Train Loss: 2.0691 Train Accuracy: 60.00
+Epoch [1/15], Step [400/600], Train Loss: 1.9175 Train Accuracy: 75.00
+Epoch [1/15], Step [500/600], Train Loss: 1.8516 Train Accuracy: 72.00
+Epoch [1/15], Step [600/600], Train Loss: 1.7468 Train Accuracy: 79.00
+Epoch [1/15], Step [100/600], Valid Loss: 1.5935 Valid Accuracy: 79.00
+Epoch [2/15], Step [100/600], Train Loss: 1.4673 Train Accuracy: 71.00
+Epoch [2/15], Step [200/600], Train Loss: 1.2637 Train Accuracy: 81.00
+Epoch [2/15], Step [300/600], Train Loss: 1.2051 Train Accuracy: 75.00
+Epoch [2/15], Step [400/600], Train Loss: 1.1222 Train Accuracy: 77.00
+Epoch [2/15], Step [500/600], Train Loss: 0.9440 Train Accuracy: 80.00
+Epoch [2/15], Step [600/600], Train Loss: 0.9053 Train Accuracy: 80.00
+Epoch [2/15], Step [100/600], Valid Loss: 0.8358 Valid Accuracy: 80.00
+Epoch [3/15], Step [100/600], Train Loss: 0.7402 Train Accuracy: 83.00
+Epoch [3/15], Step [200/600], Train Loss: 0.7890 Train Accuracy: 82.00
+Epoch [3/15], Step [300/600], Train Loss: 0.6907 Train Accuracy: 85.00
+Epoch [3/15], Step [400/600], Train Loss: 0.6620 Train Accuracy: 84.00
+Epoch [3/15], Step [500/600], Train Loss: 0.6087 Train Accuracy: 84.00
+Epoch [3/15], Step [600/600], Train Loss: 0.5862 Train Accuracy: 83.00
+Epoch [3/15], Step [100/600], Valid Loss: 0.5029 Valid Accuracy: 83.00
+Epoch [4/15], Step [100/600], Train Loss: 0.7295 Train Accuracy: 84.00
+Epoch [4/15], Step [200/600], Train Loss: 0.5334 Train Accuracy: 90.00
+Epoch [4/15], Step [300/600], Train Loss: 0.5117 Train Accuracy: 87.00
+Epoch [4/15], Step [400/600], Train Loss: 0.4921 Train Accuracy: 87.00
+Epoch [4/15], Step [500/600], Train Loss: 0.4383 Train Accuracy: 91.00
+Epoch [4/15], Step [600/600], Train Loss: 0.4578 Train Accuracy: 88.00
+Epoch [4/15], Step [100/600], Valid Loss: 0.5096 Valid Accuracy: 88.00
+Epoch [5/15], Step [100/600], Train Loss: 0.5453 Train Accuracy: 89.00
+Epoch [5/15], Step [200/600], Train Loss: 0.4459 Train Accuracy: 88.00
+Epoch [5/15], Step [300/600], Train Loss: 0.4983 Train Accuracy: 86.00
+Epoch [5/15], Step [400/600], Train Loss: 0.4272 Train Accuracy: 92.00
+Epoch [5/15], Step [500/600], Train Loss: 0.3217 Train Accuracy: 94.00
+Epoch [5/15], Step [600/600], Train Loss: 0.4678 Train Accuracy: 88.00
+Epoch [5/15], Step [100/600], Valid Loss: 0.3788 Valid Accuracy: 88.00
+Epoch [6/15], Step [100/600], Train Loss: 0.4026 Train Accuracy: 90.00
+Epoch [6/15], Step [200/600], Train Loss: 0.4934 Train Accuracy: 88.00
+Epoch [6/15], Step [300/600], Train Loss: 0.3911 Train Accuracy: 88.00
+Epoch [6/15], Step [400/600], Train Loss: 0.3767 Train Accuracy: 90.00
+Epoch [6/15], Step [500/600], Train Loss: 0.3883 Train Accuracy: 88.00
+Epoch [6/15], Step [600/600], Train Loss: 0.5105 Train Accuracy: 85.00
+Epoch [6/15], Step [100/600], Valid Loss: 0.4426 Valid Accuracy: 85.00
+Epoch [7/15], Step [100/600], Train Loss: 0.3262 Train Accuracy: 92.00
+Epoch [7/15], Step [200/600], Train Loss: 0.3972 Train Accuracy: 89.00
+Epoch [7/15], Step [300/600], Train Loss: 0.4497 Train Accuracy: 86.00
+Epoch [7/15], Step [400/600], Train Loss: 0.4553 Train Accuracy: 91.00
+Epoch [7/15], Step [500/600], Train Loss: 0.3061 Train Accuracy: 95.00
+Epoch [7/15], Step [600/600], Train Loss: 0.3935 Train Accuracy: 87.00
+Epoch [7/15], Step [100/600], Valid Loss: 0.3309 Valid Accuracy: 87.00
+Epoch [8/15], Step [100/600], Train Loss: 0.2840 Train Accuracy: 93.00
+Epoch [8/15], Step [200/600], Train Loss: 0.3149 Train Accuracy: 91.00
+Epoch [8/15], Step [300/600], Train Loss: 0.4048 Train Accuracy: 90.00
+Epoch [8/15], Step [400/600], Train Loss: 0.4253 Train Accuracy: 87.00
+Epoch [8/15], Step [500/600], Train Loss: 0.2602 Train Accuracy: 95.00
+Epoch [8/15], Step [600/600], Train Loss: 0.4154 Train Accuracy: 87.00
+Epoch [8/15], Step [100/600], Valid Loss: 0.3288 Valid Accuracy: 87.00
+Epoch [9/15], Step [100/600], Train Loss: 0.4371 Train Accuracy: 87.00
+Epoch [9/15], Step [200/600], Train Loss: 0.5010 Train Accuracy: 86.00
+Epoch [9/15], Step [300/600], Train Loss: 0.6438 Train Accuracy: 84.00
+Epoch [9/15], Step [400/600], Train Loss: 0.2669 Train Accuracy: 91.00
+Epoch [9/15], Step [500/600], Train Loss: 0.3175 Train Accuracy: 93.00
+Epoch [9/15], Step [600/600], Train Loss: 0.3795 Train Accuracy: 88.00
+Epoch [9/15], Step [100/600], Valid Loss: 0.1654 Valid Accuracy: 88.00
+Epoch [10/15], Step [100/600], Train Loss: 0.3641 Train Accuracy: 91.00
+Epoch [10/15], Step [200/600], Train Loss: 0.2129 Train Accuracy: 95.00
+Epoch [10/15], Step [300/600], Train Loss: 0.2941 Train Accuracy: 89.00
+Epoch [10/15], Step [400/600], Train Loss: 0.3033 Train Accuracy: 90.00
+Epoch [10/15], Step [500/600], Train Loss: 0.3745 Train Accuracy: 92.00
+Epoch [10/15], Step [600/600], Train Loss: 0.4020 Train Accuracy: 87.00
+Epoch [10/15], Step [100/600], Valid Loss: 0.4408 Valid Accuracy: 87.00
+Epoch [11/15], Step [100/600], Train Loss: 0.3380 Train Accuracy: 91.00
+Epoch [11/15], Step [200/600], Train Loss: 0.4202 Train Accuracy: 89.00
+Epoch [11/15], Step [300/600], Train Loss: 0.3946 Train Accuracy: 89.00
+Epoch [11/15], Step [400/600], Train Loss: 0.4581 Train Accuracy: 86.00
+Epoch [11/15], Step [500/600], Train Loss: 0.4628 Train Accuracy: 91.00
+Epoch [11/15], Step [600/600], Train Loss: 0.3604 Train Accuracy: 90.00
+Epoch [11/15], Step [100/600], Valid Loss: 0.5274 Valid Accuracy: 90.00
+Epoch [12/15], Step [100/600], Train Loss: 0.4118 Train Accuracy: 89.00
+Epoch [12/15], Step [200/600], Train Loss: 0.4359 Train Accuracy: 88.00
+Epoch [12/15], Step [300/600], Train Loss: 0.3359 Train Accuracy: 91.00
+Epoch [12/15], Step [400/600], Train Loss: 0.3319 Train Accuracy: 93.00
+Epoch [12/15], Step [500/600], Train Loss: 0.3332 Train Accuracy: 92.00
+Epoch [12/15], Step [600/600], Train Loss: 0.2867 Train Accuracy: 92.00
+Epoch [12/15], Step [100/600], Valid Loss: 0.4182 Valid Accuracy: 92.00
+Epoch [13/15], Step [100/600], Train Loss: 0.3321 Train Accuracy: 92.00
+Epoch [13/15], Step [200/600], Train Loss: 0.4304 Train Accuracy: 86.00
+Epoch [13/15], Step [300/600], Train Loss: 0.4540 Train Accuracy: 89.00
+Epoch [13/15], Step [400/600], Train Loss: 0.4773 Train Accuracy: 87.00
+Epoch [13/15], Step [500/600], Train Loss: 0.2207 Train Accuracy: 94.00
+Epoch [13/15], Step [600/600], Train Loss: 0.3059 Train Accuracy: 89.00
+Epoch [13/15], Step [100/600], Valid Loss: 0.3157 Valid Accuracy: 89.00
+Epoch [14/15], Step [100/600], Train Loss: 0.1831 Train Accuracy: 94.00
+Epoch [14/15], Step [200/600], Train Loss: 0.3283 Train Accuracy: 89.00
+Epoch [14/15], Step [300/600], Train Loss: 0.3746 Train Accuracy: 89.00
+Epoch [14/15], Step [400/600], Train Loss: 0.4691 Train Accuracy: 87.00
+Epoch [14/15], Step [500/600], Train Loss: 0.2706 Train Accuracy: 94.00
+Epoch [14/15], Step [600/600], Train Loss: 0.3622 Train Accuracy: 88.00
+Epoch [14/15], Step [100/600], Valid Loss: 0.3466 Valid Accuracy: 88.00
+Epoch [15/15], Step [100/600], Train Loss: 0.2660 Train Accuracy: 93.00
+Epoch [15/15], Step [200/600], Train Loss: 0.3929 Train Accuracy: 84.00
+Epoch [15/15], Step [300/600], Train Loss: 0.5776 Train Accuracy: 87.00
+Epoch [15/15], Step [400/600], Train Loss: 0.3012 Train Accuracy: 91.00
+Epoch [15/15], Step [500/600], Train Loss: 0.3223 Train Accuracy: 90.00
+Epoch [15/15], Step [600/600], Train Loss: 0.3072 Train Accuracy: 90.00
+Epoch [15/15], Step [100/600], Valid Loss: 0.2340 Valid Accuracy: 90.00
+Train - Average Accuracy:86.04622222222223
+Test - Average Accuracy:86.73333333333333
+
+    \end{Verbatim}
+
+    \textbf{Final Validation Loss:} \emph{0.2340}
+
+\textbf{Final Validation Accuracy:} \emph{86.73}
+
+    \paragraph{What is familiar about a 1-layer neural network with
+cross-entopy loss? Have you seen this
+before?}\label{what-is-familiar-about-a-1-layer-neural-network-with-cross-entopy-loss-have-you-seen-this-before}
+
+    Answer: One Layer Deep Learning is is like logistic regression, where
+the loss is the cross entropy is the cost, where as in logistic
+regression the cost is the log loss, which needs to be minimize via the
+gradient descent
+
+    \subsubsection{Part 4 - Two Layer Neural Net (20
+points)}\label{part-4---two-layer-neural-net-20-points}
+
+The thing that makes neural networks really powerful is that they are
+able to do complex function approximation. As we saw earlier, we can
+organize the computation done in neural networks into units called
+\emph{layers}. In a general neural network, there is an \emph{input
+layer}, and an \emph{output layer}. These may be the same layer as they
+were in our previous example. When they are not the same, there are
+intermediate layers known as \emph{hidden layers}. These layers receive
+input from other layers and send their output to other layers.
+
+We have been dealing with a certain type of neural network known as a
+\textbf{fully connected} network. For our purposes, this just means that
+the output of the layer is just the dot product of its input \texttt{x},
+its weights \texttt{w} plus a bias term \texttt{b}, all wrapped in a
+non-linear \emph{activation function} \texttt{F}.
+
+\texttt{y\ =\ F(w\^{}T\ x\ +\ b)}.
+
+These non-linear activation functions are very important but where in
+our last neural network did we apply such a function? Implicitly we
+applied what's known as a \textbf{softmax activation} in order to
+compute cross-entropy loss
+https://en.wikipedia.org/wiki/Softmax\_function.
+
+We'll now try to create a neural network with one hidden layer. This
+means that we have to come up with an activation function for the output
+of that hidden layer. A famous, simple but powerful activation function
+is the \textbf{Rectified Linear Unit (ReLU)} function defined nas
+\texttt{ReLU(x)\ =\ max(x,0)}. We will use this on the output of the
+hidden layer.
+
+\texttt{torch.nn} has a module known as \texttt{nn.Sequential} that
+allows us to chain together other modules. This module implements a
+\texttt{forward()} function that automatically handles input-output
+connections etc. Check out the API at
+https://pytorch.org/docs/stable/nn.html\#sequential.
+
+\textbf{Just like you did with the single layer model, define a class
+\texttt{TwoLayerModel}, a neural network with ReLU activation for the
+hidden layer. \texttt{nn.Sequential} may come in handy.}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{k}{class} \PY{n+nc}{TwoLayerModel}\PY{p}{(}\PY{n}{nn}\PY{o}{.}\PY{n}{Module}\PY{p}{)}\PY{p}{:}
+             \PY{c+c1}{\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}}
+             \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+                 \PY{c+c1}{\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}        }
+                 \PY{n+nb}{super}\PY{p}{(}\PY{n}{TwoLayerModel}\PY{p}{,} \PY{n+nb+bp}{self}\PY{p}{)}\PY{o}{.}\PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{p}{)}
+                 \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{layer1} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{Sequential}\PY{p}{(}
+                     \PY{n}{nn}\PY{o}{.}\PY{n}{Conv2d}\PY{p}{(}\PY{n}{in\PYZus{}channels}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{out\PYZus{}channels}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{,} \PY{n}{kernel\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{,} \PY{n}{stride}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{padding}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,}
+                     \PY{n}{nn}\PY{o}{.}\PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+                     \PY{n}{nn}\PY{o}{.}\PY{n}{MaxPool2d}\PY{p}{(}\PY{n}{kernel\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{stride}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+                 \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{layer2} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{Sequential}\PY{p}{(}
+                     \PY{n}{nn}\PY{o}{.}\PY{n}{Conv2d}\PY{p}{(}\PY{n}{in\PYZus{}channels}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{,} \PY{n}{out\PYZus{}channels}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,} \PY{n}{kernel\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{,} \PY{n}{stride}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{padding}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,}
+                     \PY{n}{nn}\PY{o}{.}\PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+                     \PY{n}{nn}\PY{o}{.}\PY{n}{MaxPool2d}\PY{p}{(}\PY{n}{kernel\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{stride}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+                 \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{fc} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{Linear}\PY{p}{(}\PY{l+m+mi}{7}\PY{o}{*}\PY{l+m+mi}{7}\PY{o}{*}\PY{l+m+mi}{32}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}
+         
+             \PY{k}{def} \PY{n+nf}{forward}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{x}\PY{p}{)}\PY{p}{:}
+                 \PY{n}{out} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{layer1}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+                 \PY{n}{out} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{layer2}\PY{p}{(}\PY{n}{out}\PY{p}{)}
+                 \PY{n}{out} \PY{o}{=} \PY{n}{out}\PY{o}{.}\PY{n}{view}\PY{p}{(}\PY{n}{out}\PY{o}{.}\PY{n}{size}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+                 \PY{n}{out} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{fc}\PY{p}{(}\PY{n}{out}\PY{p}{)}
+                 \PY{k}{return} \PY{n}{out}
+\end{Verbatim}
+
+
+    \textbf{Once again use the information provided above to do the
+following:} * ** Instantiate a \texttt{TwoLayerModel} with the
+appropriate input/output/hidden layer parameters.\textbf{ * } Define a
+cross-entropy loss function again.\textbf{ * } Define a stochastic
+gradient descent optimizer based for you model's parameters. Start with
+a learning rate of 0.001, and adjust as necessary. You can start with
+the vanilla \texttt{optim.SGD} optimizer, and change it if you wish.** *
+\textbf{Create a \texttt{SummaryWriter} object that will be responsible
+for logging our training progress into a directory called
+\texttt{logs/expt2} (Or whatever you wish your top-level directory to be
+called, just make sure the subdirectory is different from your previous
+SummaryWriter).}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}15}]:} \PY{c+c1}{\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}}
+         \PY{n}{model2} \PY{o}{=} \PY{n}{TwoLayerModel}\PY{p}{(}\PY{p}{)}
+         \PY{n}{loss2} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{CrossEntropyLoss}\PY{p}{(}\PY{p}{)}
+         \PY{n}{optimizer2} \PY{o}{=} \PY{n}{optim}\PY{o}{.}\PY{n}{SGD}\PY{p}{(}\PY{n}{model2}\PY{o}{.}\PY{n}{parameters}\PY{p}{(}\PY{p}{)}\PY{p}{,}\PY{n}{lr}\PY{o}{=}\PY{l+m+mf}{0.001}\PY{p}{)}
+         \PY{n}{writer2} \PY{o}{=} \PY{n}{SummaryWriter}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{runs/expt2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    Call \texttt{train} on your two layer neural network.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}16}]:} \PY{c+c1}{\PYZsh{}\PYZpc{}tensorboard \PYZhy{}\PYZhy{}logdir=logs}
+         \PY{n}{train}\PY{p}{(}\PY{n}{model2}\PY{p}{,} \PY{n}{train\PYZus{}loader}\PY{p}{,} \PY{n}{test\PYZus{}loader}\PY{p}{,} \PY{n}{loss2}\PY{p}{,} \PY{n}{optimizer2}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{,} \PY{n}{writer2}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch [1/15], Step [100/600], Train Loss: 2.2927 Train Accuracy: 17.00
+Epoch [1/15], Step [200/600], Train Loss: 2.2861 Train Accuracy: 15.00
+Epoch [1/15], Step [300/600], Train Loss: 2.2611 Train Accuracy: 32.00
+Epoch [1/15], Step [400/600], Train Loss: 2.2571 Train Accuracy: 30.00
+Epoch [1/15], Step [500/600], Train Loss: 2.2269 Train Accuracy: 43.00
+Epoch [1/15], Step [600/600], Train Loss: 2.1910 Train Accuracy: 49.00
+Epoch [1/15], Step [100/600], Valid Loss: 2.1739 Valid Accuracy: 49.00
+Epoch [2/15], Step [100/600], Train Loss: 2.1400 Train Accuracy: 58.00
+Epoch [2/15], Step [200/600], Train Loss: 2.0904 Train Accuracy: 64.00
+Epoch [2/15], Step [300/600], Train Loss: 2.0611 Train Accuracy: 62.00
+Epoch [2/15], Step [400/600], Train Loss: 1.9422 Train Accuracy: 70.00
+Epoch [2/15], Step [500/600], Train Loss: 1.9164 Train Accuracy: 58.00
+Epoch [2/15], Step [600/600], Train Loss: 1.8313 Train Accuracy: 69.00
+Epoch [2/15], Step [100/600], Valid Loss: 1.6138 Valid Accuracy: 69.00
+Epoch [3/15], Step [100/600], Train Loss: 1.4102 Train Accuracy: 84.00
+Epoch [3/15], Step [200/600], Train Loss: 1.2166 Train Accuracy: 86.00
+Epoch [3/15], Step [300/600], Train Loss: 1.2213 Train Accuracy: 73.00
+Epoch [3/15], Step [400/600], Train Loss: 1.1045 Train Accuracy: 77.00
+Epoch [3/15], Step [500/600], Train Loss: 0.9397 Train Accuracy: 81.00
+Epoch [3/15], Step [600/600], Train Loss: 0.9216 Train Accuracy: 77.00
+Epoch [3/15], Step [100/600], Valid Loss: 0.7151 Valid Accuracy: 77.00
+Epoch [4/15], Step [100/600], Train Loss: 0.5763 Train Accuracy: 90.00
+Epoch [4/15], Step [200/600], Train Loss: 0.6485 Train Accuracy: 84.00
+Epoch [4/15], Step [300/600], Train Loss: 0.5305 Train Accuracy: 87.00
+Epoch [4/15], Step [400/600], Train Loss: 0.5805 Train Accuracy: 84.00
+Epoch [4/15], Step [500/600], Train Loss: 0.6219 Train Accuracy: 81.00
+Epoch [4/15], Step [600/600], Train Loss: 0.5575 Train Accuracy: 87.00
+Epoch [4/15], Step [100/600], Valid Loss: 0.5725 Valid Accuracy: 87.00
+Epoch [5/15], Step [100/600], Train Loss: 0.6238 Train Accuracy: 83.00
+Epoch [5/15], Step [200/600], Train Loss: 0.5569 Train Accuracy: 85.00
+Epoch [5/15], Step [300/600], Train Loss: 0.4133 Train Accuracy: 90.00
+Epoch [5/15], Step [400/600], Train Loss: 0.5493 Train Accuracy: 87.00
+Epoch [5/15], Step [500/600], Train Loss: 0.5474 Train Accuracy: 84.00
+Epoch [5/15], Step [600/600], Train Loss: 0.6361 Train Accuracy: 79.00
+Epoch [5/15], Step [100/600], Valid Loss: 0.3059 Valid Accuracy: 79.00
+Epoch [6/15], Step [100/600], Train Loss: 0.4983 Train Accuracy: 87.00
+Epoch [6/15], Step [200/600], Train Loss: 0.4570 Train Accuracy: 87.00
+Epoch [6/15], Step [300/600], Train Loss: 0.3164 Train Accuracy: 91.00
+Epoch [6/15], Step [400/600], Train Loss: 0.4774 Train Accuracy: 88.00
+Epoch [6/15], Step [500/600], Train Loss: 0.3349 Train Accuracy: 90.00
+Epoch [6/15], Step [600/600], Train Loss: 0.4775 Train Accuracy: 83.00
+Epoch [6/15], Step [100/600], Valid Loss: 0.4383 Valid Accuracy: 83.00
+Epoch [7/15], Step [100/600], Train Loss: 0.4088 Train Accuracy: 89.00
+Epoch [7/15], Step [200/600], Train Loss: 0.3550 Train Accuracy: 89.00
+Epoch [7/15], Step [300/600], Train Loss: 0.4949 Train Accuracy: 87.00
+Epoch [7/15], Step [400/600], Train Loss: 0.3513 Train Accuracy: 89.00
+Epoch [7/15], Step [500/600], Train Loss: 0.3289 Train Accuracy: 87.00
+Epoch [7/15], Step [600/600], Train Loss: 0.3020 Train Accuracy: 93.00
+Epoch [7/15], Step [100/600], Valid Loss: 0.4511 Valid Accuracy: 93.00
+Epoch [8/15], Step [100/600], Train Loss: 0.3177 Train Accuracy: 91.00
+Epoch [8/15], Step [200/600], Train Loss: 0.3968 Train Accuracy: 86.00
+Epoch [8/15], Step [300/600], Train Loss: 0.3108 Train Accuracy: 94.00
+Epoch [8/15], Step [400/600], Train Loss: 0.3302 Train Accuracy: 91.00
+Epoch [8/15], Step [500/600], Train Loss: 0.3488 Train Accuracy: 86.00
+Epoch [8/15], Step [600/600], Train Loss: 0.3277 Train Accuracy: 93.00
+Epoch [8/15], Step [100/600], Valid Loss: 0.3597 Valid Accuracy: 93.00
+Epoch [9/15], Step [100/600], Train Loss: 0.3223 Train Accuracy: 88.00
+Epoch [9/15], Step [200/600], Train Loss: 0.2453 Train Accuracy: 92.00
+Epoch [9/15], Step [300/600], Train Loss: 0.2388 Train Accuracy: 92.00
+Epoch [9/15], Step [400/600], Train Loss: 0.2983 Train Accuracy: 93.00
+Epoch [9/15], Step [500/600], Train Loss: 0.2927 Train Accuracy: 92.00
+Epoch [9/15], Step [600/600], Train Loss: 0.2417 Train Accuracy: 90.00
+Epoch [9/15], Step [100/600], Valid Loss: 0.2326 Valid Accuracy: 90.00
+Epoch [10/15], Step [100/600], Train Loss: 0.2004 Train Accuracy: 96.00
+Epoch [10/15], Step [200/600], Train Loss: 0.3469 Train Accuracy: 90.00
+Epoch [10/15], Step [300/600], Train Loss: 0.3349 Train Accuracy: 89.00
+Epoch [10/15], Step [400/600], Train Loss: 0.2954 Train Accuracy: 91.00
+Epoch [10/15], Step [500/600], Train Loss: 0.2824 Train Accuracy: 91.00
+Epoch [10/15], Step [600/600], Train Loss: 0.3007 Train Accuracy: 90.00
+Epoch [10/15], Step [100/600], Valid Loss: 0.2536 Valid Accuracy: 90.00
+Epoch [11/15], Step [100/600], Train Loss: 0.2985 Train Accuracy: 90.00
+Epoch [11/15], Step [200/600], Train Loss: 0.4555 Train Accuracy: 84.00
+Epoch [11/15], Step [300/600], Train Loss: 0.3079 Train Accuracy: 91.00
+Epoch [11/15], Step [400/600], Train Loss: 0.2449 Train Accuracy: 94.00
+Epoch [11/15], Step [500/600], Train Loss: 0.4347 Train Accuracy: 87.00
+Epoch [11/15], Step [600/600], Train Loss: 0.3192 Train Accuracy: 88.00
+Epoch [11/15], Step [100/600], Valid Loss: 0.1985 Valid Accuracy: 88.00
+Epoch [12/15], Step [100/600], Train Loss: 0.1998 Train Accuracy: 93.00
+Epoch [12/15], Step [200/600], Train Loss: 0.3037 Train Accuracy: 92.00
+Epoch [12/15], Step [300/600], Train Loss: 0.2325 Train Accuracy: 92.00
+Epoch [12/15], Step [400/600], Train Loss: 0.3287 Train Accuracy: 92.00
+Epoch [12/15], Step [500/600], Train Loss: 0.2334 Train Accuracy: 92.00
+Epoch [12/15], Step [600/600], Train Loss: 0.1752 Train Accuracy: 96.00
+Epoch [12/15], Step [100/600], Valid Loss: 0.1708 Valid Accuracy: 96.00
+Epoch [13/15], Step [100/600], Train Loss: 0.2985 Train Accuracy: 93.00
+Epoch [13/15], Step [200/600], Train Loss: 0.2625 Train Accuracy: 92.00
+Epoch [13/15], Step [300/600], Train Loss: 0.3705 Train Accuracy: 87.00
+Epoch [13/15], Step [400/600], Train Loss: 0.4439 Train Accuracy: 91.00
+Epoch [13/15], Step [500/600], Train Loss: 0.2111 Train Accuracy: 93.00
+Epoch [13/15], Step [600/600], Train Loss: 0.2728 Train Accuracy: 95.00
+Epoch [13/15], Step [100/600], Valid Loss: 0.4088 Valid Accuracy: 95.00
+Epoch [14/15], Step [100/600], Train Loss: 0.3413 Train Accuracy: 92.00
+Epoch [14/15], Step [200/600], Train Loss: 0.3355 Train Accuracy: 90.00
+Epoch [14/15], Step [300/600], Train Loss: 0.2359 Train Accuracy: 92.00
+Epoch [14/15], Step [400/600], Train Loss: 0.1929 Train Accuracy: 94.00
+Epoch [14/15], Step [500/600], Train Loss: 0.3230 Train Accuracy: 90.00
+Epoch [14/15], Step [600/600], Train Loss: 0.2833 Train Accuracy: 91.00
+Epoch [14/15], Step [100/600], Valid Loss: 0.1670 Valid Accuracy: 91.00
+Epoch [15/15], Step [100/600], Train Loss: 0.2471 Train Accuracy: 92.00
+Epoch [15/15], Step [200/600], Train Loss: 0.2221 Train Accuracy: 92.00
+Epoch [15/15], Step [300/600], Train Loss: 0.2104 Train Accuracy: 93.00
+Epoch [15/15], Step [400/600], Train Loss: 0.3717 Train Accuracy: 91.00
+Epoch [15/15], Step [500/600], Train Loss: 0.2633 Train Accuracy: 91.00
+Epoch [15/15], Step [600/600], Train Loss: 0.2869 Train Accuracy: 93.00
+Epoch [15/15], Step [100/600], Valid Loss: 0.3172 Valid Accuracy: 93.00
+Train - Average Accuracy:83.33888888888889
+Test - Average Accuracy:84.86666666666666
+
+    \end{Verbatim}
+
+    \textbf{Final Validation Loss:} \emph{0.3494}
+
+\textbf{Final Validation Accuracy:} \emph{84.87}
+
+    \paragraph{Did your accuracy on the validation set improve with multiple
+layers? Why do you think this is
+?}\label{did-your-accuracy-on-the-validation-set-improve-with-multiple-layers-why-do-you-think-this-is}
+
+Answer: Though the average accuracy have slighly lower in Two Layer
+model, the overall validation accuracy have increased (can be visible
+from the Tensorboard - Blue Line). The reason behibd is, as we have
+added more layer, the deep neural network learns more features about the
+input images, which will have better accuracy
+
+    \subsubsection{Part 5 - What is being learned at each layer? (10
+points)}\label{part-5---what-is-being-learned-at-each-layer-10-points}
+
+So what exactly are these weights that our network is learning at each
+layer? By conveniently picking our layer dimensions as perfect square
+numbers, we can try to visualize the weights learned at each layer as
+square images. Use the following function to do so for \emph{all
+interesting layers} across your models. Feel free to modify the function
+as you wish.
+
+\textbf{At the very least, you must generate:} 1. \textbf{The ten 28x28
+weight images learned by your one layer model.} 2. \textbf{The 256 28x28
+weight images learned by the hidden layer in your two-layer model.}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}20}]:} \PY{k}{def} \PY{n+nf}{visualize\PYZus{}layer\PYZus{}weights}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{layer\PYZus{}idx}\PY{p}{,} \PY{n}{num\PYZus{}images}\PY{p}{,} \PY{n}{image\PYZus{}dim}\PY{p}{,} \PY{n}{title}\PY{p}{)}\PY{p}{:}
+             \PY{c+c1}{\PYZsh{} Find number of rows and columns based on number of images}
+             \PY{k}{for} \PY{n}{d} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{num\PYZus{}images}\PY{p}{)}\PY{p}{:}
+                 \PY{n}{f} \PY{o}{=} \PY{n}{num\PYZus{}images}\PY{o}{/}\PY{n}{d}
+                 \PY{k}{if} \PY{n+nb}{int}\PY{p}{(}\PY{n}{f}\PY{p}{)}\PY{o}{==}\PY{n}{f}\PY{p}{:}
+                     \PY{n}{dim1} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{min}\PY{p}{(}\PY{n}{f}\PY{p}{,}\PY{n}{d}\PY{p}{)}\PY{p}{)}
+                     \PY{n}{dim2} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{max}\PY{p}{(}\PY{n}{f}\PY{p}{,}\PY{n}{d}\PY{p}{)}\PY{p}{)}
+                 \PY{k}{if} \PY{n}{d} \PY{o}{\PYZgt{}} \PY{n}{f}\PY{p}{:}
+                     \PY{k}{break}    
+             \PY{c+c1}{\PYZsh{} Plot weights as square images}
+             \PY{n}{fig}\PY{p}{,} \PY{n}{ax}  \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{dim1}\PY{p}{,} \PY{n}{dim2}\PY{p}{)}
+             
+             \PY{c+c1}{\PYZsh{} At least 1 inch by 1 inch images}
+             \PY{n}{fig}\PY{o}{.}\PY{n}{set\PYZus{}size\PYZus{}inches}\PY{p}{(}\PY{n}{dim2}\PY{p}{,} \PY{n}{dim1}\PY{p}{)}
+             \PY{n}{weights} \PY{o}{=} \PY{p}{(}\PY{n+nb}{list}\PY{p}{(}\PY{n}{model}\PY{o}{.}\PY{n}{parameters}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{[}\PY{n}{layer\PYZus{}idx}\PY{p}{]}\PY{p}{)}
+             \PY{n}{fig}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{n}{title}\PY{p}{)}
+             \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{dim1}\PY{p}{)}\PY{p}{:}
+                 \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{dim2}\PY{p}{)}\PY{p}{:}
+                     \PY{n}{ax}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{weights}\PY{p}{[}\PY{n}{dim2}\PY{o}{*}\PY{n}{i}\PY{o}{+}\PY{n}{j}\PY{p}{]}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{image\PYZus{}dim}\PY{p}{,}\PY{n}{image\PYZus{}dim}\PY{p}{)}\PY{o}{.}\PY{n}{detach}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{numpy}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}21}]:} \PY{n}{visualize\PYZus{}layer\PYZus{}weights}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Model \PYZhy{} One Layer}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}22}]:} \PY{n}{visualize\PYZus{}layer\PYZus{}weights}\PY{p}{(}\PY{n}{model2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Model \PYZhy{} Two Layer}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_44_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
