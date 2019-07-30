@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css">
+    <!-- Bootstrap for some additional components (toggle swtich) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://dimplejs.org/dist/dimple.v2.1.6.min.js"></script>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <div id="chartContainer">
+      <form class="form" id="toggleForm">
+        <div class="switch-field">
+        <!--   <div class="switch-title">Display Type</div> -->
+          <input type="radio" id="switch_left" name="switch" value="yes" checked/>
+          <label for="switch_left">Counts</label>
+          <input type="radio" id="switch_right" name="switch" value="no" />
+          <label for="switch_right">Percents</label>
+        </div>
+      </form>
+
+      <script src="createGenreChart.js"></script>
+      <div id= "explanation">
+        Based on data from IMDB collected with <a href="https://github.com/andreykurenkov/data-movies">this code</a>.
+        A single movie may be associated with zero, one, or multiple genres.
+      </div>
+    </div>
+  </body>
+</html>
