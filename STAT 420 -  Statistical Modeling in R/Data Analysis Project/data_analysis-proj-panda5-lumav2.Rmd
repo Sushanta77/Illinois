@@ -89,6 +89,13 @@ pairs(childfev[c('Age','FEV','Height','Sex','Smoker')], col = "darkgrey")
 
 From the pairs plot, it sees there is a clear signs of linear releationship between FEV and Height. However there is no clear sign of linear relationship between FEV and Age variable. The 2 categorical variable `Sex` and `Smoker` seems to have 2 distinct data. Let's explore this
 
+**Let's check the Correlation Matrix to explore what's the co-relation among the variables**
+```{r}
+cor(childfev[c('Age','Height','FEV')])
+```
+It seems that what the pair plot shows seems correct, from the corelation matrix it also suggests that `Age` and `Height` are higly corelation with `FEV` response, as well as among it self,  We need to explore the variance inflation factor (VIF) while creating our model in further.
+
+
 #####**Categorical Data of Sex and Smoker**
 ```{r}
 table(childfev$Sex)
