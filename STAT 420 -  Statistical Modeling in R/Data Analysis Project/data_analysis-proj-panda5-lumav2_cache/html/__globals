@@ -14,7 +14,7 @@ unnamed-chunk-13	sqrt	mean	resid	mlr_model	hatvalues
 unnamed-chunk-14	mlr_model	data.frame	c	sum	resid	sqrt	mean	hatvalues
 unnamed-chunk-15	library	knitr	kable	mlr_model
 unnamed-chunk-16	par	c	hist	childfev	FEV	log
-unnamed-chunk-17	quad_model	lm	FEV	Age	Height	Sex	Smoker	I	childfev	summary
+unnamed-chunk-17	quad_model	lm	FEV	Sex	Smoker	poly	Age	Height	childfev	summary
 unnamed-chunk-18	par	c	plot	resid	quad_model	fitted	abline	qqnorm	qqline
 unnamed-chunk-19	bptest	quad_model
 unnamed-chunk-20	shapiro.test	resid	quad_model
@@ -23,3 +23,66 @@ unnamed-chunk-22	sqrt	mean	sum	resid	quad_model
 unnamed-chunk-23	sqrt	mean	resid	quad_model	hatvalues
 unnamed-chunk-24	quad_model	data.frame	c	sum	resid	sqrt	mean	hatvalues
 unnamed-chunk-25	library	knitr	kable	quad_model
+unnamed-chunk-26	cube_model	lm	FEV	Sex	Smoker	poly	Age	Height	childfev	summary
+unnamed-chunk-27	par	c	plot	resid	cube_model	fitted	abline	qqnorm	qqline
+unnamed-chunk-28	bptest	cube_model
+unnamed-chunk-29	shapiro.test	resid	cube_model
+unnamed-chunk-30	sum	resid	cube_model
+unnamed-chunk-31	sqrt	mean	sum	resid	cube_model
+unnamed-chunk-32	sqrt	mean	resid	cube_model	hatvalues
+unnamed-chunk-33	cube_model	data.frame	c	sum	resid	sqrt	mean	hatvalues
+unnamed-chunk-34	library	knitr	kable	cube_model
+unnamed-chunk-35	high_model	lm	FEV	Sex	Smoker	poly	Age	Height	childfev	summary
+unnamed-chunk-36	par	c	plot	resid	high_model	fitted	abline	qqnorm	qqline
+unnamed-chunk-37	bptest	high_model
+unnamed-chunk-38	shapiro.test	resid	high_model
+unnamed-chunk-39	sum	resid	high_model
+unnamed-chunk-40	sqrt	mean	sum	resid	high_model
+unnamed-chunk-41	sqrt	mean	resid	high_model	hatvalues
+unnamed-chunk-42	high_model	data.frame	c	sum	resid	sqrt	mean	hatvalues
+unnamed-chunk-43	library	knitr	kable	high_model
+unnamed-chunk-44	two_int_model	lm	FEV	Age	Height	Sex	Smoker	childfev	summary
+unnamed-chunk-45	par	c	plot	resid	two_int_model	fitted	abline	qqnorm	qqline
+unnamed-chunk-46	bptest	two_int_model
+unnamed-chunk-47	shapiro.test	resid	two_int_model
+unnamed-chunk-48	sum	resid	two_int_model
+unnamed-chunk-49	sqrt	mean	sum	resid	two_int_model
+unnamed-chunk-50	sqrt	mean	resid	two_int_model	hatvalues
+unnamed-chunk-51	two_int_model	data.frame	c	sum	resid	sqrt	mean	hatvalues
+unnamed-chunk-52	library	knitr	kable	two_int_model
+unnamed-chunk-53	three_int_model	lm	FEV	Age	Height	Sex	Smoker	childfev	summary
+unnamed-chunk-54	par	c	plot	resid	three_int_model	fitted	abline	qqnorm	qqline
+unnamed-chunk-55	bptest	three_int_model
+unnamed-chunk-56	shapiro.test	resid	three_int_model
+unnamed-chunk-57	sum	resid	three_int_model
+unnamed-chunk-58	sqrt	mean	sum	resid	three_int_model
+unnamed-chunk-59	sqrt	mean	resid	three_int_model	hatvalues
+unnamed-chunk-60	three_int_model	data.frame	c	sum	resid	sqrt	mean	hatvalues
+unnamed-chunk-61	library	knitr	kable	three_int_model
+unnamed-chunk-62	four_int_model	lm	FEV	Age	Height	Sex	Smoker	childfev	summary
+unnamed-chunk-63	par	c	plot	resid	four_int_model	fitted	abline	qqnorm	qqline
+unnamed-chunk-64	bptest	four_int_model
+unnamed-chunk-65	shapiro.test	resid	four_int_model
+unnamed-chunk-66	sum	resid	four_int_model
+unnamed-chunk-67	sqrt	mean	sum	resid	four_int_model
+unnamed-chunk-68	sqrt	mean	resid	four_int_model	hatvalues
+unnamed-chunk-69	four_int_model	data.frame	c	sum	resid	sqrt	mean	hatvalues
+unnamed-chunk-70	library	knitr	kable	four_int_model
+unnamed-chunk-71	big_model	lm	FEV	Age	Height	Sex	Smoker	poly	childfev	summary
+unnamed-chunk-72	par	c	plot	resid	big_model	fitted	abline	qqnorm	qqline
+unnamed-chunk-73	bptest	big_model
+unnamed-chunk-74	shapiro.test	resid	big_model
+unnamed-chunk-75	sum	resid	big_model
+unnamed-chunk-76	sqrt	mean	sum	resid	big_model
+unnamed-chunk-77	sqrt	mean	resid	big_model	hatvalues
+unnamed-chunk-78	big_model	data.frame	c	sum	resid	sqrt	mean	hatvalues
+unnamed-chunk-79	library	knitr	kable	big_model
+unnamed-chunk-80	big_model	lm	FEV	Age	Height	Sex	Smoker	poly	childfev	big_model_aic	step	summary
+unnamed-chunk-81	par	c	plot	resid	big_model_aic	fitted	abline	qqnorm	qqline
+unnamed-chunk-82	bptest	big_model_aic
+unnamed-chunk-83	shapiro.test	resid	big_model_aic
+unnamed-chunk-84	sum	resid	big_model_aic
+unnamed-chunk-85	sqrt	mean	sum	resid	big_model_aic
+unnamed-chunk-86	sqrt	mean	resid	big_model_aic	hatvalues
+unnamed-chunk-87	big_model_aic	data.frame	c	sum	resid	sqrt	mean	hatvalues
+unnamed-chunk-88	library	knitr	kable	big_model_aic

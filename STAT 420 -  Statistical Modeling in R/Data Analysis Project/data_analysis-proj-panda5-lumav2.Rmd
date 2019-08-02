@@ -202,7 +202,7 @@ Let's explore the polynomial transformation of the predictor to see whether we c
 #####**quadriatic Transformation of the Numerical Predictors:**
 
 ```{r}
-quad_model = lm(FEV ~ Age + Height + Sex + Smoker + I(Age ^ 2) + I(Height ^ 2), data = childfev)
+quad_model = lm(FEV ~ Sex + Smoker + poly(Age,2) + poly(Height,2), data = childfev)
 summary(quad_model)
 ```
 
@@ -275,14 +275,14 @@ The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will c
 
 
 
-#####**quadriatic Transformation of the Numerical Predictors:**
+#####**Cubic Transformation of the Numerical Predictors:**
 
 ```{r}
-quad_model = lm(FEV ~ Age + Height + Sex + Smoker + I(Age ^ 2) + I(Height ^ 2), data = childfev)
-summary(quad_model)
+cube_model = lm(FEV ~ Sex + Smoker + poly(Age,3) + poly(Height,3), data = childfev)
+summary(cube_model)
 ```
 
-It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(quad_model)$coefficientp[2,4]`
+It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(cube_model)$coefficientp[2,4]`
 
 Let's check the Assumption of the model
 
@@ -294,11 +294,11 @@ Let's verify the Assumption of the Model
 **Let's plot Plotted Versus Residul Plot to see the distribution**
 ```{r}
 par(mfrow = c(1,2))
-plot(resid(quad_model)~fitted(quad_model), ylab = "residuals", xlab = "fitted", cex = 1, pch = 1, col = "darkgrey", main = "Residuals Versis Fitted Model - Quad")
+plot(resid(cube_model)~fitted(cube_model), ylab = "residuals", xlab = "fitted", cex = 1, pch = 1, col = "darkgrey", main = "Residuals Versis Fitted Model - Cube")
 abline(h = 0, lwd = 2, col = "darkorange")
 
-qqnorm(resid(quad_model), cex = 1, pch = 1, col = "darkgrey")
-qqline(resid(quad_model), lwd = 2, col = "darkorange")
+qqnorm(resid(cube_model), cex = 1, pch = 1, col = "darkgrey")
+qqline(resid(cube_model), lwd = 2, col = "darkorange")
 ```
 
 From the above residuals versus fitted plot, though it seems better than that of **Multiple Linear Regression**, it's not doing good job for the higher fitted values. It seems as the fitted value goes higher, the residual seems to be wider, hence the **constant variance assumption is suspect**
@@ -308,13 +308,13 @@ This is the same case for the Q-Q plot, where both the tail seems to the a littl
 Let's do the BP Test and Shapiro Test to gather some more evidence
 
 ```{r warning=FALSE}
-bptest(quad_model)
+bptest(cube_model)
 ```
 
 The BP Test is very low which confirms that **constant variance is suspect**
 
 ```{r}
-shapiro.test(resid(quad_model))
+shapiro.test(resid(cube_model))
 ```
 
 The shapiro test also seems lkow, which confirms that the **normality assumption also seems suspect**
@@ -323,29 +323,526 @@ The shapiro test also seems lkow, which confirms that the **normality assumption
 Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
 **RSS**
 ```{r}
-sum((resid(quad_model))^2)
+sum((resid(cube_model))^2)
 ```
 
 **RMSE**
 ```{r}
-sqrt(mean(sum((resid(quad_model))^2)))
+sqrt(mean(sum((resid(cube_model))^2)))
 ```
 
 **RMSE LOOCV**
 ```{r}
-sqrt(mean((resid(quad_model)/(1-hatvalues(quad_model)))^2))
+sqrt(mean((resid(cube_model)/(1-hatvalues(cube_model)))^2))
 ```
 
 ```{r include=FALSE}
-quad_model = data.frame(
+cube_model = data.frame(
   Metric = c("RSS","RMSE", "RMSE LOOCV"),
-  Value = c(sum((resid(quad_model))^2),sqrt(mean(sum((resid(quad_model))^2))),sqrt(mean((resid(quad_model)/(1-hatvalues(quad_model)))^2)))
+  Value = c(sum((resid(cube_model))^2),sqrt(mean(sum((resid(cube_model))^2))),sqrt(mean((resid(cube_model)/(1-hatvalues(cube_model)))^2)))
 )
 ```
 
 ```{r echo=FALSE}
 library(knitr)
-kable(quad_model, format = "pandoc",padding = 2)
+kable(cube_model, format = "pandoc",padding = 2)
 ```
 The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
 
+
+#####**Higher Order Transformation of the Numerical Predictors:**
+
+```{r}
+high_model = lm(FEV ~ Sex + Smoker + poly(Age,6) + poly(Height,6), data = childfev)
+summary(high_model)
+```
+
+It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(high_model)$coefficientp[2,4]`
+
+Let's check the Assumption of the model
+
+#####**Assumption of the Model**
+Let's verify the Assumption of the Model
+ - Constant Varience
+ - Normality 
+
+**Let's plot Plotted Versus Residul Plot to see the distribution**
+```{r}
+par(mfrow = c(1,2))
+plot(resid(high_model)~fitted(high_model), ylab = "residuals", xlab = "fitted", cex = 1, pch = 1, col = "darkgrey", main = "Residuals Versis Fitted Model - higher order Polynomial")
+abline(h = 0, lwd = 2, col = "darkorange")
+
+qqnorm(resid(high_model), cex = 1, pch = 1, col = "darkgrey")
+qqline(resid(high_model), lwd = 2, col = "darkorange")
+```
+
+From the above residuals versus fitted plot, though it seems better than that of **Multiple Linear Regression**, it's not doing good job for the higher fitted values. It seems as the fitted value goes higher, the residual seems to be wider, hence the **constant variance assumption is suspect**
+
+This is the same case for the Q-Q plot, where both the tail seems to the a little fat tails, which tells us that **normality assuption seems suspect** for the model.
+
+Let's do the BP Test and Shapiro Test to gather some more evidence
+
+```{r warning=FALSE}
+bptest(high_model)
+```
+
+The BP Test is very low which confirms that **constant variance is suspect**
+
+```{r}
+shapiro.test(resid(high_model))
+```
+
+The shapiro test also seems lkow, which confirms that the **normality assumption also seems suspect**
+
+#####**RSS, RMSE and RMSE LOOCV**
+Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
+**RSS**
+```{r}
+sum((resid(high_model))^2)
+```
+
+**RMSE**
+```{r}
+sqrt(mean(sum((resid(high_model))^2)))
+```
+
+**RMSE LOOCV**
+```{r}
+sqrt(mean((resid(high_model)/(1-hatvalues(high_model)))^2))
+```
+
+```{r include=FALSE}
+high_model = data.frame(
+  Metric = c("RSS","RMSE", "RMSE LOOCV"),
+  Value = c(sum((resid(high_model))^2),sqrt(mean(sum((resid(high_model))^2))),sqrt(mean((resid(high_model)/(1-hatvalues(high_model)))^2)))
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(high_model, format = "pandoc",padding = 2)
+```
+
+It seems that the model is not improving beyong degree 2 and infact it's detorating after degree 2. We will explore the polynoamial with the interaction to see if there is any improvement. Also will create a bigger model and by the help of AIC and BIC to explore, whether we can improve the model.
+
+
+
+
+
+
+
+
+###Interaction between Predictors:
+Let's explore the Interaction between the predictor to see whether we can able to find the best model which lower the RMSE LOOCV
+
+#####**2 way Interaction:**
+
+```{r}
+two_int_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev)
+summary(two_int_model)
+```
+
+It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(two_int_model)$coefficientp[2,4]`
+
+Let's check the Assumption of the model
+
+#####**Assumption of the Model**
+Let's verify the Assumption of the Model
+ - Constant Varience
+ - Normality 
+
+**Let's plot Plotted Versus Residul Plot to see the distribution**
+```{r}
+par(mfrow = c(1,2))
+plot(resid(two_int_model)~fitted(two_int_model), ylab = "residuals", xlab = "fitted", cex = 1, pch = 1, col = "darkgrey", main = "Residuals Versis Fitted Model - Quad")
+abline(h = 0, lwd = 2, col = "darkorange")
+
+qqnorm(resid(two_int_model), cex = 1, pch = 1, col = "darkgrey")
+qqline(resid(two_int_model), lwd = 2, col = "darkorange")
+```
+
+From the above residuals versus fitted plot, though it seems better than that of **Multiple Linear Regression**, it's not doing good job for the higher fitted values. It seems as the fitted value goes higher, the residual seems to be wider, hence the **constant variance assumption is suspect**
+
+This is the same case for the Q-Q plot, where both the tail seems to the a little fat tails, which tells us that **normality assuption seems suspect** for the model.
+
+Let's do the BP Test and Shapiro Test to gather some more evidence
+
+```{r warning=FALSE}
+bptest(two_int_model)
+```
+
+The BP Test is very low which confirms that **constant variance is suspect**
+
+```{r}
+shapiro.test(resid(two_int_model))
+```
+
+The shapiro test also seems lkow, which confirms that the **normality assumption also seems suspect**
+
+#####**RSS, RMSE and RMSE LOOCV**
+Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
+**RSS**
+```{r}
+sum((resid(two_int_model))^2)
+```
+
+**RMSE**
+```{r}
+sqrt(mean(sum((resid(two_int_model))^2)))
+```
+
+**RMSE LOOCV**
+```{r}
+sqrt(mean((resid(two_int_model)/(1-hatvalues(two_int_model)))^2))
+```
+
+```{r include=FALSE}
+two_int_model = data.frame(
+  Metric = c("RSS","RMSE", "RMSE LOOCV"),
+  Value = c(sum((resid(two_int_model))^2),sqrt(mean(sum((resid(two_int_model))^2))),sqrt(mean((resid(two_int_model)/(1-hatvalues(two_int_model)))^2)))
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(two_int_model, format = "pandoc",padding = 2)
+```
+
+The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
+
+
+
+
+
+
+
+
+#####**3 way Interaction:**
+
+```{r}
+three_int_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev)
+summary(three_int_model)
+```
+
+It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(three_int_model)$coefficientp[2,4]`
+
+Let's check the Assumption of the model
+
+#####**Assumption of the Model**
+Let's verify the Assumption of the Model
+ - Constant Varience
+ - Normality 
+
+**Let's plot Plotted Versus Residul Plot to see the distribution**
+```{r}
+par(mfrow = c(1,2))
+plot(resid(three_int_model)~fitted(three_int_model), ylab = "residuals", xlab = "fitted", cex = 1, pch = 1, col = "darkgrey", main = "Residuals Versis Fitted Model - Quad")
+abline(h = 0, lwd = 2, col = "darkorange")
+
+qqnorm(resid(three_int_model), cex = 1, pch = 1, col = "darkgrey")
+qqline(resid(three_int_model), lwd = 2, col = "darkorange")
+```
+
+From the above residuals versus fitted plot, though it seems better than that of **Multiple Linear Regression**, it's not doing good job for the higher fitted values. It seems as the fitted value goes higher, the residual seems to be wider, hence the **constant variance assumption is suspect**
+
+This is the same case for the Q-Q plot, where both the tail seems to the a little fat tails, which tells us that **normality assuption seems suspect** for the model.
+
+Let's do the BP Test and Shapiro Test to gather some more evidence
+
+```{r warning=FALSE}
+bptest(three_int_model)
+```
+
+The BP Test is very low which confirms that **constant variance is suspect**
+
+```{r}
+shapiro.test(resid(three_int_model))
+```
+
+The shapiro test also seems lkow, which confirms that the **normality assumption also seems suspect**
+
+#####**RSS, RMSE and RMSE LOOCV**
+Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
+**RSS**
+```{r}
+sum((resid(three_int_model))^2)
+```
+
+**RMSE**
+```{r}
+sqrt(mean(sum((resid(three_int_model))^2)))
+```
+
+**RMSE LOOCV**
+```{r}
+sqrt(mean((resid(three_int_model)/(1-hatvalues(three_int_model)))^2))
+```
+
+```{r include=FALSE}
+three_int_model = data.frame(
+  Metric = c("RSS","RMSE", "RMSE LOOCV"),
+  Value = c(sum((resid(three_int_model))^2),sqrt(mean(sum((resid(three_int_model))^2))),sqrt(mean((resid(three_int_model)/(1-hatvalues(three_int_model)))^2)))
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(three_int_model, format = "pandoc",padding = 2)
+```
+
+The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
+
+
+#####**4 way Interaction:**
+
+```{r}
+four_int_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 4, data = childfev)
+summary(four_int_model)
+```
+
+It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(four_int_model)$coefficientp[2,4]`
+
+Let's check the Assumption of the model
+
+#####**Assumption of the Model**
+Let's verify the Assumption of the Model
+ - Constant Varience
+ - Normality 
+
+**Let's plot Plotted Versus Residul Plot to see the distribution**
+```{r}
+par(mfrow = c(1,2))
+plot(resid(four_int_model)~fitted(four_int_model), ylab = "residuals", xlab = "fitted", cex = 1, pch = 1, col = "darkgrey", main = "Residuals Versis Fitted Model - Quad")
+abline(h = 0, lwd = 2, col = "darkorange")
+
+qqnorm(resid(four_int_model), cex = 1, pch = 1, col = "darkgrey")
+qqline(resid(four_int_model), lwd = 2, col = "darkorange")
+```
+
+From the above residuals versus fitted plot, though it seems better than that of **Multiple Linear Regression**, it's not doing good job for the higher fitted values. It seems as the fitted value goes higher, the residual seems to be wider, hence the **constant variance assumption is suspect**
+
+This is the same case for the Q-Q plot, where both the tail seems to the a little fat tails, which tells us that **normality assuption seems suspect** for the model.
+
+Let's do the BP Test and Shapiro Test to gather some more evidence
+
+```{r warning=FALSE}
+bptest(four_int_model)
+```
+
+The BP Test is very low which confirms that **constant variance is suspect**
+
+```{r}
+shapiro.test(resid(four_int_model))
+```
+
+The shapiro test also seems lkow, which confirms that the **normality assumption also seems suspect**
+
+#####**RSS, RMSE and RMSE LOOCV**
+Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
+**RSS**
+```{r}
+sum((resid(four_int_model))^2)
+```
+
+**RMSE**
+```{r}
+sqrt(mean(sum((resid(four_int_model))^2)))
+```
+
+**RMSE LOOCV**
+```{r}
+sqrt(mean((resid(four_int_model)/(1-hatvalues(four_int_model)))^2))
+```
+
+```{r include=FALSE}
+four_int_model = data.frame(
+  Metric = c("RSS","RMSE", "RMSE LOOCV"),
+  Value = c(sum((resid(four_int_model))^2),sqrt(mean(sum((resid(four_int_model))^2))),sqrt(mean((resid(four_int_model)/(1-hatvalues(four_int_model)))^2)))
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(four_int_model, format = "pandoc",padding = 2)
+```
+
+The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
+
+
+
+
+
+
+
+###Model- Big Model, Stepwise via AIC / BIC:
+Let's create a big model, with Polynomial of degree 3 and 3 way interaction between categorical-to-categorical, categorical-to-numeric, numeric-to-numeric and see it's score. Also reduced the model via AIC and BIC to see any improvement in the score
+
+#####**Big Model:**
+
+```{r}
+big_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3 + poly(Age,3) + poly(Height,3), data = childfev)
+summary(big_model)
+```
+
+It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(big_model)$coefficientp[2,4]`
+
+Let's check the Assumption of the model
+
+#####**Assumption of the Model**
+Let's verify the Assumption of the Model
+ - Constant Varience
+ - Normality 
+
+**Let's plot Plotted Versus Residul Plot to see the distribution**
+```{r}
+par(mfrow = c(1,2))
+plot(resid(big_model)~fitted(big_model), ylab = "residuals", xlab = "fitted", cex = 1, pch = 1, col = "darkgrey", main = "Residuals Versis Fitted Model - Quad")
+abline(h = 0, lwd = 2, col = "darkorange")
+
+qqnorm(resid(big_model), cex = 1, pch = 1, col = "darkgrey")
+qqline(resid(big_model), lwd = 2, col = "darkorange")
+```
+
+From the above residuals versus fitted plot, though it seems better than that of **Multiple Linear Regression**, it's not doing good job for the higher fitted values. It seems as the fitted value goes higher, the residual seems to be wider, hence the **constant variance assumption is suspect**
+
+This is the same case for the Q-Q plot, where both the tail seems to the a little fat tails, which tells us that **normality assuption seems suspect** for the model.
+
+Let's do the BP Test and Shapiro Test to gather some more evidence
+
+```{r warning=FALSE}
+bptest(big_model)
+```
+
+The BP Test is very low which confirms that **constant variance is suspect**
+
+```{r}
+shapiro.test(resid(big_model))
+```
+
+The shapiro test also seems lkow, which confirms that the **normality assumption also seems suspect**
+
+#####**RSS, RMSE and RMSE LOOCV**
+Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
+**RSS**
+```{r}
+sum((resid(big_model))^2)
+```
+
+**RMSE**
+```{r}
+sqrt(mean(sum((resid(big_model))^2)))
+```
+
+**RMSE LOOCV**
+```{r}
+sqrt(mean((resid(big_model)/(1-hatvalues(big_model)))^2))
+```
+
+```{r include=FALSE}
+big_model = data.frame(
+  Metric = c("RSS","RMSE", "RMSE LOOCV"),
+  Value = c(sum((resid(big_model))^2),sqrt(mean(sum((resid(big_model))^2))),sqrt(mean((resid(big_model)/(1-hatvalues(big_model)))^2)))
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(big_model, format = "pandoc",padding = 2)
+```
+
+The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
+
+
+
+
+#####**Reduced Big Model via AIC :**
+
+```{r}
+big_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3 + poly(Age,3) + poly(Height,3), data = childfev)
+big_model_aic = step(big_model, direction = "backward", trace = 0)
+summary(big_model_aic)
+```
+
+It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(big_model_aic)$coefficientp[2,4]`
+
+Let's check the Assumption of the model
+
+#####**Assumption of the Model**
+Let's verify the Assumption of the Model
+ - Constant Varience
+ - Normality 
+
+**Let's plot Plotted Versus Residul Plot to see the distribution**
+```{r}
+par(mfrow = c(1,2))
+plot(resid(big_model_aic)~fitted(big_model_aic), ylab = "residuals", xlab = "fitted", cex = 1, pch = 1, col = "darkgrey", main = "Residuals Versis Fitted Model - Quad")
+abline(h = 0, lwd = 2, col = "darkorange")
+
+qqnorm(resid(big_model_aic), cex = 1, pch = 1, col = "darkgrey")
+qqline(resid(big_model_aic), lwd = 2, col = "darkorange")
+```
+
+From the above residuals versus fitted plot, though it seems better than that of **Multiple Linear Regression**, it's not doing good job for the higher fitted values. It seems as the fitted value goes higher, the residual seems to be wider, hence the **constant variance assumption is suspect**
+
+This is the same case for the Q-Q plot, where both the tail seems to the a little fat tails, which tells us that **normality assuption seems suspect** for the model.
+
+Let's do the BP Test and Shapiro Test to gather some more evidence
+
+```{r warning=FALSE}
+bptest(big_model_aic)
+```
+
+The BP Test is very low which confirms that **constant variance is suspect**
+
+```{r}
+shapiro.test(resid(big_model_aic))
+```
+
+The shapiro test also seems lkow, which confirms that the **normality assumption also seems suspect**
+
+#####**RSS, RMSE and RMSE LOOCV**
+Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
+**RSS**
+```{r}
+sum((resid(big_model_aic))^2)
+```
+
+**RMSE**
+```{r}
+sqrt(mean(sum((resid(big_model_aic))^2)))
+```
+
+**RMSE LOOCV**
+```{r}
+sqrt(mean((resid(big_model_aic)/(1-hatvalues(big_model_aic)))^2))
+```
+
+```{r include=FALSE}
+big_model_aic = data.frame(
+  Metric = c("RSS","RMSE", "RMSE LOOCV"),
+  Value = c(sum((resid(big_model_aic))^2),sqrt(mean(sum((resid(big_model_aic))^2))),sqrt(mean((resid(big_model_aic)/(1-hatvalues(big_model_aic)))^2)))
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(big_model_aic, format = "pandoc",padding = 2)
+```
+
+The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
+
+
+###Compare RSS, RMSE, RMSE LOOCV - All Models:
+
+```{r include=FALSE}
+compare_model = data.frame(
+  Metric = c("RSS","RMSE", "RMSE LOOCV"),
+  MLR_Value = c(sum((resid(mlr_model))^2),sqrt(mean(sum((resid(mlr_model))^2))),sqrt(mean((resid(mlr_model)/(1-hatvalues(mlr_model)))^2))),
+  Value = c(sum((resid(big_model_aic))^2),sqrt(mean(sum((resid(big_model_aic))^2))),sqrt(mean((resid(big_model_aic)/(1-hatvalues(big_model_aic)))^2)))
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(big_model_aic, format = "pandoc",padding = 2)
+```
