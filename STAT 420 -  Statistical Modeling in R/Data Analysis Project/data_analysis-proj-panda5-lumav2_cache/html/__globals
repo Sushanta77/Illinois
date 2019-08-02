@@ -2,13 +2,24 @@ unnamed-chunk-1	Variable	data.frame	c
 unnamed-chunk-2	library	knitr	kable	Variable
 unnamed-chunk-3	childfev	read.csv	Sex	as.factor	Smoker	str	dim	head	FEV
 unnamed-chunk-4	pairs	childfev	c
-unnamed-chunk-5	table	childfev	Sex	Smoker
-unnamed-chunk-6	mlr_model	lm	FEV	Age	Height	Sex	Smoker	childfev	summary
-unnamed-chunk-7	par	c	plot	resid	mlr_model	fitted	abline	qqnorm	qqline
-unnamed-chunk-8	bptest	mlr_model
-unnamed-chunk-9	shapiro.test	resid	mlr_model
-unnamed-chunk-10	sum	resid	mlr_model
-unnamed-chunk-11	sqrt	mean	sum	resid	mlr_model
-unnamed-chunk-12	sqrt	mean	resid	mlr_model	hatvalues
-unnamed-chunk-13	mlr_model	data.frame	c	sum	resid	sqrt	mean	hatvalues
-unnamed-chunk-14	library	knitr	kable	mlr_model
+unnamed-chunk-5	cor	childfev	c
+unnamed-chunk-6	table	childfev	Sex	Smoker
+unnamed-chunk-7	mlr_model	lm	FEV	Age	Height	Sex	Smoker	childfev	summary
+unnamed-chunk-8	par	c	plot	resid	mlr_model	fitted	abline	qqnorm	qqline
+unnamed-chunk-9	bptest	mlr_model
+unnamed-chunk-10	shapiro.test	resid	mlr_model
+unnamed-chunk-11	sum	resid	mlr_model
+unnamed-chunk-12	sqrt	mean	sum	resid	mlr_model
+unnamed-chunk-13	sqrt	mean	resid	mlr_model	hatvalues
+unnamed-chunk-14	mlr_model	data.frame	c	sum	resid	sqrt	mean	hatvalues
+unnamed-chunk-15	library	knitr	kable	mlr_model
+unnamed-chunk-16	par	c	hist	childfev	FEV	log
+unnamed-chunk-17	quad_model	lm	FEV	Age	Height	Sex	Smoker	I	childfev	summary
+unnamed-chunk-18	par	c	plot	resid	quad_model	fitted	abline	qqnorm	qqline
+unnamed-chunk-19	bptest	quad_model
+unnamed-chunk-20	shapiro.test	resid	quad_model
+unnamed-chunk-21	sum	resid	quad_model
+unnamed-chunk-22	sqrt	mean	sum	resid	quad_model
+unnamed-chunk-23	sqrt	mean	resid	quad_model	hatvalues
+unnamed-chunk-24	quad_model	data.frame	c	sum	resid	sqrt	mean	hatvalues
+unnamed-chunk-25	library	knitr	kable	quad_model
