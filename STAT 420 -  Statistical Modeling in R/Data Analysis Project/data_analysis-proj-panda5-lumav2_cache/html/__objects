@@ -11,7 +11,7 @@ unnamed-chunk-10
 unnamed-chunk-11	
 unnamed-chunk-12	
 unnamed-chunk-13	
-unnamed-chunk-14	mlr_model
+unnamed-chunk-14	df_mlr_model
 unnamed-chunk-15	
 unnamed-chunk-16	
 unnamed-chunk-17	quad_model
@@ -21,7 +21,7 @@ unnamed-chunk-20
 unnamed-chunk-21	
 unnamed-chunk-22	
 unnamed-chunk-23	
-unnamed-chunk-24	quad_model
+unnamed-chunk-24	df_quad_model
 unnamed-chunk-25	
 unnamed-chunk-26	cube_model
 unnamed-chunk-27	
@@ -30,7 +30,7 @@ unnamed-chunk-29
 unnamed-chunk-30	
 unnamed-chunk-31	
 unnamed-chunk-32	
-unnamed-chunk-33	cube_model
+unnamed-chunk-33	df_cube_model
 unnamed-chunk-34	
 unnamed-chunk-35	high_model
 unnamed-chunk-36	
@@ -39,7 +39,7 @@ unnamed-chunk-38
 unnamed-chunk-39	
 unnamed-chunk-40	
 unnamed-chunk-41	
-unnamed-chunk-42	high_model
+unnamed-chunk-42	df_high_model
 unnamed-chunk-43	
 unnamed-chunk-44	two_int_model
 unnamed-chunk-45	
@@ -48,7 +48,7 @@ unnamed-chunk-47
 unnamed-chunk-48	
 unnamed-chunk-49	
 unnamed-chunk-50	
-unnamed-chunk-51	two_int_model
+unnamed-chunk-51	df_two_int_model
 unnamed-chunk-52	
 unnamed-chunk-53	three_int_model
 unnamed-chunk-54	
@@ -57,7 +57,7 @@ unnamed-chunk-56
 unnamed-chunk-57	
 unnamed-chunk-58	
 unnamed-chunk-59	
-unnamed-chunk-60	three_int_model
+unnamed-chunk-60	df_three_int_model
 unnamed-chunk-61	
 unnamed-chunk-62	four_int_model
 unnamed-chunk-63	
@@ -66,7 +66,7 @@ unnamed-chunk-65
 unnamed-chunk-66	
 unnamed-chunk-67	
 unnamed-chunk-68	
-unnamed-chunk-69	four_int_model
+unnamed-chunk-69	df_four_int_model
 unnamed-chunk-70	
 unnamed-chunk-71	big_model
 unnamed-chunk-72	
@@ -75,7 +75,7 @@ unnamed-chunk-74
 unnamed-chunk-75	
 unnamed-chunk-76	
 unnamed-chunk-77	
-unnamed-chunk-78	big_model
+unnamed-chunk-78	df_big_model
 unnamed-chunk-79	
 unnamed-chunk-80	big_model	big_model_aic
 unnamed-chunk-81	
@@ -84,5 +84,8 @@ unnamed-chunk-83
 unnamed-chunk-84	
 unnamed-chunk-85	
 unnamed-chunk-86	
-unnamed-chunk-87	big_model_aic
+unnamed-chunk-87	df_big_model_aic
 unnamed-chunk-88	
+unnamed-chunk-89	compare_model
+unnamed-chunk-90	compare_model2
+unnamed-chunk-91	

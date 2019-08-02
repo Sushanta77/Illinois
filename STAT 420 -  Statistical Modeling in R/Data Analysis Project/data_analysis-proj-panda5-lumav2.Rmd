@@ -161,7 +161,7 @@ sqrt(mean((resid(mlr_model)/(1-hatvalues(mlr_model)))^2))
 ```
 
 ```{r include=FALSE}
-mlr_model = data.frame(
+df_mlr_model = data.frame(
   Metric = c("RSS","RMSE", "RMSE LOOCV"),
   Value = c(sum((resid(mlr_model))^2),sqrt(mean(sum((resid(mlr_model))^2))),sqrt(mean((resid(mlr_model)/(1-hatvalues(mlr_model)))^2)))
 )
@@ -261,7 +261,7 @@ sqrt(mean((resid(quad_model)/(1-hatvalues(quad_model)))^2))
 ```
 
 ```{r include=FALSE}
-quad_model = data.frame(
+df_quad_model = data.frame(
   Metric = c("RSS","RMSE", "RMSE LOOCV"),
   Value = c(sum((resid(quad_model))^2),sqrt(mean(sum((resid(quad_model))^2))),sqrt(mean((resid(quad_model)/(1-hatvalues(quad_model)))^2)))
 )
@@ -269,7 +269,7 @@ quad_model = data.frame(
 
 ```{r echo=FALSE}
 library(knitr)
-kable(quad_model, format = "pandoc",padding = 2)
+kable(df_quad_model, format = "pandoc",padding = 2)
 ```
 The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
 
@@ -337,7 +337,7 @@ sqrt(mean((resid(cube_model)/(1-hatvalues(cube_model)))^2))
 ```
 
 ```{r include=FALSE}
-cube_model = data.frame(
+df_cube_model = data.frame(
   Metric = c("RSS","RMSE", "RMSE LOOCV"),
   Value = c(sum((resid(cube_model))^2),sqrt(mean(sum((resid(cube_model))^2))),sqrt(mean((resid(cube_model)/(1-hatvalues(cube_model)))^2)))
 )
@@ -345,7 +345,7 @@ cube_model = data.frame(
 
 ```{r echo=FALSE}
 library(knitr)
-kable(cube_model, format = "pandoc",padding = 2)
+kable(df_cube_model, format = "pandoc",padding = 2)
 ```
 The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
 
@@ -412,7 +412,7 @@ sqrt(mean((resid(high_model)/(1-hatvalues(high_model)))^2))
 ```
 
 ```{r include=FALSE}
-high_model = data.frame(
+df_high_model = data.frame(
   Metric = c("RSS","RMSE", "RMSE LOOCV"),
   Value = c(sum((resid(high_model))^2),sqrt(mean(sum((resid(high_model))^2))),sqrt(mean((resid(high_model)/(1-hatvalues(high_model)))^2)))
 )
@@ -420,7 +420,7 @@ high_model = data.frame(
 
 ```{r echo=FALSE}
 library(knitr)
-kable(high_model, format = "pandoc",padding = 2)
+kable(df_high_model, format = "pandoc",padding = 2)
 ```
 
 It seems that the model is not improving beyong degree 2 and infact it's detorating after degree 2. We will explore the polynoamial with the interaction to see if there is any improvement. Also will create a bigger model and by the help of AIC and BIC to explore, whether we can improve the model.
@@ -497,7 +497,7 @@ sqrt(mean((resid(two_int_model)/(1-hatvalues(two_int_model)))^2))
 ```
 
 ```{r include=FALSE}
-two_int_model = data.frame(
+df_two_int_model = data.frame(
   Metric = c("RSS","RMSE", "RMSE LOOCV"),
   Value = c(sum((resid(two_int_model))^2),sqrt(mean(sum((resid(two_int_model))^2))),sqrt(mean((resid(two_int_model)/(1-hatvalues(two_int_model)))^2)))
 )
@@ -505,7 +505,7 @@ two_int_model = data.frame(
 
 ```{r echo=FALSE}
 library(knitr)
-kable(two_int_model, format = "pandoc",padding = 2)
+kable(df_two_int_model, format = "pandoc",padding = 2)
 ```
 
 The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
@@ -579,7 +579,7 @@ sqrt(mean((resid(three_int_model)/(1-hatvalues(three_int_model)))^2))
 ```
 
 ```{r include=FALSE}
-three_int_model = data.frame(
+df_three_int_model = data.frame(
   Metric = c("RSS","RMSE", "RMSE LOOCV"),
   Value = c(sum((resid(three_int_model))^2),sqrt(mean(sum((resid(three_int_model))^2))),sqrt(mean((resid(three_int_model)/(1-hatvalues(three_int_model)))^2)))
 )
@@ -587,7 +587,7 @@ three_int_model = data.frame(
 
 ```{r echo=FALSE}
 library(knitr)
-kable(three_int_model, format = "pandoc",padding = 2)
+kable(df_three_int_model, format = "pandoc",padding = 2)
 ```
 
 The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
@@ -655,7 +655,7 @@ sqrt(mean((resid(four_int_model)/(1-hatvalues(four_int_model)))^2))
 ```
 
 ```{r include=FALSE}
-four_int_model = data.frame(
+df_four_int_model = data.frame(
   Metric = c("RSS","RMSE", "RMSE LOOCV"),
   Value = c(sum((resid(four_int_model))^2),sqrt(mean(sum((resid(four_int_model))^2))),sqrt(mean((resid(four_int_model)/(1-hatvalues(four_int_model)))^2)))
 )
@@ -663,7 +663,7 @@ four_int_model = data.frame(
 
 ```{r echo=FALSE}
 library(knitr)
-kable(four_int_model, format = "pandoc",padding = 2)
+kable(df_four_int_model, format = "pandoc",padding = 2)
 ```
 
 The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
@@ -739,7 +739,7 @@ sqrt(mean((resid(big_model)/(1-hatvalues(big_model)))^2))
 ```
 
 ```{r include=FALSE}
-big_model = data.frame(
+df_big_model = data.frame(
   Metric = c("RSS","RMSE", "RMSE LOOCV"),
   Value = c(sum((resid(big_model))^2),sqrt(mean(sum((resid(big_model))^2))),sqrt(mean((resid(big_model)/(1-hatvalues(big_model)))^2)))
 )
@@ -747,7 +747,7 @@ big_model = data.frame(
 
 ```{r echo=FALSE}
 library(knitr)
-kable(big_model, format = "pandoc",padding = 2)
+kable(df_big_model, format = "pandoc",padding = 2)
 ```
 
 The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
@@ -818,7 +818,7 @@ sqrt(mean((resid(big_model_aic)/(1-hatvalues(big_model_aic)))^2))
 ```
 
 ```{r include=FALSE}
-big_model_aic = data.frame(
+df_big_model_aic = data.frame(
   Metric = c("RSS","RMSE", "RMSE LOOCV"),
   Value = c(sum((resid(big_model_aic))^2),sqrt(mean(sum((resid(big_model_aic))^2))),sqrt(mean((resid(big_model_aic)/(1-hatvalues(big_model_aic)))^2)))
 )
@@ -826,7 +826,7 @@ big_model_aic = data.frame(
 
 ```{r echo=FALSE}
 library(knitr)
-kable(big_model_aic, format = "pandoc",padding = 2)
+kable(df_big_model_aic, format = "pandoc",padding = 2)
 ```
 
 The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
@@ -834,15 +834,19 @@ The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will c
 
 ###Compare RSS, RMSE, RMSE LOOCV - All Models:
 
-```{r include=FALSE}
+```{r}
 compare_model = data.frame(
-  Metric = c("RSS","RMSE", "RMSE LOOCV"),
-  MLR_Value = c(sum((resid(mlr_model))^2),sqrt(mean(sum((resid(mlr_model))^2))),sqrt(mean((resid(mlr_model)/(1-hatvalues(mlr_model)))^2))),
-  Value = c(sum((resid(big_model_aic))^2),sqrt(mean(sum((resid(big_model_aic))^2))),sqrt(mean((resid(big_model_aic)/(1-hatvalues(big_model_aic)))^2)))
-)
+  Model = c("mlr","quad", "cube", "high_poly", "i2_way_int","i3_way_int","i4_way_int","big_model","big_model_aic"),
+  No_Of_Parameters = c(length(coef(mlr_model)),length(coef(quad_model)),length(coef(cube_model)),length(coef(high_model)),length(coef(two_int_model)),length(coef(three_int_model)),length(coef(four_int_model)),length(coef(big_model)),length(coef(big_model_aic))),
+  RSS = c(sum((resid(mlr_model))^2),sum((resid(quad_model))^2),sum((resid(cube_model))^2),sum((resid(high_model))^2),sum((resid(two_int_model))^2),sum((resid(three_int_model))^2),sum((resid(four_int_model))^2),sum((resid(big_model))^2),sum((resid(big_model_aic))^2)),
+  RMSE = c(sqrt(mean(sum((resid(mlr_model))^2))),sqrt(mean(sum((resid(quad_model))^2))),sqrt(mean(sum((resid(cube_model))^2))),sqrt(mean(sum((resid(high_model))^2))),sqrt(mean(sum((resid(two_int_model))^2))),sqrt(mean(sum((resid(three_int_model))^2))),sqrt(mean(sum((resid(four_int_model))^2))),sqrt(mean(sum((resid(big_model))^2))),sqrt(mean(sum((resid(big_model_aic))^2)))),
+  RMSE_LOOCV = c(sqrt(mean((resid(mlr_model)/(1-hatvalues(mlr_model)))^2)),sqrt(mean((resid(quad_model)/(1-hatvalues(quad_model)))^2)),sqrt(mean((resid(cube_model)/(1-hatvalues(cube_model)))^2)),sqrt(mean((resid(high_model)/(1-hatvalues(high_model)))^2)),sqrt(mean((resid(two_int_model)/(1-hatvalues(two_int_model)))^2)),sqrt(mean((resid(three_int_model)/(1-hatvalues(three_int_model)))^2)),sqrt(mean((resid(four_int_model)/(1-hatvalues(four_int_model)))^2)),sqrt(mean((resid(big_model)/(1-hatvalues(big_model)))^2)),sqrt(mean((resid(big_model_aic)/(1-hatvalues(big_model_aic)))^2)))  
+  )
 ```
+
+
 
 ```{r echo=FALSE}
 library(knitr)
-kable(big_model_aic, format = "pandoc",padding = 2)
+kable(compare_model, format = "pandoc",padding = 2)
 ```
