@@ -50,7 +50,7 @@ The data contains the determinations of FEB on 654 children ages 6 – 22 who ar
 Note: No citation required for this source (http://www.statsci.org/data/general/fev.html)
 
 
-###Interest in dataset hope to explore:
+###Why is it interesting:
 This dataset has chosen by us because of personal interests, whether we can predict the child’s FEV with the help of the available predictor, rather going for a Pulmonary Function Test, which will identify any pulmonary disease of a child. And secondly, to do statistical analysis on what are the predictors responsible to increase / decrease the pulmonary function of the child and try to find answer on these lines.
 
 ###Why are we creating a model of this Data:
@@ -58,5 +58,73 @@ In order to **predict the child's Forced Exporatory Volume (FEV)** based on the 
 
 
 ###Goal of the Model:
-The goal of the model is to predict the child's FEV with minimal error with the data available with us. We will be going throgh different statiscal analysis and methods to minimize the errors
+The goal of the model is to find the best model after going through the several methods, which predict the child's FEV with minimal error. The best model would have the lowest Root Mean Square Error (RMSE) against Leave One Out cross validation (LOOCV).
 
+
+# Methods
+We will be doing several data analysis and methods in this section, where each section will be describing what's the part of the tasks.
+
+###Load FEV data, Observations:
+
+```{r}
+childfev = read.csv("http://www.statsci.org/data/general/fev.txt",
+                    sep = "\t",
+                    quote = "\"",
+                    comment.char = "",
+                    stringsAsFactors = FALSE)
+childfev$Sex = as.factor(childfev$Sex)
+childfev$Smoker = as.factor(childfev$Smoker)
+str(childfev)
+dim(childfev)
+head(childfev$FEV,10)
+```
+
+From the dataset, it observered data, Age, Heigh is a numerical variable, where as Sex / Smoker field is a categorical variable. The FEV is the numerical **response** variable.
+
+
+#####**Load FEV data:**
+```{r fig.height=10, fig.width=10}
+pairs(childfev[c('Age','FEV','Height','Sex','Smoker')], col = "darkgrey")
+```
+
+From the pairs plot, it sees there is a clear signs of linear releationship between FEV and Height. However there is no clear sign of linear relationship between FEV and Age variable. The 2 categorical variable `Sex` and `Smoker` seems to have 2 distinct data. Let's explore this
+
+#####**Categorical Data of Sex and Smoker**
+```{r}
+table(childfev$Sex)
+table(childfev$Smoker)
+```
+
+
+#####**MLR FEV data:**
+Let's start with the Multiple Linear Regression (MLR) against all the predictor (Except the ID), to predict the FEV as the response
+
+```{r}
+mlr_model = lm(FEV ~ Age + Height + Sex + Smoker, data = childfev)
+summary(mlr_model)
+```
+
+#####**Assumption of the Model**
+Let's verify the Assumption of the Model
+ - Constant Varience
+ - Normality 
+
+**Let's plot Plotted Versus Residul Plot to see the distribution**
+```{r}
+par(mfrow = c(1,2))
+plot(resid(mlr_model)~fitted(mlr_model), ylab = "residuals", xlab = "fitted", cex = 1, pch = 1, col = "darkgrey", main = "Residuals Versis Fitted Model")
+abline(h = 0, lwd = 2, col = "darkorange")
+
+qqnorm(resid(mlr_model), cex = 1, pch = 1, col = "darkgrey")
+qqline(resid(mlr_model), lwd = 2, col = "darkorange")
+```
+
+```{r warning=FALSE}
+library(lmtest)
+bptest(mlr_model)
+shapiro.test(resid(mlr_model))
+```
+
+#####**RMSE LOOCV**
+```
+```

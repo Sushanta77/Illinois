@@ -1,2 +1,8 @@
 unnamed-chunk-1	Variable	data.frame	c
 unnamed-chunk-2	library	knitr	kable	Variable
+unnamed-chunk-3	childfev	read.csv	Sex	as.factor	Smoker	str	dim	head	FEV
+unnamed-chunk-4	pairs	childfev	c
+unnamed-chunk-5	table	childfev	Sex	Smoker
+unnamed-chunk-6	mlr_model	lm	FEV	Age	Height	Sex	Smoker	childfev	summary
+unnamed-chunk-7	par	c	plot	resid	mlr_model	fitted	abline	qqnorm	qqline
+unnamed-chunk-8	library	lmtest	bptest	mlr_model	shapiro.test	resid
