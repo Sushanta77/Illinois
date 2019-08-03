@@ -106,107 +106,12 @@ Let's start with the Multiple Linear Regression (MLR) against all the predictor 
 
 ```{r}
 mlr_model = lm(FEV ~ Age + Height + Sex + Smoker, data = childfev)
-summary(mlr_model)
 ```
 
-It seems that the `Model 1 - Multiple Linear Regression` is significance including all the predictor of the model is significance too. Let's explore other methods to dig down
+The Multiple Linear Regression contains all the predictor in the model, which also includes the dummy variable for the categorical predictor (Sex and Smoker)
 
-#####**Assumption of the Model**
-Let's verify the Assumption of the Model
- - Constant Varience
- - Normality 
-
-**Let's plot Plotted Versus Residul Plot to see the distribution**
-```{r}
-par(mfrow = c(1,2))
-plot(resid(mlr_model)~fitted(mlr_model), ylab = "residuals", xlab = "fitted", cex = 1, pch = 1, col = "darkgrey", main = "Residuals Versis Fitted Model")
-abline(h = 0, lwd = 2, col = "darkorange")
-
-qqnorm(resid(mlr_model), cex = 1, pch = 1, col = "darkgrey")
-qqline(resid(mlr_model), lwd = 2, col = "darkorange")
-```
-
-From the above residuals versus fitted plot, it seems the **constant variance assumption is suspect**, as the residuals are not equally distributed. 
-
-This is the same case for the Q-Q plot, where both the tail seems to the a little fat tails, which tells us that **normality assuption seems suspect** for the model.
-
-Let's do the BP Test and Shapiro Test to gather some more evidence
-
-```{r warning=FALSE}
-library(lmtest)
-bptest(mlr_model)
-```
-
-The BP Test is very low which confirms that **constant variance is suspect**
-
-```{r}
-shapiro.test(resid(mlr_model))
-```
-
-The shapiro test also seems lkow, which confirms that the **normality assumption also seems suspect**
-
-#####**RSS, RMSE and RMSE LOOCV**
-Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
-**RSS**
-```{r}
-sum((resid(mlr_model))^2)
-```
-
-**RMSE**
-```{r}
-sqrt(mean(sum((resid(mlr_model))^2)))
-```
-
-**RMSE LOOCV**
-```{r}
-sqrt(mean((resid(mlr_model)/(1-hatvalues(mlr_model)))^2))
-```
-
-```{r include=FALSE}
-df_mlr_model = data.frame(
-  Metric = c("RSS","RMSE", "RMSE LOOCV"),
-  Value = c(sum((resid(mlr_model))^2),sqrt(mean(sum((resid(mlr_model))^2))),sqrt(mean((resid(mlr_model)/(1-hatvalues(mlr_model)))^2)))
-)
-```
-
-```{r echo=FALSE}
-library(knitr)
-kable(df_mlr_model, format = "pandoc",padding = 2)
-```
-
-###Model 2 - Transformation of response variable FEV (Logarithimic):
-Let's explore whether transformation of the response variable `FEV` has any siginificance to improve the score (low RMSE LOOCV)
-
-
-Let's first plot the histogram of the `FEV` response variable with and without the logarathimic value
-
-```{r}
-par(mfrow=c(1,2))
-hist(childfev$FEV,
-     xlab = 'FEV response Variable Data',
-     probability = TRUE,
-     breaks = 20,
-     col = "darkgrey",
-     name = "Original FEV response")
-
-hist(log(childfev$FEV),
-     xlab = 'log(FEV) response Variable Data',     
-     breaks = 20,
-     col = "darkgrey",
-     name = "Logarithimic FEV response")
-```
-
-It seems that after the logarithimic transformation the `FEV` response doesn't seems to be normal distibution. Hence let's not explore the lograthimic transformation for the `FEV` response variable
-
-###Model 3 - Polynomial Transformation of Numeric Predictor
+###Model 2 - Polynomial Transformation of Numeric Predictor
 Let's explore the polynomial transformation of the predictor to see whether we can able to find the best model which lower the RMSE LOOCV
-
-We will carry out the following methods to identify the best model
- - Lowest RMSE LOOCV 
- - Highest R2 and Adjusted R2
- - Lowest Average Percentage Error
- - Anova F Test P value
-
 
 ```{r}
 poly2_model = lm(FEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) , data = childfev)
@@ -216,31 +121,74 @@ poly5_model = lm(FEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(
 poly6_model = lm(FEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3) + I(Age^4) + I(Height^4) + I(Age^5) + I(Height^5) + I(Age^6) + I(Height^6), data = childfev)
 ```
 
-```{r include=FALSE}
-#Split the data into 80% (Train Set), 20% (Test Set)
-set.seed(420)
-childfev_trn_idx  = sample(nrow(childfev), size = trunc(0.80 * nrow(childfev)))
-childfev_trn_data = childfev[childfev_trn_idx, ]
-childfev_tst_data = childfev[-childfev_trn_idx, ]
+###Model 3 - Interaction between Predictors:
+Following are the exploration needs to be done as part of the Interaction between the predictors
+ - Interaction between Numerical Predictor (Age, Height) and Categorical Predictor (Sex, Smoker) - One at a Time
+ - Interaction between Numerical Predictors (Age, Height) it self
+ - Interaction between all of the them 2 way and 3 way.
+ - Carry out Inova F Test and RMSE LOOCV and Average Percentage Error to find out what's the best model
 
-#Function to calculate average percent error
-average_percent_error = function(actual, predicted) {
-  100 * mean((abs(actual - predicted)) / actual)
-}
+
+```{r}
+model_age_sex = lm(FEV ~ (Age + Sex) ^ 2 , data = childfev)
+model_age_smoker = lm(FEV ~ (Age + Smoker) ^ 2 , data = childfev)
+model_age_sex_smoker = lm(FEV ~ Age + Sex + Smoker + Age:Sex + Age:Smoker , data = childfev)
+model_height_sex = lm(FEV ~ (Height + Sex) ^ 2 , data = childfev)
+model_height_smoker = lm(FEV ~ (Height + Smoker) ^ 2 , data = childfev)
+model_height_sex_smoker = lm(FEV ~ Height + Sex + Smoker + Height:Sex + Height:Smoker , data = childfev)
+model_all_int_except_age_height = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker, data = childfev) 
+model_all_int_with_age_height = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker + Age:Height, data = childfev) 
+model_all_2way = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev) 
+model_all_3way = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev)
 ```
 
+
+###Model 4 - Creation of Big Model (Polynomial + Interaction), Stepwise via AIC / BIC:
+Let's create a big model, with Polynomial of degree 3 and 3 way interaction between categorical-to-categorical, categorical-to-numeric, numeric-to-numeric and see it's score. 
+
+Also create few models with combination from the previous model (which treat as good model)
+ - Polynomial degree 2 + Interaction Model 8 
+ - Polynomial degree 2 + Interaction Model 9 (2 way interaction)
+ - Polynomial degree 2 + Interaction Model 10 (3 way interaction)
+
+#####**Big Model: + 3 other model**
+
+```{r}
+big_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3 + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3), data = childfev) # Big Model - Polynomial degree 3 + 3 Way Interaction
+poly2_int_model8 = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker + Age:Height , data = childfev) # Polynomial degree 2 + All Interaction Except Sex:Smoker
+poly2_int_model9 = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev) # Polynomial degree 2 + 2 Way Interaction
+poly2_int_model10 = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev) # Polynomial degree 2 + 3 Way Interaction
+```
+
+#####**AIC, BIC of the Big Model:**
+Let's do the AIC and BIC to see what' the outcome, after do the ANOVA F Test.
+
+```{r}
+n = length(resid(big_model))
+big_model_aic = step(big_model, direction = "backward", trace = 0)
+big_model_bic = step(big_model, direction = "backward", k = log(n), trace = 0)
+```
+
+Let's compare with the good model from the Interaction model and Polynomial Regression Model, to see which one is siginificance
+
+# Results
+Let's evaluate the results which is derived from the above 5 different category of models
+
+###Model 1,2 - Multiple Linear Regression (MLR) + Log Transformation + Polynomial  - Results:
+
+
 ```{r include=FALSE}
-train_test_error_poly_model = rep(0,5)
-r2_poly_model = rep(0,5)
-adjr2_poly_model = rep(0,5)
+#train_test_error_poly_model = rep(0,6)
+r2_poly_model = rep(0,6)
+adjr2_poly_model = rep(0,6)
 
 #Populate train_test_error_model
-train_test_error_poly_model[1] = average_percent_error(childfev_tst_data$FEV, predict(mlr_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_poly_model[2] = average_percent_error(childfev_tst_data$FEV, predict(poly2_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_poly_model[3] = average_percent_error(childfev_tst_data$FEV, predict(poly3_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_poly_model[4] = average_percent_error(childfev_tst_data$FEV, predict(poly4_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_poly_model[5] = average_percent_error(childfev_tst_data$FEV, predict(poly5_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_poly_model[6] = average_percent_error(childfev_tst_data$FEV, predict(poly6_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_poly_model[1] = average_percent_error(childfev_tst_data$FEV, predict(mlr_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_poly_model[2] = average_percent_error(childfev_tst_data$FEV, predict(poly2_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_poly_model[3] = average_percent_error(childfev_tst_data$FEV, predict(poly3_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_poly_model[4] = average_percent_error(childfev_tst_data$FEV, predict(poly4_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_poly_model[5] = average_percent_error(childfev_tst_data$FEV, predict(poly5_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_poly_model[6] = average_percent_error(childfev_tst_data$FEV, predict(poly6_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
 
 #R2
 r2_poly_model[1] = summary(mlr_model)$r.squared
@@ -261,9 +209,9 @@ adjr2_poly_model[6] = summary(poly6_model)$adj.r.squared
 
 ```{r include=FALSE}
 #Creating Empty list
-rss_poly_model = rep(0,5)
-rmse_poly_model = rep(0,5)
-rmse_loocv_poly_model = rep(0,5)
+rss_poly_model = rep(0,6)
+rmse_poly_model = rep(0,6)
+rmse_loocv_poly_model = rep(0,6)
 
 #Populate RSS
 rss_poly_model[1] = sum((resid(mlr_model))^2)
@@ -332,9 +280,9 @@ plot(polynomial_degree, adjr2_poly_model, type = "b",
        ylim = c(min(adjr2_poly_model), max(adjr2_poly_model)), col = red, lwd = 2,
        xlab = "Polynomial Degree", ylab = "Adjusted R2", main = "Adjusted R2 Vs Polynomial Degree")
 
-plot(polynomial_degree, train_test_error_poly_model, type = "b",
-       ylim = c(min(train_test_error_poly_model), max(train_test_error_poly_model)), col = orchid, lwd = 2,
-       xlab = "Polynomial Degree", ylab = "Average Percent Error", main = "Average Percent Error Vs Polynomial Degree")
+#plot(polynomial_degree, train_test_error_poly_model, type = "b",
+#       ylim = c(min(train_test_error_poly_model), max(train_test_error_poly_model)), col = orchid, lwd = 2,
+#       xlab = "Polynomial Degree", ylab = "Average Percent Error", main = "Average Percent Error Vs Polynomial Degree")
 ```
 
 It seems the R2 keeps increasing as the Polynomial degree increases. However adjusted R2 seems mostly fixed on/beyond Polynomial degree 2. Which kind of gives enough evidence to go for the model having Polynomail degree 2. 
@@ -396,27 +344,7 @@ It also clearly gives confidence that Polynomial degree 2 would be the best mode
  - Lowest Average Percentage Error
  - Anova F Test P value
 
-
-###Model 4 - Interaction between Predictors:
-Following are the exploration needs to be done as part of the Interaction between the predictors
- - Interaction between Numerical Predictor (Age, Height) and Categorical Predictor (Sex, Smoker) - One at a Time
- - Interaction between Numerical Predictors (Age, Height) it self
- - Interaction between all of the them 2 way and 3 way.
- - Carry out Inova F Test and RMSE LOOCV and Average Percentage Error to find out what's the best model
-
-#####**Interaction Model:**
-```{r}
-model_age_sex = lm(FEV ~ (Age + Sex) ^ 2 , data = childfev)
-model_age_smoker = lm(FEV ~ (Age + Smoker) ^ 2 , data = childfev)
-model_age_sex_smoker = lm(FEV ~ Age + Sex + Smoker + Age:Sex + Age:Smoker , data = childfev)
-model_height_sex = lm(FEV ~ (Height + Sex) ^ 2 , data = childfev)
-model_height_smoker = lm(FEV ~ (Height + Smoker) ^ 2 , data = childfev)
-model_height_sex_smoker = lm(FEV ~ Height + Sex + Smoker + Height:Sex + Height:Smoker , data = childfev)
-model_all_int_except_age_height = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker, data = childfev) 
-model_all_int_with_age_height = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker + Age:Height, data = childfev) 
-model_all_2way = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev) 
-model_all_3way = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev)
-```
+###Model 3 - Interaction Model - Results:
 
 ```{r echo=FALSE}
 #For Age Vs FEV
@@ -526,23 +454,22 @@ It seems the 3 way interaction seems significance among all the interaction betw
 
 Let's see how these model perform on the RSS, RMSE, RMSE LOOCV and 
 
-
 ```{r include=FALSE}
-train_test_error_int_model = rep(0,10)
+#train_test_error_int_model = rep(0,10)
 r2_int_model = rep(0,10)
 adjr2_int_model = rep(0,10)
 
 #Populate train_test_error_model
-train_test_error_int_model[1] = average_percent_error(childfev_tst_data$FEV, predict(model_age_sex, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_int_model[2] = average_percent_error(childfev_tst_data$FEV, predict(model_age_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_int_model[3] = average_percent_error(childfev_tst_data$FEV, predict(model_age_sex_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_int_model[4] = average_percent_error(childfev_tst_data$FEV, predict(model_height_sex, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_int_model[5] = average_percent_error(childfev_tst_data$FEV, predict(model_height_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_int_model[6] = average_percent_error(childfev_tst_data$FEV, predict(model_height_sex_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_int_model[7] = average_percent_error(childfev_tst_data$FEV, predict(model_all_int_except_age_height, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_int_model[8] = average_percent_error(childfev_tst_data$FEV, predict(model_all_int_with_age_height, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_int_model[9] = average_percent_error(childfev_tst_data$FEV, predict(model_all_2way, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_int_model[10] = average_percent_error(childfev_tst_data$FEV, predict(model_all_3way, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_int_model[1] = average_percent_error(childfev_tst_data$FEV, predict(model_age_sex, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_int_model[2] = average_percent_error(childfev_tst_data$FEV, predict(model_age_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_int_model[3] = average_percent_error(childfev_tst_data$FEV, predict(model_age_sex_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_int_model[4] = average_percent_error(childfev_tst_data$FEV, predict(model_height_sex, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_int_model[5] = average_percent_error(childfev_tst_data$FEV, predict(model_height_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_int_model[6] = average_percent_error(childfev_tst_data$FEV, predict(model_height_sex_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_int_model[7] = average_percent_error(childfev_tst_data$FEV, predict(model_all_int_except_age_height, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_int_model[8] = average_percent_error(childfev_tst_data$FEV, predict(model_all_int_with_age_height, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_int_model[9] = average_percent_error(childfev_tst_data$FEV, predict(model_all_2way, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_int_model[10] = average_percent_error(childfev_tst_data$FEV, predict(model_all_3way, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
 
 #R2
 r2_int_model[1] = summary(model_age_sex)$r.squared
@@ -654,9 +581,9 @@ plot(Interaction_Model, adjr2_int_model, type = "b",
        ylim = c(min(adjr2_int_model), max(adjr2_int_model)), col = red, lwd = 2,
        xlab = "Interaction Model", ylab = "Adjusted R2", main = "Adjusted R2 Vs Interaction Model")
 
-plot(Interaction_Model, train_test_error_int_model, type = "b",
-       ylim = c(min(train_test_error_int_model), max(train_test_error_int_model)), col = orchid, lwd = 2,
-       xlab = "Interaction Model", ylab = "Average Percent Error", main = "Average Percent Error Vs Interaction Model")
+#plot(Interaction_Model, train_test_error_int_model, type = "b",
+#       ylim = c(min(train_test_error_int_model), max(train_test_error_int_model)), col = orchid, lwd = 2,
+#       xlab = "Interaction Model", ylab = "Average Percent Error", main = "Average Percent Error Vs Interaction Model")
 ```
 
 It seems the R2 and adjusted R2 keeps increasing as the Polynomial degree increases. Also the error rate is also decreasing as the interaction increases. However after the Model 9 the Error rate increases slightly as the interaction increases
@@ -684,24 +611,7 @@ kable(df_compare_anova_interaction, format = "pandoc",padding = 2)
 
 It kind of confirmation that Polynomial regression with degree 2 is lowest RMSE LOOCV. We have decided to see it's the best model.
 
-###Model 5 - Creation of Big Model (Polynomial + Interaction), Stepwise via AIC / BIC:
-Let's create a big model, with Polynomial of degree 3 and 3 way interaction between categorical-to-categorical, categorical-to-numeric, numeric-to-numeric and see it's score. 
-
-Also create few models with combination from the previous model (which treat as good model)
- - Polynomial degree 2 + Interaction Model 8 
- - Polynomial degree 2 + Interaction Model 9 (2 way interaction)
- - Polynomial degree 2 + Interaction Model 10 (3 way interaction)
-
-#####**Big Model: + 3 other model**
-
-```{r}
-big_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3 + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3), data = childfev) # Big Model - Polynomial degree 3 + 3 Way Interaction
-poly2_int_model8 = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker + Age:Height , data = childfev) # Polynomial degree 2 + All Interaction Except Sex:Smoker
-poly2_int_model9 = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev) # Polynomial degree 2 + 2 Way Interaction
-poly2_int_model10 = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev) # Polynomial degree 2 + 3 Way Interaction
-```
-
-Let's compare with the good model from the Interaction model and Polynomial Regression Model, to see which one is siginificance
+###Model 4 - Big Model, AIC, BIC - Results:
 
 ```{r echo=FALSE}
 anova_final_p_value = rep(0,7)
@@ -715,14 +625,6 @@ anova_final_p_value[6] = anova(poly2_int_model9,big_model)$'Pr(>F)'[2] # Polynom
 anova_final_p_value[7] = anova(poly2_int_model10,big_model)$'Pr(>F)'[2] # Polynomial degree 2 + 3 Way Interaction
 ```
 
-Let's do the AIC and BIC to see what' the outcome, after do the ANOVA F Test.
-
-#####**AIC, BIC of the Big Model:**
-```{r include=FALSE}
-n = length(resid(big_model))
-big_model_aic = step(big_model, direction = "backward", trace = 0)
-big_model_bic = step(big_model, direction = "backward", k = log(n), trace = 0)
-```
 
 ```{r include=FALSE}
 poly2_int_model8_aic = step(poly2_int_model8, direction = "backward", trace = 0)
@@ -774,13 +676,455 @@ library(knitr)
 kable(df_compare_anova_final, format = "pandoc",padding = 2)
 ```
 
+From the above Table, its been observed that the AIC / BIC model of the Big model / Polynomial Degree 2 + 3 way communication is being significance.
 
-###Residual Diagnostic - All Models:
+Let's do the RSS, RMSE, RMSE LOOCV, R2 and Adjusted R2 and Average Error Rate to compare these 15 models
 
+
+```{r include=FALSE}
+#train_test_error_final_model = rep(0,15)
+r2_final_model = rep(0,15)
+adjr2_final_model = rep(0,15)
+
+#Populate train_test_error_final_model
+#train_test_error_final_model[1] = average_percent_error(childfev_tst_data$FEV, predict(poly2_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[2] = average_percent_error(childfev_tst_data$FEV, predict(model_all_int_with_age_height, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[3] = average_percent_error(childfev_tst_data$FEV, predict(model_all_2way, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[4] = average_percent_error(childfev_tst_data$FEV, predict(model_all_3way, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[5] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model8, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[6] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model8_aic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[7] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model8_bic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[8] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model9, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[9] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model9_aic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[10] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model9_bic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[11] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model10, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[12] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model10_aic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[13] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model10_bic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[14] = average_percent_error(childfev_tst_data$FEV, predict(big_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[15] = average_percent_error(childfev_tst_data$FEV, predict(big_model_aic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+#train_test_error_final_model[16] = average_percent_error(childfev_tst_data$FEV, predict(big_model_bic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+
+
+#R2
+r2_final_model[1] = summary(poly2_model)$r.squared
+r2_final_model[2] = summary(model_all_int_with_age_height)$r.squared
+r2_final_model[3] = summary(model_all_2way)$r.squared
+r2_final_model[4] = summary(model_all_3way)$r.squared
+r2_final_model[5] = summary(poly2_int_model8)$r.squared
+r2_final_model[6] = summary(poly2_int_model8_aic)$r.squared
+r2_final_model[7] = summary(poly2_int_model8_bic)$r.squared
+r2_final_model[8] = summary(poly2_int_model9)$r.squared
+r2_final_model[9] = summary(poly2_int_model9_aic)$r.squared
+r2_final_model[10] = summary(poly2_int_model9_bic)$r.squared
+r2_final_model[11] = summary(poly2_int_model10)$r.squared
+r2_final_model[12] = summary(poly2_int_model10_aic)$r.squared
+r2_final_model[13] = summary(poly2_int_model10_bic)$r.squared
+r2_final_model[14] = summary(big_model)$r.squared
+r2_final_model[15] = summary(big_model_aic)$r.squared
+r2_final_model[16] = summary(big_model_bic)$r.squared
+
+#Adjusted R2
+adjr2_final_model[1] = summary(poly2_model)$adj.r.squared
+adjr2_final_model[2] = summary(model_all_int_with_age_height)$adj.r.squared
+adjr2_final_model[3] = summary(model_all_2way)$adj.r.squared
+adjr2_final_model[4] = summary(model_all_3way)$adj.r.squared
+adjr2_final_model[5] = summary(poly2_int_model8)$adj.r.squared
+adjr2_final_model[6] = summary(poly2_int_model8_aic)$adj.r.squared
+adjr2_final_model[7] = summary(poly2_int_model8_bic)$adj.r.squared
+adjr2_final_model[8] = summary(poly2_int_model9)$adj.r.squared
+adjr2_final_model[9] = summary(poly2_int_model9_aic)$adj.r.squared
+adjr2_final_model[10] = summary(poly2_int_model9_bic)$adj.r.squared
+adjr2_final_model[11] = summary(poly2_int_model10)$adj.r.squared
+adjr2_final_model[12] = summary(poly2_int_model10_aic)$adj.r.squared
+adjr2_final_model[13] = summary(poly2_int_model10_bic)$adj.r.squared
+adjr2_final_model[14] = summary(big_model)$adj.r.squared
+adjr2_final_model[15] = summary(big_model_aic)$adj.r.squared
+adjr2_final_model[16] = summary(big_model_bic)$adj.r.squared
+```
+
+```{r include=FALSE}
+#Creating Empty list
+rss_final_model = rep(0,15)
+rmse_final_model = rep(0,15)
+rmse_loocv_final_model = rep(0,15)
+
+#Populate RSS
+rss_final_model[1] = sum((resid(poly2_model))^2)
+rss_final_model[2] = sum((resid(model_all_int_with_age_height))^2)
+rss_final_model[3] = sum((resid(model_all_2way))^2)
+rss_final_model[4] = sum((resid(model_all_3way))^2)
+rss_final_model[5] = sum((resid(poly2_int_model8))^2)
+rss_final_model[6] = sum((resid(poly2_int_model8_aic))^2)
+rss_final_model[7] = sum((resid(poly2_int_model8_bic))^2)
+rss_final_model[8] = sum((resid(poly2_int_model9))^2)
+rss_final_model[9] = sum((resid(poly2_int_model9_aic))^2)
+rss_final_model[10] = sum((resid(poly2_int_model9_bic))^2)
+rss_final_model[11] = sum((resid(poly2_int_model10))^2)
+rss_final_model[12] = sum((resid(poly2_int_model10_aic))^2)
+rss_final_model[13] = sum((resid(poly2_int_model10_bic))^2)
+rss_final_model[14] = sum((resid(big_model))^2)
+rss_final_model[15] = sum((resid(big_model_aic))^2)
+rss_final_model[16] = sum((resid(big_model_bic))^2)
+
+#Populate RMSE
+rmse_final_model[1] = sqrt(mean(sum((resid(poly2_model))^2)))
+rmse_final_model[2] = sqrt(mean(sum((resid(model_all_int_with_age_height))^2)))
+rmse_final_model[3] = sqrt(mean(sum((resid(model_all_2way))^2)))
+rmse_final_model[4] = sqrt(mean(sum((resid(model_all_3way))^2)))
+rmse_final_model[5] = sqrt(mean(sum((resid(poly2_int_model8))^2)))
+rmse_final_model[6] = sqrt(mean(sum((resid(poly2_int_model8_aic))^2)))
+rmse_final_model[7] = sqrt(mean(sum((resid(poly2_int_model8_bic))^2)))
+rmse_final_model[8] = sqrt(mean(sum((resid(poly2_int_model9))^2)))
+rmse_final_model[9] = sqrt(mean(sum((resid(poly2_int_model9_aic))^2)))
+rmse_final_model[10] = sqrt(mean(sum((resid(poly2_int_model9_bic))^2)))
+rmse_final_model[11] = sqrt(mean(sum((resid(poly2_int_model10))^2)))
+rmse_final_model[12] = sqrt(mean(sum((resid(poly2_int_model10_aic))^2)))
+rmse_final_model[13] = sqrt(mean(sum((resid(poly2_int_model10_bic))^2)))
+rmse_final_model[14] = sqrt(mean(sum((resid(big_model))^2)))
+rmse_final_model[15] = sqrt(mean(sum((resid(big_model_aic))^2)))
+rmse_final_model[16] = sqrt(mean(sum((resid(big_model_bic))^2)))
+
+
+#Populate RMSE LOOC
+rmse_loocv_final_model[1] = sqrt(mean((resid(poly2_model)/(1-hatvalues(poly2_model)))^2))
+rmse_loocv_final_model[2] = sqrt(mean((resid(model_all_int_with_age_height)/(1-hatvalues(model_all_int_with_age_height)))^2))
+rmse_loocv_final_model[3] = sqrt(mean((resid(model_all_2way)/(1-hatvalues(model_all_2way)))^2))
+rmse_loocv_final_model[4] = sqrt(mean((resid(model_all_3way)/(1-hatvalues(model_all_3way)))^2))
+rmse_loocv_final_model[5] = sqrt(mean((resid(poly2_int_model8)/(1-hatvalues(poly2_int_model8)))^2))
+rmse_loocv_final_model[6] = sqrt(mean((resid(poly2_int_model8_aic)/(1-hatvalues(poly2_int_model8_aic)))^2))
+rmse_loocv_final_model[7] = sqrt(mean((resid(poly2_int_model8_bic)/(1-hatvalues(poly2_int_model8_bic)))^2))
+rmse_loocv_final_model[8] = sqrt(mean((resid(poly2_int_model9)/(1-hatvalues(poly2_int_model9)))^2))
+rmse_loocv_final_model[9] = sqrt(mean((resid(poly2_int_model9_aic)/(1-hatvalues(poly2_int_model9_aic)))^2))
+rmse_loocv_final_model[10] = sqrt(mean((resid(poly2_int_model9_bic)/(1-hatvalues(poly2_int_model9_bic)))^2))
+rmse_loocv_final_model[11] = sqrt(mean((resid(poly2_int_model10)/(1-hatvalues(poly2_int_model10)))^2))
+rmse_loocv_final_model[12] = sqrt(mean((resid(poly2_int_model10_aic)/(1-hatvalues(poly2_int_model10_aic)))^2))
+rmse_loocv_final_model[13] = sqrt(mean((resid(poly2_int_model10_bic)/(1-hatvalues(poly2_int_model10_bic)))^2))
+rmse_loocv_final_model[14] = sqrt(mean((resid(big_model)/(1-hatvalues(big_model)))^2))
+rmse_loocv_final_model[15] = sqrt(mean((resid(big_model_aic)/(1-hatvalues(big_model_aic)))^2))
+rmse_loocv_final_model[16] = sqrt(mean((resid(big_model_bic)/(1-hatvalues(big_model_bic)))^2))
+```
+
+```{r echo=FALSE}
+black = "#2C3E50"
+grey = "#ECF0F1"
+green = "#009999"
+purple = "#990073"
+blue = "blue4"
+
+par(mfrow = c(1, 3), oma = c(0, 0, 5, 0))
+Final_Model = 1:16
+plot(Final_Model, rss_final_model, type = "b",
+       ylim = c(min(rss_final_model), max(rss_final_model)), col = purple, lwd = 2,
+       xlab = "Final Model", ylab = "Residual Sum Square (RSS)", main = "RSS Vs Final Models")
+
+plot(Final_Model, rmse_final_model, type = "b",
+       ylim = c(min(rmse_final_model), max(rmse_final_model)), col = green, lwd = 2,
+       xlab = "Final Model", ylab = "Root Mean Square (RMSE)", main = "RMSE Vs Final Models")
+
+plot(Final_Model, rmse_loocv_final_model, type = "b",
+       ylim = c(min(rmse_loocv_final_model), max(rmse_loocv_final_model)), col = blue, lwd = 2,
+       xlab = "Final Model", ylab = "Root Mean Square (RMSE) LOOCV", main = "RMSE LOOCV Vs Final Models")
+```
+
+It seems that as the Interaction increased, the `RSS` and `RMSE` decreases, which should be as the model becomes more and more complex, the error will decreased. Also the RMSE LOOCV also **decreases** with increase in Interaction, however the RMSE LOOCV increased slighly after the Model 9 
+
+Let's see what happens to the R2 and Adjusted R2 when the polynomail degree increases. Also let's see what will be the Average Percentage Error, when the Polynomail degree increases. 
+
+
+```{r echo=FALSE}
+gold = "gold4"
+red = "darkred"
+orchid = "darkorchid2"
+
+par(mfrow = c(1, 3), oma = c(0, 0, 5, 0))
+Interaction_Model = 1:16
+plot(Interaction_Model, r2_final_model, type = "b",
+       ylim = c(min(r2_final_model), max(r2_final_model)), col = gold, lwd = 2,
+       xlab = "Final Model", ylab = "R2", main = "R2 Vs Interaction Model")
+
+plot(Interaction_Model, adjr2_final_model, type = "b",
+       ylim = c(min(adjr2_final_model), max(adjr2_final_model)), col = red, lwd = 2,
+       xlab = "Final Model", ylab = "Adjusted R2", main = "Adjusted R2 Vs Final Models")
+
+#plot(Interaction_Model, train_test_error_final_model, type = "b",
+#       ylim = c(min(train_test_error_final_model), max(train_test_error_final_model)), col = orchid, lwd = 2,
+#       xlab = "Final Model", ylab = "Average Percent Error", main = "Average Percent Error Vs Final Models")
+```
+
+It seems the R2 and adjusted R2 keeps increasing as the Polynomial degree increases. Also the error rate is also decreasing as the interaction increases. However after the Model 9 the Error rate increases slightly as the interaction increases
+
+
+Let's see the comparision of the data in actual between all the models, to see what's the best finalize model
+
+```{r include=FALSE}
+df_compare_anova_final = data.frame(
+  ID = c("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16"),
+  Interaction_Model = c("Polynomial Degree 2","All Interaction Except Sex:Smoker","2 way","3 way",
+                         "Polynomial Degree 2 + All Interaction Except Sex:Smoker","AIC - Polynomial Degree 2 + All Interaction Except Sex:Smoker", 
+                         "BIC - Polynomial Degree 2 + All Interaction Except Sex:Smoker",
+                         "Polynomial Degree 2 + 2 way", "AIC - Polynomial Degree 2 + 2 way", "BIC- Polynomial Degree 2 + 2 way",
+                         "Polynomial Degree 2 + 3 way", "AIC - Polynomial Degree 2 + 3 way","BIC - Polynomial Degree 2 + 3 way",
+                         "Big Model", "AIC - Big Model", "BIC - Big Model"
+                        ),
+                rss = c(rss_final_model[1],rss_final_model[2],rss_final_model[3],rss_final_model[4],rss_final_model[5],rss_final_model[6],
+                        rss_final_model[7],rss_final_model[8],rss_final_model[9],rss_final_model[10], rss_final_model[11], rss_final_model[12],
+                        rss_final_model[13], rss_final_model[14], rss_final_model[15], rss_final_model[16]),
+               rmse = c(rmse_final_model[1],rmse_final_model[2],rmse_final_model[3],rmse_final_model[4],rmse_final_model[5],rmse_final_model[6],
+                       rmse_final_model[7],rmse_final_model[8],rmse_final_model[9],rmse_final_model[10], rmse_final_model[11],rmse_final_model[12],
+                       rmse_final_model[13],rmse_final_model[14],rmse_final_model[15],rmse_final_model[16]),
+         rmse_loocv = c(rmse_loocv_final_model[1],rmse_loocv_final_model[2],rmse_loocv_final_model[3],rmse_loocv_final_model[4],rmse_loocv_final_model[5],
+                       rmse_loocv_final_model[6],rmse_loocv_final_model[7],rmse_loocv_final_model[8],rmse_loocv_final_model[9], rmse_loocv_final_model[10],
+                       rmse_loocv_final_model[11],rmse_loocv_final_model[12], rmse_loocv_final_model[13], rmse_loocv_final_model[14], 
+                       rmse_loocv_final_model[15], rmse_loocv_final_model[16]),
+            adj_r2 = c(adjr2_final_model[1],adjr2_final_model[2],adjr2_final_model[3],adjr2_final_model[4],adjr2_final_model[5],adjr2_final_model[6],
+                       adjr2_final_model[7],adjr2_final_model[8],adjr2_final_model[9],adjr2_final_model[10], adjr2_final_model[11],adjr2_final_model[12],
+                       adjr2_final_model[13],adjr2_final_model[14],adjr2_final_model[15],adjr2_final_model[16])
+            #percent_error = c(train_test_error_final_model[1],train_test_error_final_model[2],train_test_error_final_model[3],
+            #                  train_test_error_final_model[4],train_test_error_final_model[5],train_test_error_final_model[6],
+            #                  train_test_error_final_model[7],train_test_error_final_model[8],train_test_error_final_model[9],
+            #                  train_test_error_final_model[10],train_test_error_final_model[11],train_test_error_final_model[12],
+            #                  train_test_error_final_model[13],train_test_error_final_model[14],train_test_error_final_model[15],
+            #                  train_test_error_final_model[16])
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(df_compare_anova_final, format = "pandoc",padding = 2)
+```
+
+The best model from the above 16 models is the **Model 12** with lowest RMSE LOOCV which is **`0.3892`**, though doesn't have the highest RSS or RMSE. Let's explore the Linearity Assumptions of this model
+
+###Diagnostic Plot - Best Model :
+Below are the 2 assumptions which needs to be tested as part of the section
+ - Constant Variance
+ - Normality
+
+Let's plot the residual versus Fitted plot and Q-Q plot of the model
+```{r fig.height=6, fig.width=10}
+par(mfrow = c(1, 2), oma = c(0, 0, 2, 0))
+
+plot(resid(poly2_int_model10_aic)~fitted(poly2_int_model10_aic),
+     pch = 1,
+     cex = 1,
+     cex.main = 0.8,
+     col = "darkgrey",
+     xlab = "Fitted Values",
+     ylab = "Residuals",
+     main = "Fitted Vs Residual - Polynomial Degree 2 + 3 Way Interaction Model")
+abline (h = 0, col = "darkorange", lwd = 2, lty = 1)
+
+qqnorm(resid(poly2_int_model10_aic), 
+       pch = 1,
+       cex = 1,
+       cex.main = 0.8,
+       col = "darkgrey")
+qqline(resid(poly2_int_model10_aic),
+       lwd = 1,
+       col = "red",
+       lty = 2)
+```
+
+It seems both the Constant Variance and Normality is in **Suspect**. From the residual plot, it seems that the for lower fitted values the variance is small, as the the fitted values increases, the variance also increasing. Also for the Q-Q plot, it seems have a fat tail.
+
+Let's check the BP Test and Shapiro Wiki Test to validate this
+
+```{r}
+bptest(poly2_int_model10_aic)
+shapiro.test(resid(poly2_int_model10_aic))
+```
+
+It seems that both the P value is small, which confirms the Constant Variance and Normality is **Suspect**.
 
 
 ###Outlier Diagnostic - All Models:
+Let's check for any influence points in the model
+
+###Large Leverage
+```{r}
+head(hatvalues(poly2_int_model10_aic)[hatvalues(poly2_int_model10_aic) > 2 * mean(hatvalues(poly2_int_model10_aic))],10)
+```
+
+There are around **`r length(hatvalues(poly2_int_model10_aic)[hatvalues(poly2_int_model10_aic) > 2 * mean(hatvalues(poly2_int_model10_aic))])`** observations which have the high leverage
+
+Let's check the high standard residuals
+
+###Large Standard Residuals
+```{r}
+head(rstandard(poly2_int_model10_aic)[abs(rstandard(poly2_int_model10_aic)) > 2],10)
+```
+
+There are around **`r length(rstandard(poly2_int_model10_aic)[abs(rstandard(poly2_int_model10_aic)) > 2])`** observations which have the high Standardize Residuals
+
+Even though the model has high leverage and standard residuals, let's check whether these are influentials or not.
+
+This can be verified by the cook's distance
+
+```{r}
+n = length(resid(poly2_int_model10_aic))
+length(cooks.distance(poly2_int_model10_aic)[cooks.distance(poly2_int_model10_aic) > (4/n)])
+```
+
+It has been observed that there are around `length(cooks.distance(poly2_int_model10_aic)[cooks.distance(poly2_int_model10_aic) > (4/n)])` influential observations in the model
+
+###Re-Fit the Model, by removing these influentials
+Now, let's re-fir the model, after removing the influential data to see if the model has improved or not
+```{r}
+model_cd = cooks.distance(poly2_int_model10_aic)
+poly2_int_model10 = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev, subset = model_cd <= (4/n)) # Polynomial degree 2 + 3 Way Interaction
+poly2_int_model10_aic = step(poly2_int_model10, direction = "backward", trace = 0)
+```
+
+The model re-fit is now completed. Now let's draw the diagnostic plot once again
+
+```{r fig.height=6, fig.width=10}
+par(mfrow = c(1, 2), oma = c(0, 0, 2, 0))
+
+plot(resid(poly2_int_model10_aic)~fitted(poly2_int_model10_aic),
+     pch = 1,
+     cex = 1,
+     cex.main = 0.8,
+     col = "darkgrey",
+     xlab = "Fitted Values",
+     ylab = "Residuals",
+     main = "Fitted Vs Residual - Polynomial Degree 2 + 3 Way Interaction Model")
+abline (h = 0, col = "darkorange", lwd = 2, lty = 1)
+
+qqnorm(resid(poly2_int_model10_aic), 
+       pch = 1,
+       cex = 1,
+       cex.main = 0.8,
+       col = "darkgrey")
+qqline(resid(poly2_int_model10_aic),
+       lwd = 1,
+       col = "red",
+       lty = 2)
+```
+
+The plot seems much better than the earlier one. The **constant Variance still seems suspect**, as the constant variance is low to high as the fitted values increased from low to how. However the Q-Q plot seems good, hence the **normality is not in suspect**.
+
+Let's do the BP Test and Shapiro Wiki test to confirm
+
+```{r}
+bptest(poly2_int_model10_aic)
+shapiro.test(resid(poly2_int_model10_aic))
+```
+
+As from the plot, the P value of the BP Test is too low, which confirms the **Variance Is Suspect**, where as the P value from the Shapiro Wiki Test is high which is greater than for any alpha value (0.5, 0.1), which confirms the **Normality is not suspect**
+
+# Discussion
+
+#####Dicussion on Why we have Choosen the Model (12)
+At the final we have around 16 models which seems to be evalauted. Out of the 16 models, we have selected our best model as the **Model 12** based on the soley fact, it has the lowest **Leave One Out Cross Validation (LOOCV)**. This model comes after the AIC performed on the model Polynomial Regression of Degree - 2 and 3 Way Interaction between the Predictrs
+
+Below is the re-drawn of the RSS, RMSE, RMSE LOOCV, where locate the point number (12) for the model
+```{r echo=FALSE}
+black = "#2C3E50"
+grey = "#ECF0F1"
+green = "#009999"
+purple = "#990073"
+blue = "blue4"
+
+par(mfrow = c(1, 3), oma = c(0, 0, 5, 0))
+Final_Model = 1:16
+plot(Final_Model, rss_final_model, type = "b",
+       ylim = c(min(rss_final_model), max(rss_final_model)), col = purple, lwd = 2,
+       xlab = "Final Model", ylab = "Residual Sum Square (RSS)", main = "RSS Vs Final Models")
+points(12,rss_final_model[12], col = "red", pch = 1, cex =3 )
+
+plot(Final_Model, rmse_final_model, type = "b",
+       ylim = c(min(rmse_final_model), max(rmse_final_model)), col = green, lwd = 2,
+       xlab = "Final Model", ylab = "Root Mean Square (RMSE)", main = "RMSE Vs Final Models")
+points(12,rmse_final_model[12], col = "red", pch = 1, cex =3 )
+
+plot(Final_Model, rmse_loocv_final_model, type = "b",
+       ylim = c(min(rmse_loocv_final_model), max(rmse_loocv_final_model)), col = blue, lwd = 2,
+       xlab = "Final Model", ylab = "Root Mean Square (RMSE) LOOCV", main = "RMSE LOOCV Vs Final Models")
+points(12,rmse_loocv_final_model[12], col = "red", pch = 1, cex =3 )
+```
+
+The RMSE LOOCV is the lowest, the RSS and RMSE is not the lowest one. As we know that RSS and RMSE always decrease as the model complexity increases, hence it will be always low if we go furthe complex model beyond (12). However RMSE LOOCV is great way to validate the model performance, it's a good model which will predict the FEV.
 
 
+Also below is the replot of the R2 and Adjusted R2, where the circle is marked on the Model (12)
+```{r echo=FALSE}
+gold = "gold4"
+red = "darkred"
+orchid = "darkorchid2"
 
-###Model Selection - All Models:
+par(mfrow = c(1, 3), oma = c(0, 0, 3, 0))
+Interaction_Model = 1:16
+plot(Interaction_Model, r2_final_model, type = "b",
+       ylim = c(min(r2_final_model), max(r2_final_model)), col = gold, lwd = 2,
+       xlab = "Final Model", ylab = "R2", main = "R2 Vs Interaction Model")
+points(12,r2_final_model[12], col = "red", pch = 1, cex =3 )
+
+
+plot(Interaction_Model, adjr2_final_model, type = "b",
+       ylim = c(min(adjr2_final_model), max(adjr2_final_model)), col = red, lwd = 2,
+       xlab = "Final Model", ylab = "Adjusted R2", main = "Adjusted R2 Vs Final Models")
+points(12,adjr2_final_model[12], col = "red", pch = 1, cex =3 )
+
+
+#plot(Interaction_Model, train_test_error_final_model, type = "b",
+#       ylim = c(min(train_test_error_final_model), max(train_test_error_final_model)), col = orchid, lwd = 2,
+#       xlab = "Final Model", ylab = "Average Percent Error", main = "Average Percent Error Vs Final Models")
+#points(12,train_test_error_final_model[12], col = "red", pch = 1, cex =3 )
+```
+
+#####Percent of Error
+
+Let's dicuss what's the percentage of Error Produced by the Model 12. But before that let's create a function which will calculates the percent of error from the below formula
+
+- Calculate the average percent error:
+\[
+\frac{1}{n}\sum_i\frac{|\text{predicted}_i - \text{actual}_i|}{\text{predicted}_i} \times 100
+\]
+
+```{r include=FALSE}
+#Split the data into 80% (Train Set), 20% (Test Set)
+set.seed(420)
+childfev_trn_idx  = sample(nrow(childfev), size = trunc(0.80 * nrow(childfev)))
+childfev_trn_data = childfev[childfev_trn_idx, ]
+childfev_tst_data = childfev[-childfev_trn_idx, ]
+
+#Function to calculate average percent error
+average_percent_error = function(actual, predicted) {
+  100 * mean((abs(actual - predicted)) / actual)
+}
+```
+
+
+```{r include=FALSE}
+train_test_error_final_model = rep(0,15)
+
+#Populate train_test_error_final_model
+train_test_error_final_model[1] = average_percent_error(childfev_tst_data$FEV, predict(poly2_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[2] = average_percent_error(childfev_tst_data$FEV, predict(model_all_int_with_age_height, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[3] = average_percent_error(childfev_tst_data$FEV, predict(model_all_2way, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[4] = average_percent_error(childfev_tst_data$FEV, predict(model_all_3way, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[5] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model8, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[6] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model8_aic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[7] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model8_bic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[8] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model9, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[9] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model9_aic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[10] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model9_bic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[11] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model10, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[12] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model10_aic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[13] = average_percent_error(childfev_tst_data$FEV, predict(poly2_int_model10_bic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[14] = average_percent_error(childfev_tst_data$FEV, predict(big_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[15] = average_percent_error(childfev_tst_data$FEV, predict(big_model_aic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_final_model[16] = average_percent_error(childfev_tst_data$FEV, predict(big_model_bic, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+```
+
+
+```{r echo=FALSE}
+plot(Interaction_Model, train_test_error_final_model, type = "b",
+       ylim = c(min(train_test_error_final_model), max(train_test_error_final_model)), col = orchid, lwd = 2,
+       xlab = "Final Model", ylab = "Average Percent Error", main = "Average Percent Error Vs Final 16 Models")
+points(12,train_test_error_final_model[12], col = "red", pch = 1, cex =3 )
+```
+
+We can see that the Percent of Error for the Model **`Model 12`** is around **`train_test_error_final_model[12]`** which is not bad, though we have done a random sampling with seed. It could be possible for many many sampling, the percentage of error could reduced. However, since the Model 12 is based on the lowest RMSE LOOCV, we will **finalize the model 12 as the final model**
+
+
