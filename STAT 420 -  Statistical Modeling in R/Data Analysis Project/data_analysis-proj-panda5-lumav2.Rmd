@@ -406,11 +406,9 @@ Following are the exploration needs to be done as part of the Interaction betwee
 
 #####**Interaction Model:**
 ```{r}
-model_age = lm(FEV ~ Age , data = childfev)
 model_age_sex = lm(FEV ~ (Age + Sex) ^ 2 , data = childfev)
 model_age_smoker = lm(FEV ~ (Age + Smoker) ^ 2 , data = childfev)
 model_age_sex_smoker = lm(FEV ~ Age + Sex + Smoker + Age:Sex + Age:Smoker , data = childfev)
-model_height = lm(FEV ~ Height , data = childfev)
 model_height_sex = lm(FEV ~ (Height + Sex) ^ 2 , data = childfev)
 model_height_smoker = lm(FEV ~ (Height + Smoker) ^ 2 , data = childfev)
 model_height_sex_smoker = lm(FEV ~ Height + Sex + Smoker + Height:Sex + Height:Smoker , data = childfev)
@@ -687,15 +685,97 @@ kable(df_compare_anova_interaction, format = "pandoc",padding = 2)
 It kind of confirmation that Polynomial regression with degree 2 is lowest RMSE LOOCV. We have decided to see it's the best model.
 
 ###Model 5 - Creation of Big Model (Polynomial + Interaction), Stepwise via AIC / BIC:
-Let's create a big model, with Polynomial of degree 3 and 3 way interaction between categorical-to-categorical, categorical-to-numeric, numeric-to-numeric and see it's score. Also reduced the model via AIC and BIC to see any improvement in the score
+Let's create a big model, with Polynomial of degree 3 and 3 way interaction between categorical-to-categorical, categorical-to-numeric, numeric-to-numeric and see it's score. 
 
-#####**Big Model:**
+Also create few models with combination from the previous model (which treat as good model)
+ - Polynomial degree 2 + Interaction Model 8 
+ - Polynomial degree 2 + Interaction Model 9 (2 way interaction)
+ - Polynomial degree 2 + Interaction Model 10 (3 way interaction)
+
+#####**Big Model: + 3 other model**
 
 ```{r}
-big_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3 + poly(Age,3) + poly(Height,3), data = childfev)
+big_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3 + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3), data = childfev) # Big Model - Polynomial degree 3 + 3 Way Interaction
+poly2_int_model8 = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker + Age:Height , data = childfev) # Polynomial degree 2 + All Interaction Except Sex:Smoker
+poly2_int_model9 = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev) # Polynomial degree 2 + 2 Way Interaction
+poly2_int_model10 = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev) # Polynomial degree 2 + 3 Way Interaction
 ```
 
-It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(big_model)$coefficientp[2,4]`
+Let's compare with the good model from the Interaction model and Polynomial Regression Model, to see which one is siginificance
+
+```{r echo=FALSE}
+anova_final_p_value = rep(0,7)
+anova_final_p_value[1] = anova(poly2_model,big_model)$'Pr(>F)'[2] #Polynomial Model With Degree 2
+anova_final_p_value[2] = anova(model_all_int_with_age_height,big_model)$'Pr(>F)'[2] #Interacton Model 8 (All Interaction Except Sex:Smoker)
+anova_final_p_value[3] = anova(model_all_2way,big_model)$'Pr(>F)'[2] #Interacton Model 9 (2 way Interaction Model)
+anova_final_p_value[4] = anova(model_all_3way,big_model)$'Pr(>F)'[2] #Interacton Model 10 (3 way Interaction Model)
+
+anova_final_p_value[5] = anova(poly2_int_model8,big_model)$'Pr(>F)'[2] # Polynomial degree 2 + All Interaction Except Sex:Smoker
+anova_final_p_value[6] = anova(poly2_int_model9,big_model)$'Pr(>F)'[2] # Polynomial degree 2 + 2 Way Interaction
+anova_final_p_value[7] = anova(poly2_int_model10,big_model)$'Pr(>F)'[2] # Polynomial degree 2 + 3 Way Interaction
+```
+
+Let's do the AIC and BIC to see what' the outcome, after do the ANOVA F Test.
+
+#####**AIC, BIC of the Big Model:**
+```{r include=FALSE}
+n = length(resid(big_model))
+big_model_aic = step(big_model, direction = "backward", trace = 0)
+big_model_bic = step(big_model, direction = "backward", k = log(n), trace = 0)
+```
+
+```{r include=FALSE}
+poly2_int_model8_aic = step(poly2_int_model8, direction = "backward", trace = 0)
+poly2_int_model8_bic = step(poly2_int_model8, direction = "backward", k = log(n), trace = 0)
+
+poly2_int_model9_aic = step(poly2_int_model9, direction = "backward", trace = 0)
+poly2_int_model9_bic = step(poly2_int_model9, direction = "backward", k = log(n), trace = 0)
+
+poly2_int_model10_aic = step(poly2_int_model10, direction = "backward", trace = 0)
+poly2_int_model10_bic = step(poly2_int_model10, direction = "backward", k = log(n), trace = 0)
+```
+
+**ANOVA F Test of the AIC/BIC**
+```{r include=FALSE}
+anova_final_p_value[8] = anova(big_model_aic,big_model)$'Pr(>F)'[2] # Big Model AIC
+anova_final_p_value[9] = anova(big_model_bic,big_model)$'Pr(>F)'[2] # Big Model BIC
+
+anova_final_p_value[10] = anova(poly2_int_model8_aic,big_model)$'Pr(>F)'[2]
+anova_final_p_value[11] = anova(poly2_int_model8_bic,big_model)$'Pr(>F)'[2]
+anova_final_p_value[12] = anova(poly2_int_model9_aic,big_model)$'Pr(>F)'[2]
+anova_final_p_value[13] = anova(poly2_int_model9_bic,big_model)$'Pr(>F)'[2]
+anova_final_p_value[14] = anova(poly2_int_model10_aic,big_model)$'Pr(>F)'[2]
+anova_final_p_value[15] = anova(poly2_int_model10_bic,big_model)$'Pr(>F)'[2]
+```
+
+
+```{r include=FALSE}
+df_compare_anova_final = data.frame(
+  ID = c("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"),
+  null_Model = c("Polynomial Degree 2","All Interaction Except Sex:Smoker","2 way","3 way",
+                 "Polynomial Degree 2 + All Interaction Except Sex:Smoker","Polynomial Degree 2 + 2 way",
+                 "Polynomial Degree 2 + 3 way","Big Model - AIC", "Big Model - BIC",
+                 "AIC - Polynomial Degree 2 + All Interaction Except Sex:Smoker","BIC - Polynomial Degree 2 + All Interaction Except Sex:Smoker",
+                 "AIC - Polynomial Degree 2 + 2 way","BIC- Polynomial Degree 2 + 2 way",
+                 "AIC - Polynomial Degree 2 + 3 way","BIC - Polynomial Degree 2 + 3 way"),
+  full_Model = c("Big Model","Big Model","Big Model","Big Model","Big Model",
+                 "Big Model","Big Model","Big Model","Big Model","Big Model","Big Model",
+                 "Big Model","Big Model","Big Model","Big Model"),
+  p_value = c(anova_final_p_value[1],anova_final_p_value[2],anova_final_p_value[3],anova_final_p_value[4],
+              anova_final_p_value[5],anova_final_p_value[6],anova_final_p_value[7],anova_final_p_value[8],
+              anova_final_p_value[9],anova_final_p_value[10],anova_final_p_value[11],anova_final_p_value[12],
+              anova_final_p_value[13],anova_final_p_value[14],anova_final_p_value[15]),
+  descision = c("Big Model","Big Model","Big Model","3 way","Big Model","Big Model","Polynomial Degree 2 + 3 way","Big Model - AIC","Big Model - BIC","Big Model","Big Model","Big Model","Big Model","AIC - Polynomial Degree 2 + 3 way","BIC - Polynomial Degree 2 + 3 way")
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(df_compare_anova_final, format = "pandoc",padding = 2)
+```
+
+From the above table (Anova F Test), It sees the Big Table or the 3 Way Interaction or 3 Way Interaction + Polynomial degree 2 is of higher significance.
+
 
 #####**RSS, RMSE and RMSE LOOCV**
 Let'e calculate the RSS, RMSE and RMSE LOOCV of the model

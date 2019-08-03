@@ -555,11 +555,9 @@ poly6_model = lm(FEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(
 <p>Following are the exploration needs to be done as part of the Interaction between the predictors - Interaction between Numerical Predictor (Age, Height) and Categorical Predictor (Sex, Smoker) - One at a Time - Interaction between Numerical Predictors (Age, Height) it self - Interaction between all of the them 2 way and 3 way. - Carry out Inova F Test and RMSE LOOCV and Average Percentage Error to find out what’s the best model</p>
 <div id="interaction-model" class="section level5">
 <h5><strong>Interaction Model:</strong></h5>
-<pre class="r"><code>model_age = lm(FEV ~ Age , data = childfev)
-model_age_sex = lm(FEV ~ (Age + Sex) ^ 2 , data = childfev)
+<pre class="r"><code>model_age_sex = lm(FEV ~ (Age + Sex) ^ 2 , data = childfev)
 model_age_smoker = lm(FEV ~ (Age + Smoker) ^ 2 , data = childfev)
 model_age_sex_smoker = lm(FEV ~ Age + Sex + Smoker + Age:Sex + Age:Smoker , data = childfev)
-model_height = lm(FEV ~ Height , data = childfev)
 model_height_sex = lm(FEV ~ (Height + Sex) ^ 2 , data = childfev)
 model_height_smoker = lm(FEV ~ (Height + Smoker) ^ 2 , data = childfev)
 model_height_sex_smoker = lm(FEV ~ Height + Sex + Smoker + Height:Sex + Height:Smoker , data = childfev)
@@ -774,11 +772,139 @@ model_all_3way = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev)</c
 </div>
 <div id="model-5---creation-of-big-model-polynomial-interaction-stepwise-via-aic-bic" class="section level3">
 <h3>Model 5 - Creation of Big Model (Polynomial + Interaction), Stepwise via AIC / BIC:</h3>
-<p>Let’s create a big model, with Polynomial of degree 3 and 3 way interaction between categorical-to-categorical, categorical-to-numeric, numeric-to-numeric and see it’s score. Also reduced the model via AIC and BIC to see any improvement in the score</p>
-<div id="big-model" class="section level5">
-<h5><strong>Big Model:</strong></h5>
-<pre class="r"><code>big_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3 + poly(Age,3) + poly(Height,3), data = childfev)</code></pre>
-<p>It seems the quadratic model is significance with low p value <strong>&lt;2e-16</strong>, including all the predictors are significance though except <code>Age</code> where the p value is around</p>
+<p>Let’s create a big model, with Polynomial of degree 3 and 3 way interaction between categorical-to-categorical, categorical-to-numeric, numeric-to-numeric and see it’s score.</p>
+<p>Also create few models with combination from the previous model (which treat as good model) - Polynomial degree 2 + Interaction Model 8 - Polynomial degree 2 + Interaction Model 9 (2 way interaction) - Polynomial degree 2 + Interaction Model 10 (3 way interaction)</p>
+<div id="big-model-3-other-model" class="section level5">
+<h5><strong>Big Model: + 3 other model</strong></h5>
+<pre class="r"><code>big_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3 + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3), data = childfev) # Big Model - Polynomial degree 3 + 3 Way Interaction
+poly2_int_model8 = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker + Age:Height , data = childfev) # Polynomial degree 2 + All Interaction Except Sex:Smoker
+poly2_int_model9 = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev) # Polynomial degree 2 + 2 Way Interaction
+poly2_int_model10 = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev) # Polynomial degree 2 + 3 Way Interaction</code></pre>
+<p>Let’s compare with the good model from the Interaction model and Polynomial Regression Model, to see which one is siginificance</p>
+<p>Let’s do the AIC and BIC to see what’ the outcome, after do the ANOVA F Test.</p>
+</div>
+<div id="aic-bic-of-the-big-model" class="section level5">
+<h5><strong>AIC, BIC of the Big Model:</strong></h5>
+<p><strong>ANOVA F Test of the AIC/BIC</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">ID</th>
+<th align="left">null_Model</th>
+<th align="left">full_Model</th>
+<th align="right">p_value</th>
+<th align="left">descision</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">Polynomial Degree 2</td>
+<td align="left">Big Model</td>
+<td align="right">0.0000</td>
+<td align="left">Big Model</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">All Interaction Except Sex:Smoker</td>
+<td align="left">Big Model</td>
+<td align="right">0.0001</td>
+<td align="left">Big Model</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">2 way</td>
+<td align="left">Big Model</td>
+<td align="right">0.0000</td>
+<td align="left">Big Model</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">3 way</td>
+<td align="left">Big Model</td>
+<td align="right">0.2198</td>
+<td align="left">3 way</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Polynomial Degree 2 + All Interaction Except Sex:Smoker</td>
+<td align="left">Big Model</td>
+<td align="right">0.0001</td>
+<td align="left">Big Model</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Polynomial Degree 2 + 2 way</td>
+<td align="left">Big Model</td>
+<td align="right">0.0000</td>
+<td align="left">Big Model</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="left">Polynomial Degree 2 + 3 way</td>
+<td align="left">Big Model</td>
+<td align="right">0.2198</td>
+<td align="left">Polynomial Degree 2 + 3 way</td>
+</tr>
+<tr class="even">
+<td align="left">8</td>
+<td align="left">Big Model - AIC</td>
+<td align="left">Big Model</td>
+<td align="right">0.7976</td>
+<td align="left">Big Model - AIC</td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="left">Big Model - BIC</td>
+<td align="left">Big Model</td>
+<td align="right">0.3877</td>
+<td align="left">Big Model - BIC</td>
+</tr>
+<tr class="even">
+<td align="left">10</td>
+<td align="left">AIC - Polynomial Degree 2 + All Interaction Except Sex:Smoker</td>
+<td align="left">Big Model</td>
+<td align="right">0.0003</td>
+<td align="left">Big Model</td>
+</tr>
+<tr class="odd">
+<td align="left">11</td>
+<td align="left">BIC - Polynomial Degree 2 + All Interaction Except Sex:Smoker</td>
+<td align="left">Big Model</td>
+<td align="right">0.0000</td>
+<td align="left">Big Model</td>
+</tr>
+<tr class="even">
+<td align="left">12</td>
+<td align="left">AIC - Polynomial Degree 2 + 2 way</td>
+<td align="left">Big Model</td>
+<td align="right">0.0003</td>
+<td align="left">Big Model</td>
+</tr>
+<tr class="odd">
+<td align="left">13</td>
+<td align="left">BIC- Polynomial Degree 2 + 2 way</td>
+<td align="left">Big Model</td>
+<td align="right">0.0000</td>
+<td align="left">Big Model</td>
+</tr>
+<tr class="even">
+<td align="left">14</td>
+<td align="left">AIC - Polynomial Degree 2 + 3 way</td>
+<td align="left">Big Model</td>
+<td align="right">0.3877</td>
+<td align="left">AIC - Polynomial Degree 2 + 3 way</td>
+</tr>
+<tr class="odd">
+<td align="left">15</td>
+<td align="left">BIC - Polynomial Degree 2 + 3 way</td>
+<td align="left">Big Model</td>
+<td align="right">0.3877</td>
+<td align="left">BIC - Polynomial Degree 2 + 3 way</td>
+</tr>
+</tbody>
+</table>
+<p>From the above table (Anova F Test), It sees the Big Table or the 3 Way Interaction or 3 Way Interaction + Polynomial degree 2 is of higher significance.</p>
 </div>
 <div id="rss-rmse-and-rmse-loocv-1" class="section level5">
 <h5><strong>RSS, RMSE and RMSE LOOCV</strong></h5>
