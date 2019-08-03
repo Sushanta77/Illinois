@@ -217,10 +217,6 @@ poly6_model = lm(FEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(
 ```
 
 ```{r include=FALSE}
-train_test_error_model = rep(0,5)
-r2_model = rep(0,5)
-adjr2_model = rep(0,5)
-
 #Split the data into 80% (Train Set), 20% (Test Set)
 set.seed(420)
 childfev_trn_idx  = sample(nrow(childfev), size = trunc(0.80 * nrow(childfev)))
@@ -231,62 +227,67 @@ childfev_tst_data = childfev[-childfev_trn_idx, ]
 average_percent_error = function(actual, predicted) {
   100 * mean((abs(actual - predicted)) / actual)
 }
+```
+
+```{r include=FALSE}
+train_test_error_poly_model = rep(0,5)
+r2_poly_model = rep(0,5)
+adjr2_poly_model = rep(0,5)
 
 #Populate train_test_error_model
-train_test_error_model[1] = average_percent_error(childfev_tst_data$FEV, predict(mlr_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_model[2] = average_percent_error(childfev_tst_data$FEV, predict(poly2_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_model[3] = average_percent_error(childfev_tst_data$FEV, predict(poly3_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_model[4] = average_percent_error(childfev_tst_data$FEV, predict(poly4_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_model[5] = average_percent_error(childfev_tst_data$FEV, predict(poly5_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-train_test_error_model[6] = average_percent_error(childfev_tst_data$FEV, predict(poly6_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
-
+train_test_error_poly_model[1] = average_percent_error(childfev_tst_data$FEV, predict(mlr_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_poly_model[2] = average_percent_error(childfev_tst_data$FEV, predict(poly2_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_poly_model[3] = average_percent_error(childfev_tst_data$FEV, predict(poly3_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_poly_model[4] = average_percent_error(childfev_tst_data$FEV, predict(poly4_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_poly_model[5] = average_percent_error(childfev_tst_data$FEV, predict(poly5_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_poly_model[6] = average_percent_error(childfev_tst_data$FEV, predict(poly6_model, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
 
 #R2
-r2_model[1] = summary(mlr_model)$r.squared
-r2_model[2] = summary(poly2_model)$r.squared
-r2_model[3] = summary(poly3_model)$r.squared
-r2_model[4] = summary(poly4_model)$r.squared
-r2_model[5] = summary(poly5_model)$r.squared
-r2_model[6] = summary(poly6_model)$r.squared
+r2_poly_model[1] = summary(mlr_model)$r.squared
+r2_poly_model[2] = summary(poly2_model)$r.squared
+r2_poly_model[3] = summary(poly3_model)$r.squared
+r2_poly_model[4] = summary(poly4_model)$r.squared
+r2_poly_model[5] = summary(poly5_model)$r.squared
+r2_poly_model[6] = summary(poly6_model)$r.squared
 
 #Adjusted R2
-adjr2_model[1] = summary(mlr_model)$adj.r.squared
-adjr2_model[2] = summary(poly2_model)$adj.r.squared
-adjr2_model[3] = summary(poly3_model)$adj.r.squared
-adjr2_model[4] = summary(poly4_model)$adj.r.squared
-adjr2_model[5] = summary(poly5_model)$adj.r.squared
-adjr2_model[6] = summary(poly6_model)$adj.r.squared
+adjr2_poly_model[1] = summary(mlr_model)$adj.r.squared
+adjr2_poly_model[2] = summary(poly2_model)$adj.r.squared
+adjr2_poly_model[3] = summary(poly3_model)$adj.r.squared
+adjr2_poly_model[4] = summary(poly4_model)$adj.r.squared
+adjr2_poly_model[5] = summary(poly5_model)$adj.r.squared
+adjr2_poly_model[6] = summary(poly6_model)$adj.r.squared
 ```
 
 ```{r include=FALSE}
 #Creating Empty list
-rss_model = rep(0,5)
-rmse_model = rep(0,5)
-rmse_loocv_model = rep(0,5)
+rss_poly_model = rep(0,5)
+rmse_poly_model = rep(0,5)
+rmse_loocv_poly_model = rep(0,5)
 
 #Populate RSS
-rss_model[1] = sum((resid(mlr_model))^2)
-rss_model[2] = sum((resid(poly2_model))^2)
-rss_model[3] = sum((resid(poly3_model))^2)
-rss_model[4] = sum((resid(poly4_model))^2)
-rss_model[5] = sum((resid(poly5_model))^2)
-rss_model[6] = sum((resid(poly6_model))^2)
+rss_poly_model[1] = sum((resid(mlr_model))^2)
+rss_poly_model[2] = sum((resid(poly2_model))^2)
+rss_poly_model[3] = sum((resid(poly3_model))^2)
+rss_poly_model[4] = sum((resid(poly4_model))^2)
+rss_poly_model[5] = sum((resid(poly5_model))^2)
+rss_poly_model[6] = sum((resid(poly6_model))^2)
 
 #Populate RMSE
-rmse_model[1] = sqrt(mean(sum((resid(mlr_model))^2)))
-rmse_model[2] = sqrt(mean(sum((resid(poly2_model))^2)))
-rmse_model[3] = sqrt(mean(sum((resid(poly3_model))^2)))
-rmse_model[4] = sqrt(mean(sum((resid(poly4_model))^2)))
-rmse_model[5] = sqrt(mean(sum((resid(poly5_model))^2)))
-rmse_model[6] = sqrt(mean(sum((resid(poly6_model))^2)))
+rmse_poly_model[1] = sqrt(mean(sum((resid(mlr_model))^2)))
+rmse_poly_model[2] = sqrt(mean(sum((resid(poly2_model))^2)))
+rmse_poly_model[3] = sqrt(mean(sum((resid(poly3_model))^2)))
+rmse_poly_model[4] = sqrt(mean(sum((resid(poly4_model))^2)))
+rmse_poly_model[5] = sqrt(mean(sum((resid(poly5_model))^2)))
+rmse_poly_model[6] = sqrt(mean(sum((resid(poly6_model))^2)))
 
 #Populate RMSE LOOC
-rmse_loocv_model[1] = sqrt(mean((resid(mlr_model)/(1-hatvalues(mlr_model)))^2))
-rmse_loocv_model[2] = sqrt(mean((resid(poly2_model)/(1-hatvalues(poly2_model)))^2))
-rmse_loocv_model[3] = sqrt(mean((resid(poly3_model)/(1-hatvalues(poly3_model)))^2))
-rmse_loocv_model[4] = sqrt(mean((resid(poly4_model)/(1-hatvalues(poly4_model)))^2))
-rmse_loocv_model[5] = sqrt(mean((resid(poly5_model)/(1-hatvalues(poly4_model)))^2))
-rmse_loocv_model[6] = sqrt(mean((resid(poly6_model)/(1-hatvalues(poly6_model)))^2))
+rmse_loocv_poly_model[1] = sqrt(mean((resid(mlr_model)/(1-hatvalues(mlr_model)))^2))
+rmse_loocv_poly_model[2] = sqrt(mean((resid(poly2_model)/(1-hatvalues(poly2_model)))^2))
+rmse_loocv_poly_model[3] = sqrt(mean((resid(poly3_model)/(1-hatvalues(poly3_model)))^2))
+rmse_loocv_poly_model[4] = sqrt(mean((resid(poly4_model)/(1-hatvalues(poly4_model)))^2))
+rmse_loocv_poly_model[5] = sqrt(mean((resid(poly5_model)/(1-hatvalues(poly4_model)))^2))
+rmse_loocv_poly_model[6] = sqrt(mean((resid(poly6_model)/(1-hatvalues(poly6_model)))^2))
 ```
 
 ```{r echo=FALSE}
@@ -298,16 +299,16 @@ blue = "blue4"
 
 par(mfrow = c(1, 3), oma = c(0, 0, 5, 0))
 polynomial_degree = 1:6
-plot(polynomial_degree, rss_model, type = "b",
-       ylim = c(min(rss_model), max(rss_model)), col = purple, lwd = 2,
+plot(polynomial_degree, rss_poly_model, type = "b",
+       ylim = c(min(rss_poly_model), max(rss_poly_model)), col = purple, lwd = 2,
        xlab = "Polynomial Degree", ylab = "Residual Sum Square (RSS)", main = "RSS Vs Polynomial Degree")
 
-plot(polynomial_degree, rmse_model, type = "b",
-       ylim = c(min(rmse_model), max(rmse_model)), col = green, lwd = 2,
+plot(polynomial_degree, rmse_poly_model, type = "b",
+       ylim = c(min(rmse_poly_model), max(rmse_poly_model)), col = green, lwd = 2,
        xlab = "Polynomial Degree", ylab = "Root Mean Square (RMSE)", main = "RMSE Vs Polynomial Degree")
 
-plot(polynomial_degree, rmse_loocv_model, type = "b",
-       ylim = c(min(rmse_loocv_model), max(rmse_loocv_model)), col = blue, lwd = 2,
+plot(polynomial_degree, rmse_loocv_poly_model, type = "b",
+       ylim = c(min(rmse_loocv_poly_model), max(rmse_loocv_poly_model)), col = blue, lwd = 2,
        xlab = "Polynomial Degree", ylab = "Root Mean Square (RMSE) LOOCV", main = "RMSE LOOCV Vs Polynomial Degree")
 ```
 
@@ -323,16 +324,16 @@ orchid = "darkorchid2"
 
 par(mfrow = c(1, 3), oma = c(0, 0, 5, 0))
 polynomial_degree = 1:6
-plot(polynomial_degree, r2_model, type = "b",
-       ylim = c(min(r2_model), max(r2_model)), col = gold, lwd = 2,
-       xlab = "Polynomial Degree", ylab = "R2", main = "RSS Vs Polynomial Degree")
+plot(polynomial_degree, r2_poly_model, type = "b",
+       ylim = c(min(r2_poly_model), max(r2_poly_model)), col = gold, lwd = 2,
+       xlab = "Polynomial Degree", ylab = "R2", main = "R2 Vs Polynomial Degree")
 
-plot(polynomial_degree, adjr2_model, type = "b",
-       ylim = c(min(adjr2_model), max(adjr2_model)), col = red, lwd = 2,
+plot(polynomial_degree, adjr2_poly_model, type = "b",
+       ylim = c(min(adjr2_poly_model), max(adjr2_poly_model)), col = red, lwd = 2,
        xlab = "Polynomial Degree", ylab = "Adjusted R2", main = "Adjusted R2 Vs Polynomial Degree")
 
-plot(polynomial_degree, train_test_error_model, type = "b",
-       ylim = c(min(train_test_error_model), max(train_test_error_model)), col = orchid, lwd = 2,
+plot(polynomial_degree, train_test_error_poly_model, type = "b",
+       ylim = c(min(train_test_error_poly_model), max(train_test_error_poly_model)), col = orchid, lwd = 2,
        xlab = "Polynomial Degree", ylab = "Average Percent Error", main = "Average Percent Error Vs Polynomial Degree")
 ```
 
@@ -346,19 +347,19 @@ Let's do an Inova F Test to compare these models, to see whether the Polynomial 
 
 #####**Anova F Test**
 ```{r echo=FALSE}
-anova_p_value = rep(0,4)
-anova_p_value[1] = anova(mlr_model,poly2_model)$'Pr(>F)'[2]
-anova_p_value[2] = anova(poly2_model,poly3_model)$'Pr(>F)'[2]
-anova_p_value[3] = anova(poly2_model,poly4_model)$'Pr(>F)'[2]
-anova_p_value[4] = anova(poly2_model,poly5_model)$'Pr(>F)'[2]
-anova_p_value[5] = anova(poly2_model,poly6_model)$'Pr(>F)'[2]
+anova_poly_p_value = rep(0,4)
+anova_poly_p_value[1] = anova(mlr_model,poly2_model)$'Pr(>F)'[2]
+anova_poly_p_value[2] = anova(poly2_model,poly3_model)$'Pr(>F)'[2]
+anova_poly_p_value[3] = anova(poly2_model,poly4_model)$'Pr(>F)'[2]
+anova_poly_p_value[4] = anova(poly2_model,poly5_model)$'Pr(>F)'[2]
+anova_poly_p_value[5] = anova(poly2_model,poly6_model)$'Pr(>F)'[2]
 
 red = "firebrick4"
 
 par(mfrow = c(1, 3), oma = c(0, 0, 5, 0))
 polynomial_degree = 1:5
-plot(polynomial_degree, anova_p_value, type = "b",
-       ylim = c(min(anova_p_value), max(anova_p_value)), col = red, lwd = 2,
+plot(polynomial_degree, anova_poly_p_value, type = "b",
+       ylim = c(min(anova_poly_p_value), max(anova_poly_p_value)), col = red, lwd = 2,
        xlab = "Model Participate in Anova F Test", ylab = "Anova P Value", main = "Anova P Value Vs Model Comparision")
 abline (h = 0.05, lwd = 1, lty = 2, col = "darkgreen")
 legend("topleft", legend=c("p value","alpha(0.05)"), col = c("firebrick4","darkgreen"),lty = c(1,2))
@@ -366,6 +367,28 @@ legend("topleft", legend=c("p value","alpha(0.05)"), col = c("firebrick4","darkg
 ```
 
 Each point shows the `p value` comes from the Anova F Test between `Polynomial Regresssion of degree 1` Vs `Polynomial Regresssion of degree 2` and rest all points are between `Polynomial Regresssion of degree 2` and `Polynomial Regresssion of degree 3/4/5/6`. It clearly observed that for alpha value **`0.05`** we **failed to reject all hypothesis** of estimated parameters to be zero for Polynomial of degree more than 2. 
+
+Let's see the comparision of the data in actual between all the models, to concrete the Model with Polynomial regression of degree 2 is the best model
+
+```{r include=FALSE}
+df_compare_anova_polynomial = data.frame(
+  ID        = c("1","2","3","4","5","6"),
+  Interaction_Model = c("MLR","Polynomial Degree 2","Polynomial Degree 3", "Polynomial Degree 4", "Polynomial Degree 5", "Polynomial Degree 6"),
+  rss        = c(rss_poly_model[1],rss_poly_model[2],rss_poly_model[3],rss_poly_model[4],rss_poly_model[5],rss_poly_model[6]),
+  rmse       = c(rmse_poly_model[1],rmse_poly_model[2],rmse_poly_model[3],rmse_poly_model[4],rmse_poly_model[5],rmse_poly_model[6]),
+  rmse_loocv = c(rmse_loocv_poly_model[1],rmse_loocv_poly_model[2],rmse_loocv_poly_model[3],rmse_loocv_poly_model[4],rmse_loocv_poly_model[5],rmse_loocv_poly_model[6]), 
+  r2         = c(r2_poly_model[1],r2_poly_model[2],r2_poly_model[3],r2_poly_model[4],r2_poly_model[5],r2_poly_model[6]),
+  adj_r2     = c(adjr2_poly_model[1],adjr2_poly_model[2],adjr2_poly_model[3],adjr2_poly_model[4],adjr2_poly_model[5],adjr2_poly_model[6])
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(df_compare_anova_polynomial, format = "pandoc",padding = 2)
+```
+
+It seems even though ANOVA F Test suugest to Model 10 is significance (`3 Way`), the RMSE LOOCV is small (not that though) against Model 8. We will keep these 2 modesl (`Model 8` and `Model 10`) are the best model, which we will explore further
+
 
 It also clearly gives confidence that Polynomial degree 2 would be the best model, from the following methods which we have tested
  - Lowest RMSE LOOCV 
@@ -382,156 +405,286 @@ Following are the exploration needs to be done as part of the Interaction betwee
  - Carry out Inova F Test and RMSE LOOCV and Average Percentage Error to find out what's the best model
 
 #####**Interaction Model:**
-
 ```{r}
 model_age = lm(FEV ~ Age , data = childfev)
 model_age_sex = lm(FEV ~ (Age + Sex) ^ 2 , data = childfev)
 model_age_smoker = lm(FEV ~ (Age + Smoker) ^ 2 , data = childfev)
+model_age_sex_smoker = lm(FEV ~ Age + Sex + Smoker + Age:Sex + Age:Smoker , data = childfev)
 model_height = lm(FEV ~ Height , data = childfev)
 model_height_sex = lm(FEV ~ (Height + Sex) ^ 2 , data = childfev)
 model_height_smoker = lm(FEV ~ (Height + Smoker) ^ 2 , data = childfev)
-model_age_height = lm(FEV ~ (Age + Height) ^ 2 , data = childfev)
-model_all = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker, data = childfev) 
+model_height_sex_smoker = lm(FEV ~ Height + Sex + Smoker + Height:Sex + Height:Smoker , data = childfev)
+model_all_int_except_age_height = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker, data = childfev) 
+model_all_int_with_age_height = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker + Age:Height, data = childfev) 
 model_all_2way = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev) 
 model_all_3way = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev)
 ```
 
-```{r}
+```{r echo=FALSE}
+#For Age Vs FEV
+pink = "deeppink"
+blue = "dodgerblue"
+par(mfrow = c(1, 4), oma = c(0, 0, 5, 0))
+typecol = c("deeppink","dodgerblue")
+plot(FEV ~ Age, data = childfev, col = typecol, pch = c(1,2), main = "Age Vs Fev")
+grid()
+int_female = summary(model_age_sex)$coefficient[1,1]
+int_male = summary(model_age_sex)$coefficient[1,1] + summary(model_age_sex)$coefficient[3,1]
+slope_female = summary(model_age_sex)$coefficient[2,1]
+slope_male = summary(model_age_sex)$coefficient[2,1] + summary(model_age_sex)$coefficient[4,1]
+abline(int_female,slope_female, lwd = 2, col = pink, lty = 2)
+abline(int_male,slope_male, lwd = 2, col = blue, lty = 2)
+legend("topleft",legend=c("Female","Male"),col = c("deeppink","dodgerblue"), pch=c(1,2))
 
+gold = "gold2"
+green = "darkolivegreen"
+typecol = c("gold2","darkolivegreen")
+plot(FEV ~ Age, data = childfev, col = typecol, pch = c(1,2), main = "Age Vs Fev")
+grid()
+int_smoker = summary(model_age_smoker)$coefficient[1,1]
+int_nonsmoker = summary(model_age_smoker)$coefficient[1,1] + summary(model_age_smoker)$coefficient[3,1]
+slope_smoker = summary(model_age_smoker)$coefficient[2,1]
+slope_nonsmoker = summary(model_age_smoker)$coefficient[2,1] + summary(model_age_smoker)$coefficient[4,1]
+abline(int_smoker,slope_smoker, lwd = 2, col = gold, lty = 2)
+abline(int_nonsmoker,slope_nonsmoker, lwd = 2, col = green, lty = 2)
+legend("topleft",legend=c("Smoker","Non-Smoker"),col = c("gold2","darkolivegreen"), pch=c(1,2))
+
+#For Height Vs FEV
+pink = "orangered"
+blue = "yellowgreen"
+typecol = c("orangered","yellowgreen")
+plot(FEV ~ Height, data = childfev, col = typecol, pch = c(1,2), main = "Height Vs Fev")
+grid()
+int_female = summary(model_height_sex)$coefficient[1,1]
+int_male = summary(model_height_sex)$coefficient[1,1] + summary(model_height_sex)$coefficient[3,1]
+slope_female = summary(model_height_sex)$coefficient[2,1]
+slope_male = summary(model_height_sex)$coefficient[2,1] + summary(model_height_sex)$coefficient[4,1]
+abline(int_female,slope_female, lwd = 2, col = pink, lty = 2)
+abline(int_male,slope_male, lwd = 2, col = blue, lty = 2)
+legend("topleft",legend=c("Female","Male"),col = c("orangered","yellowgreen"), pch=c(1,2))
+
+gold = "tan1"
+green = "slateblue4"
+typecol = c("tan1","slateblue4")
+plot(FEV ~ Height, data = childfev, col = typecol, pch = c(1,2), main = "Heighte Vs Fev")
+grid()
+int_smoker = summary(model_height_smoker)$coefficient[1,1]
+int_nonsmoker = summary(model_height_smoker)$coefficient[1,1] + summary(model_height_smoker)$coefficient[3,1]
+slope_smoker = summary(model_height_smoker)$coefficient[2,1]
+slope_nonsmoker = summary(model_height_smoker)$coefficient[2,1] + summary(model_height_smoker)$coefficient[4,1]
+abline(int_smoker,slope_smoker, lwd = 2, col = gold, lty = 2)
+abline(int_nonsmoker,slope_nonsmoker, lwd = 2, col = green, lty = 2)
+legend("topleft",legend=c("Smoker","Non-Smoker"),col = c("tan1","slateblue4"), pch=c(1,2))
 ```
 
-```{r}
+It seems that the interaction between the `Age` with categorical variable (Sex and Smoker) has changed the estimates drasticallly, than the interaction between `Height` with the Categorical variable (Sex and Smoker).
+
+Let's conduct the Anova F Test to verify, which interaction is significance and which is not
+
+#####**Anova F Test**
+```{r echo=FALSE}
+anova_int_p_value = rep(0,9)
+anova_int_p_value[1] = anova(model_age_sex,model_age_sex_smoker)$'Pr(>F)'[2]
+anova_int_p_value[2] = anova(model_age_smoker,model_age_sex_smoker)$'Pr(>F)'[2]
+anova_int_p_value[3] = anova(model_height_sex,model_height_sex_smoker)$'Pr(>F)'[2]
+anova_int_p_value[4] = anova(model_height_smoker,model_height_sex_smoker)$'Pr(>F)'[2]
+anova_int_p_value[5] = anova(model_age_sex_smoker,model_all_int_except_age_height)$'Pr(>F)'[2]
+anova_int_p_value[6] = anova(model_height_sex,model_all_int_except_age_height)$'Pr(>F)'[2]
+anova_int_p_value[7] = anova(model_height_sex_smoker,model_all_int_except_age_height)$'Pr(>F)'[2]
+anova_int_p_value[8] = anova(model_all_int_except_age_height,model_all_int_with_age_height)$'Pr(>F)'[2]
+anova_int_p_value[9] = anova(model_all_int_with_age_height,model_all_2way)$'Pr(>F)'[2] #Relation between Sex and Smoker is non-Significant
+anova_int_p_value[10] = anova(model_all_int_with_age_height,model_all_3way)$'Pr(>F)'[2] #Certainly this is one of the best model
+```
+
+
+```{r include=FALSE}
+df_compare_anova_interaction = data.frame(
+  ID = c("1","2","3","4","5","6","7","8","9","10"),
+  null_Model = c("Age+Sex+Age:Sex","Age+Smoker+Age:Smoker","Height+Sex+Height:Sex","Height+Smoker+Height:Smoker",
+                 "Age+Sex+Smoker+Age:Sex+Age:Smoker","Height+Sex+Height:Sex","Height+Sex+Smoker+Height:Sex+Height:Smoker",
+                 "Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker","Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker+Age:Height",
+                 "Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker+Age:Height"),
+  full_Model = c("Age+Sex+Smoker+Age:Sex+Age:Smoker","Age+Sex+Smoker+Age:Sex+Age:Smoker","Height+Sex+Smoker+Height:Sex+Height:Smoker",
+                 "Height+Sex+Smoker+Height:Sex+Height:Smoker","Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker",
+                 "Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker","Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker",
+                 "Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker+Age:Height","2 way","3 way"),
+  p_value = c(anova_int_p_value[1],anova_int_p_value[2],anova_int_p_value[3],anova_int_p_value[4],anova_int_p_value[5],anova_int_p_value[6],anova_int_p_value[7],
+              anova_int_p_value[8],anova_int_p_value[9],anova_int_p_value[10]
+              ),
+  descision = c("Age+Sex+Smoker+Age:Sex+Age:Smoker","Age+Sex+Smoker+Age:Sex+Age:Smoker","Height+Sex+Height:Sex",
+                "Height+Sex+Smoker+Height:Sex+Height:Smoker","Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker",
+                "Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker","Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker",
+                "Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker+Age:Height","Age+Height+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker+Age:Height",
+                "3way")
+)
+```
+
+```{r echo=FALSE}
+library(knitr)
+kable(df_compare_anova_interaction, format = "pandoc",padding = 2)
+```
+
+It seems the 3 way interaction seems significance among all the interaction between the numeric and categorical variable.
+
+Let's see how these model perform on the RSS, RMSE, RMSE LOOCV and 
+
+
+```{r include=FALSE}
+train_test_error_int_model = rep(0,10)
+r2_int_model = rep(0,10)
+adjr2_int_model = rep(0,10)
+
+#Populate train_test_error_model
+train_test_error_int_model[1] = average_percent_error(childfev_tst_data$FEV, predict(model_age_sex, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_int_model[2] = average_percent_error(childfev_tst_data$FEV, predict(model_age_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_int_model[3] = average_percent_error(childfev_tst_data$FEV, predict(model_age_sex_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_int_model[4] = average_percent_error(childfev_tst_data$FEV, predict(model_height_sex, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_int_model[5] = average_percent_error(childfev_tst_data$FEV, predict(model_height_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_int_model[6] = average_percent_error(childfev_tst_data$FEV, predict(model_height_sex_smoker, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_int_model[7] = average_percent_error(childfev_tst_data$FEV, predict(model_all_int_except_age_height, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_int_model[8] = average_percent_error(childfev_tst_data$FEV, predict(model_all_int_with_age_height, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_int_model[9] = average_percent_error(childfev_tst_data$FEV, predict(model_all_2way, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+train_test_error_int_model[10] = average_percent_error(childfev_tst_data$FEV, predict(model_all_3way, childfev_tst_data[c("Age","Height","Sex","Smoker")]))
+
+#R2
+r2_int_model[1] = summary(model_age_sex)$r.squared
+r2_int_model[2] = summary(model_age_smoker)$r.squared
+r2_int_model[3] = summary(model_age_sex_smoker)$r.squared
+r2_int_model[4] = summary(model_height_sex)$r.squared
+r2_int_model[5] = summary(model_height_smoker)$r.squared
+r2_int_model[6] = summary(model_height_sex_smoker)$r.squared
+r2_int_model[7] = summary(model_all_int_except_age_height)$r.squared
+r2_int_model[8] = summary(model_all_int_with_age_height)$r.squared
+r2_int_model[9] = summary(model_all_2way)$r.squared
+r2_int_model[10] = summary(model_all_3way)$r.squared
+
+#Adjusted R2
+adjr2_int_model[1] = summary(model_age_sex)$adj.r.squared
+adjr2_int_model[2] = summary(model_age_smoker)$adj.r.squared
+adjr2_int_model[3] = summary(model_age_sex_smoker)$adj.r.squared
+adjr2_int_model[4] = summary(model_height_sex)$adj.r.squared
+adjr2_int_model[5] = summary(model_height_smoker)$adj.r.squared
+adjr2_int_model[6] = summary(model_height_sex_smoker)$adj.r.squared
+adjr2_int_model[7] = summary(model_all_int_except_age_height)$adj.r.squared
+adjr2_int_model[8] = summary(model_all_int_with_age_height)$adj.r.squared
+adjr2_int_model[9] = summary(model_all_2way)$adj.r.squared
+adjr2_int_model[10] = summary(model_all_3way)$adj.r.squared
+```
+
+```{r include=FALSE}
+#Creating Empty list
+rss_int_model = rep(0,10)
+rmse_int_model = rep(0,10)
+rmse_loocv_int_model = rep(0,10)
+
+#Populate RSS
+rss_int_model[1] = sum((resid(model_age_sex))^2)
+rss_int_model[2] = sum((resid(model_age_smoker))^2)
+rss_int_model[3] = sum((resid(model_age_sex_smoker))^2)
+rss_int_model[4] = sum((resid(model_height_sex))^2)
+rss_int_model[5] = sum((resid(model_height_smoker))^2)
+rss_int_model[6] = sum((resid(model_height_sex_smoker))^2)
+rss_int_model[7] = sum((resid(model_all_int_except_age_height))^2)
+rss_int_model[8] = sum((resid(model_all_int_with_age_height))^2)
+rss_int_model[9] = sum((resid(model_all_2way))^2)
+rss_int_model[10] = sum((resid(model_all_3way))^2)
+
+#Populate RMSE
+rmse_int_model[1] = sqrt(mean(sum((resid(model_age_sex))^2)))
+rmse_int_model[2] = sqrt(mean(sum((resid(model_age_smoker))^2)))
+rmse_int_model[3] = sqrt(mean(sum((resid(model_age_sex_smoker))^2)))
+rmse_int_model[4] = sqrt(mean(sum((resid(model_height_sex))^2)))
+rmse_int_model[5] = sqrt(mean(sum((resid(model_height_smoker))^2)))
+rmse_int_model[6] = sqrt(mean(sum((resid(model_height_sex_smoker))^2)))
+rmse_int_model[7] = sqrt(mean(sum((resid(model_all_int_except_age_height))^2)))
+rmse_int_model[8] = sqrt(mean(sum((resid(model_all_int_with_age_height))^2)))
+rmse_int_model[9] = sqrt(mean(sum((resid(model_all_2way))^2)))
+rmse_int_model[10] = sqrt(mean(sum((resid(model_all_2way))^2)))
+
+#Populate RMSE LOOC
+rmse_loocv_int_model[1] = sqrt(mean((resid(model_age_sex)/(1-hatvalues(model_age_sex)))^2))
+rmse_loocv_int_model[2] = sqrt(mean((resid(model_age_smoker)/(1-hatvalues(model_age_smoker)))^2))
+rmse_loocv_int_model[3] = sqrt(mean((resid(model_age_sex_smoker)/(1-hatvalues(model_age_sex_smoker)))^2))
+rmse_loocv_int_model[4] = sqrt(mean((resid(model_height_sex)/(1-hatvalues(model_height_sex)))^2))
+rmse_loocv_int_model[5] = sqrt(mean((resid(model_height_smoker)/(1-hatvalues(model_height_smoker)))^2))
+rmse_loocv_int_model[6] = sqrt(mean((resid(model_height_sex_smoker)/(1-hatvalues(model_height_sex_smoker)))^2))
+rmse_loocv_int_model[7] = sqrt(mean((resid(model_all_int_except_age_height)/(1-hatvalues(model_all_int_except_age_height)))^2))
+rmse_loocv_int_model[8] = sqrt(mean((resid(model_all_int_with_age_height)/(1-hatvalues(model_all_int_with_age_height)))^2))
+rmse_loocv_int_model[9] = sqrt(mean((resid(model_all_2way)/(1-hatvalues(model_all_2way)))^2))
+rmse_loocv_int_model[10] = sqrt(mean((resid(model_all_2way)/(1-hatvalues(model_all_2way)))^2))
+```
+
+```{r echo=FALSE}
+black = "#2C3E50"
+grey = "#ECF0F1"
+green = "#009999"
+purple = "#990073"
+blue = "blue4"
+
+par(mfrow = c(1, 3), oma = c(0, 0, 5, 0))
+Interaction_Model = 1:10
+plot(Interaction_Model, rss_int_model, type = "b",
+       ylim = c(min(rss_int_model), max(rss_int_model)), col = purple, lwd = 2,
+       xlab = "Interaction Model", ylab = "Residual Sum Square (RSS)", main = "RSS Vs Interaction Model")
+
+plot(Interaction_Model, rmse_int_model, type = "b",
+       ylim = c(min(rmse_int_model), max(rmse_int_model)), col = green, lwd = 2,
+       xlab = "Interaction Model", ylab = "Root Mean Square (RMSE)", main = "RMSE Vs Interaction Model")
+
+plot(Interaction_Model, rmse_loocv_int_model, type = "b",
+       ylim = c(min(rmse_loocv_int_model), max(rmse_loocv_int_model)), col = blue, lwd = 2,
+       xlab = "Interaction Model", ylab = "Root Mean Square (RMSE) LOOCV", main = "RMSE LOOCV Vs Interaction Model")
+```
+
+It seems that as the Interaction increased, the `RSS` and `RMSE` decreases, which should be as the model becomes more and more complex, the error will decreased. Also the RMSE LOOCV also **decreases** with increase in Interaction, however the RMSE LOOCV increased slighly after the Model 9 
+
+Let's see what happens to the R2 and Adjusted R2 when the polynomail degree increases. Also let's see what will be the Average Percentage Error, when the Polynomail degree increases. 
+
+
+```{r echo=FALSE}
 gold = "gold4"
 red = "darkred"
 orchid = "darkorchid2"
 
 par(mfrow = c(1, 3), oma = c(0, 0, 5, 0))
-polynomial_degree = 1:6
-plot(polynomial_degree, r2_model, type = "b",
-       ylim = c(min(r2_model), max(r2_model)), col = gold, lwd = 2,
-       xlab = "Polynomial Degree", ylab = "R2", main = "RSS Vs Polynomial Degree")
+Interaction_Model = 1:10
+plot(Interaction_Model, r2_int_model, type = "b",
+       ylim = c(min(r2_int_model), max(r2_int_model)), col = gold, lwd = 2,
+       xlab = "Interaction Model", ylab = "R2", main = "R2 Vs Interaction Model")
 
-plot(polynomial_degree, adjr2_model, type = "b",
-       ylim = c(min(adjr2_model), max(adjr2_model)), col = red, lwd = 2,
-       xlab = "Polynomial Degree", ylab = "Adjusted R2", main = "Adjusted R2 Vs Polynomial Degree")
+plot(Interaction_Model, adjr2_int_model, type = "b",
+       ylim = c(min(adjr2_int_model), max(adjr2_int_model)), col = red, lwd = 2,
+       xlab = "Interaction Model", ylab = "Adjusted R2", main = "Adjusted R2 Vs Interaction Model")
 
-plot(polynomial_degree, train_test_error_model, type = "b",
-       ylim = c(min(train_test_error_model), max(train_test_error_model)), col = orchid, lwd = 2,
-       xlab = "Polynomial Degree", ylab = "Average Percent Error", main = "Average Percent Error Vs Polynomial Degree")
+plot(Interaction_Model, train_test_error_int_model, type = "b",
+       ylim = c(min(train_test_error_int_model), max(train_test_error_int_model)), col = orchid, lwd = 2,
+       xlab = "Interaction Model", ylab = "Average Percent Error", main = "Average Percent Error Vs Interaction Model")
 ```
 
+It seems the R2 and adjusted R2 keeps increasing as the Polynomial degree increases. Also the error rate is also decreasing as the interaction increases. However after the Model 9 the Error rate increases slightly as the interaction increases
 
-#####**RSS, RMSE and RMSE LOOCV**
-Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
-**RSS**
-```{r}
-sum((resid(two_int_model))^2)
-```
-
-**RMSE**
-```{r}
-sqrt(mean(sum((resid(two_int_model))^2)))
-```
-
-**RMSE LOOCV**
-```{r}
-sqrt(mean((resid(two_int_model)/(1-hatvalues(two_int_model)))^2))
-```
+Let's see the comparision of the data in actual between all the models, to see what's the best finalize model
 
 ```{r include=FALSE}
-df_two_int_model = data.frame(
-  Metric = c("RSS","RMSE", "RMSE LOOCV"),
-  Value = c(sum((resid(two_int_model))^2),sqrt(mean(sum((resid(two_int_model))^2))),sqrt(mean((resid(two_int_model)/(1-hatvalues(two_int_model)))^2)))
+df_compare_anova_interaction = data.frame(
+  ID = c("1","2","3","4","5","6","7","8","9","10"),
+  Interaction_Model = c("Age+Sex+Age:Sex","Age+Smoker+Age:Smoker","Age+Sex+Smoker+Age:Sex+Age:Smoker","Height+Sex+Height:Sex","Height+Smoker+Height:Smoker",
+                        "Height+Sex+Smoker+Height:Sex+Height:Smoker","Age+Height+Sex+Smoker+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker",
+                        "Age+Height+Sex+Smoker+Age:Sex+Age:Smoker+Height:Sex+Height:Smoker+Age:Height","2 Way", "3 Way"),
+  rss = c(rss_int_model[1],rss_int_model[2],rss_int_model[3],rss_int_model[4],rss_int_model[5],rss_int_model[6],rss_int_model[7],rss_int_model[8],rss_int_model[9],rss_int_model[10]),
+  rmse = c(rmse_int_model[1],rmse_int_model[2],rmse_int_model[3],rmse_int_model[4],rmse_int_model[5],rmse_int_model[6],rmse_int_model[7],rmse_int_model[8],rmse_int_model[9],rmse_int_model[10]),
+  rmse_loocv = c(rmse_loocv_int_model[1],rmse_loocv_int_model[2],rmse_loocv_int_model[3],rmse_loocv_int_model[4],rmse_loocv_int_model[5],rmse_loocv_int_model[6],rmse_loocv_int_model[7],rmse_loocv_int_model[8],rmse_loocv_int_model[9],rmse_loocv_int_model[10]), 
+  r2 = c(r2_int_model[1],r2_int_model[2],r2_int_model[3],r2_int_model[4],r2_int_model[5],r2_int_model[6],r2_int_model[7],r2_int_model[8],r2_int_model[9],r2_int_model[10]),
+  adj_r2 = c(adjr2_int_model[1],adjr2_int_model[2],adjr2_int_model[3],adjr2_int_model[4],adjr2_int_model[5],adjr2_int_model[6],adjr2_int_model[7],adjr2_int_model[8],adjr2_int_model[9],adjr2_int_model[10])
 )
 ```
 
 ```{r echo=FALSE}
 library(knitr)
-kable(df_two_int_model, format = "pandoc",padding = 2)
+kable(df_compare_anova_interaction, format = "pandoc",padding = 2)
 ```
 
-The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
-
-#####**3 way Interaction:**
-
-```{r}
-three_int_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev)
-summary(three_int_model)
-```
-
-It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(three_int_model)$coefficientp[2,4]`
-
-#####**RSS, RMSE and RMSE LOOCV**
-Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
-**RSS**
-```{r}
-sum((resid(three_int_model))^2)
-```
-
-**RMSE**
-```{r}
-sqrt(mean(sum((resid(three_int_model))^2)))
-```
-
-**RMSE LOOCV**
-```{r}
-sqrt(mean((resid(three_int_model)/(1-hatvalues(three_int_model)))^2))
-```
-
-```{r include=FALSE}
-df_three_int_model = data.frame(
-  Metric = c("RSS","RMSE", "RMSE LOOCV"),
-  Value = c(sum((resid(three_int_model))^2),sqrt(mean(sum((resid(three_int_model))^2))),sqrt(mean((resid(three_int_model)/(1-hatvalues(three_int_model)))^2)))
-)
-```
-
-```{r echo=FALSE}
-library(knitr)
-kable(df_three_int_model, format = "pandoc",padding = 2)
-```
-
-The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
-
-
-#####**4 way Interaction:**
-
-```{r}
-four_int_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 4, data = childfev)
-summary(four_int_model)
-```
-
-It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(four_int_model)$coefficientp[2,4]`
-
-#####**RSS, RMSE and RMSE LOOCV**
-Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
-**RSS**
-```{r}
-sum((resid(four_int_model))^2)
-```
-
-**RMSE**
-```{r}
-sqrt(mean(sum((resid(four_int_model))^2)))
-```
-
-**RMSE LOOCV**
-```{r}
-sqrt(mean((resid(four_int_model)/(1-hatvalues(four_int_model)))^2))
-```
-
-```{r include=FALSE}
-df_four_int_model = data.frame(
-  Metric = c("RSS","RMSE", "RMSE LOOCV"),
-  Value = c(sum((resid(four_int_model))^2),sqrt(mean(sum((resid(four_int_model))^2))),sqrt(mean((resid(four_int_model)/(1-hatvalues(four_int_model)))^2)))
-)
-```
-
-```{r echo=FALSE}
-library(knitr)
-kable(df_four_int_model, format = "pandoc",padding = 2)
-```
-
-The RMSE LOOCV seems better than that of `Multiple Linear Regression`. We will compare at the last while making the decission around models
+It kind of confirmation that Polynomial regression with degree 2 is lowest RMSE LOOCV. We have decided to see it's the best model.
 
 ###Model 5 - Creation of Big Model (Polynomial + Interaction), Stepwise via AIC / BIC:
 Let's create a big model, with Polynomial of degree 3 and 3 way interaction between categorical-to-categorical, categorical-to-numeric, numeric-to-numeric and see it's score. Also reduced the model via AIC and BIC to see any improvement in the score
@@ -540,7 +693,6 @@ Let's create a big model, with Polynomial of degree 3 and 3 way interaction betw
 
 ```{r}
 big_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3 + poly(Age,3) + poly(Height,3), data = childfev)
-summary(big_model)
 ```
 
 It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(big_model)$coefficientp[2,4]`
