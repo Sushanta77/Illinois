@@ -201,12 +201,19 @@ It seems that after the logarithimic transformation the `FEV` response doesn't s
 ###Model 3 - Polynomial Transformation of Numeric Predictor
 Let's explore the polynomial transformation of the predictor to see whether we can able to find the best model which lower the RMSE LOOCV
 
+We will carry out the following methods to identify the best model
+ - Lowest RMSE LOOCV 
+ - Highest R2 and Adjusted R2
+ - Lowest Average Percentage Error
+ - Anova F Test P value
+
+
 ```{r}
-poly2_model = lm(FEV ~ Sex + Smoker + poly(Age,2) + poly(Height,2), data = childfev)
-poly3_model = lm(FEV ~ Sex + Smoker + poly(Age,3) + poly(Height,3), data = childfev)
-poly4_model = lm(FEV ~ Sex + Smoker + poly(Age,4) + poly(Height,4), data = childfev)
-poly5_model = lm(FEV ~ Sex + Smoker + poly(Age,5) + poly(Height,5), data = childfev)
-poly6_model = lm(FEV ~ Sex + Smoker + poly(Age,6) + poly(Height,6), data = childfev)
+poly2_model = lm(FEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) , data = childfev)
+poly3_model = lm(FEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3) , data = childfev)
+poly4_model = lm(FEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3) + I(Age^4) + I(Height^4), data = childfev)
+poly5_model = lm(FEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3) + I(Age^4) + I(Height^4) + I(Age^5) + I(Height^5), data = childfev)
+poly6_model = lm(FEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3) + I(Age^4) + I(Height^4) + I(Age^5) + I(Height^5) + I(Age^6) + I(Height^6), data = childfev)
 ```
 
 ```{r include=FALSE}
@@ -304,41 +311,115 @@ plot(polynomial_degree, rmse_loocv_model, type = "b",
        xlab = "Polynomial Degree", ylab = "Root Mean Square (RMSE) LOOCV", main = "RMSE LOOCV Vs Polynomial Degree")
 ```
 
+It seems that as the Polynomial degree increases, the `RSS` and `RMSE` decreases, which should be as the model becomes more and more complex, the error will decreased. However the RMSE LOOCV seems **increases** after the Polynomial degree 2. Hence it's not been seen good, if we increase the model beyond degree 2, as the Root Mean Square Error (RMSE) Leave One Out Cross Validation Error increases.
+
+Let's see what happens to the R2 and Adjusted R2 when the polynomail degree increases. Also let's see what will be the Average Percentage Error, when the Polynomail degree increases. 
+
 
 ```{r echo=FALSE}
-black = "#2C3E50"
-grey = "#ECF0F1"
-green = "#009999"
-purple = "#990073"
-blue = "blue4"
+gold = "gold4"
+red = "darkred"
+orchid = "darkorchid2"
 
 par(mfrow = c(1, 3), oma = c(0, 0, 5, 0))
 polynomial_degree = 1:6
 plot(polynomial_degree, r2_model, type = "b",
-       ylim = c(min(r2_model), max(r2_model)), col = purple, lwd = 2,
+       ylim = c(min(r2_model), max(r2_model)), col = gold, lwd = 2,
        xlab = "Polynomial Degree", ylab = "R2", main = "RSS Vs Polynomial Degree")
 
 plot(polynomial_degree, adjr2_model, type = "b",
-       ylim = c(min(adjr2_model), max(adjr2_model)), col = green, lwd = 2,
+       ylim = c(min(adjr2_model), max(adjr2_model)), col = red, lwd = 2,
        xlab = "Polynomial Degree", ylab = "Adjusted R2", main = "Adjusted R2 Vs Polynomial Degree")
 
 plot(polynomial_degree, train_test_error_model, type = "b",
-       ylim = c(min(train_test_error_model), max(train_test_error_model)), col = blue, lwd = 2,
+       ylim = c(min(train_test_error_model), max(train_test_error_model)), col = orchid, lwd = 2,
        xlab = "Polynomial Degree", ylab = "Average Percent Error", main = "Average Percent Error Vs Polynomial Degree")
 ```
 
+It seems the R2 keeps increasing as the Polynomial degree increases. However adjusted R2 seems mostly fixed on/beyond Polynomial degree 2. Which kind of gives enough evidence to go for the model having Polynomail degree 2. 
 
-###Model 4 - Interaction between Predictors:
-Let's explore the Interaction between the predictor to see whether we can able to find the best model which lower the RMSE LOOCV
+The 3rd plot which gives the average percentage of error, which is calculated from the below formula
 
-#####**2 way Interaction:**
+which depicts that the percentage of error doesn't decrease after Polynomial degree 2, and increased. This also have inclination towards the Polynomial Regression model with Degree 2.
 
-```{r}
-two_int_model = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev)
-summary(two_int_model)
+Let's do an Inova F Test to compare these models, to see whether the Polynomial degree has significance or not.
+
+#####**Anova F Test**
+```{r echo=FALSE}
+anova_p_value = rep(0,4)
+anova_p_value[1] = anova(mlr_model,poly2_model)$'Pr(>F)'[2]
+anova_p_value[2] = anova(poly2_model,poly3_model)$'Pr(>F)'[2]
+anova_p_value[3] = anova(poly2_model,poly4_model)$'Pr(>F)'[2]
+anova_p_value[4] = anova(poly2_model,poly5_model)$'Pr(>F)'[2]
+anova_p_value[5] = anova(poly2_model,poly6_model)$'Pr(>F)'[2]
+
+red = "firebrick4"
+
+par(mfrow = c(1, 3), oma = c(0, 0, 5, 0))
+polynomial_degree = 1:5
+plot(polynomial_degree, anova_p_value, type = "b",
+       ylim = c(min(anova_p_value), max(anova_p_value)), col = red, lwd = 2,
+       xlab = "Model Participate in Anova F Test", ylab = "Anova P Value", main = "Anova P Value Vs Model Comparision")
+abline (h = 0.05, lwd = 1, lty = 2, col = "darkgreen")
+legend("topleft", legend=c("p value","alpha(0.05)"), col = c("firebrick4","darkgreen"),lty = c(1,2))
+
 ```
 
-It seems the quadratic model is significance with low p value **<2e-16**, including all the predictors are significance though except `Age` where the p value is around `r summary(two_int_model)$coefficientp[2,4]`
+Each point shows the `p value` comes from the Anova F Test between `Polynomial Regresssion of degree 1` Vs `Polynomial Regresssion of degree 2` and rest all points are between `Polynomial Regresssion of degree 2` and `Polynomial Regresssion of degree 3/4/5/6`. It clearly observed that for alpha value **`0.05`** we **failed to reject all hypothesis** of estimated parameters to be zero for Polynomial of degree more than 2. 
+
+It also clearly gives confidence that Polynomial degree 2 would be the best model, from the following methods which we have tested
+ - Lowest RMSE LOOCV 
+ - Highest R2 and Adjusted R2
+ - Lowest Average Percentage Error
+ - Anova F Test P value
+
+
+###Model 4 - Interaction between Predictors:
+Following are the exploration needs to be done as part of the Interaction between the predictors
+ - Interaction between Numerical Predictor (Age, Height) and Categorical Predictor (Sex, Smoker) - One at a Time
+ - Interaction between Numerical Predictors (Age, Height) it self
+ - Interaction between all of the them 2 way and 3 way.
+ - Carry out Inova F Test and RMSE LOOCV and Average Percentage Error to find out what's the best model
+
+#####**Interaction Model:**
+
+```{r}
+model_age = lm(FEV ~ Age , data = childfev)
+model_age_sex = lm(FEV ~ (Age + Sex) ^ 2 , data = childfev)
+model_age_smoker = lm(FEV ~ (Age + Smoker) ^ 2 , data = childfev)
+model_height = lm(FEV ~ Height , data = childfev)
+model_height_sex = lm(FEV ~ (Height + Sex) ^ 2 , data = childfev)
+model_height_smoker = lm(FEV ~ (Height + Smoker) ^ 2 , data = childfev)
+model_age_height = lm(FEV ~ (Age + Height) ^ 2 , data = childfev)
+model_all = lm(FEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker, data = childfev) 
+model_all_2way = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev) 
+model_all_3way = lm(FEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev)
+```
+
+```{r}
+
+```
+
+```{r}
+gold = "gold4"
+red = "darkred"
+orchid = "darkorchid2"
+
+par(mfrow = c(1, 3), oma = c(0, 0, 5, 0))
+polynomial_degree = 1:6
+plot(polynomial_degree, r2_model, type = "b",
+       ylim = c(min(r2_model), max(r2_model)), col = gold, lwd = 2,
+       xlab = "Polynomial Degree", ylab = "R2", main = "RSS Vs Polynomial Degree")
+
+plot(polynomial_degree, adjr2_model, type = "b",
+       ylim = c(min(adjr2_model), max(adjr2_model)), col = red, lwd = 2,
+       xlab = "Polynomial Degree", ylab = "Adjusted R2", main = "Adjusted R2 Vs Polynomial Degree")
+
+plot(polynomial_degree, train_test_error_model, type = "b",
+       ylim = c(min(train_test_error_model), max(train_test_error_model)), col = orchid, lwd = 2,
+       xlab = "Polynomial Degree", ylab = "Average Percent Error", main = "Average Percent Error Vs Polynomial Degree")
+```
+
 
 #####**RSS, RMSE and RMSE LOOCV**
 Let'e calculate the RSS, RMSE and RMSE LOOCV of the model
