@@ -1,0 +1,455 @@
+---
+title: 'Data Analysis Project - STAT 420 - Group Project'
+author: "Luma Vasiljevic(lumav2), Sushanta Panda(panda5)"
+date: 
+output:
+  html_document:
+    theme: flatly
+    toc: yes
+    fig_width: 10
+    fig_height: 5
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
+library(lmtest)
+options(scipen = 1, digits = 4, width = 80)
+library(knitr)
+opts_chunk$set(cache = TRUE, autodep = TRUE)
+library(faraway)
+```
+
+# Introduction
+
+
+### Description of the dataset
+Forced Expiratory Volume (FEV) is an index of pulmonary function that measures the volume of the air expelled after one second of constant effort. The data contains the determinations of FEB on 654 children ages 6 – 22 who are seen in childhood respiratory disease study in 1980 in East Boston, Massachusetts. The data are part of a larger study to follow the change in pulmonary function over time in children.
+
+##### **Dataset Link: **
+http://www.statsci.org/data/general/fev.html
+
+##### **Variables in the Dataset**
+
+```{r create variable, include=FALSE}
+Variable = data.frame(
+  VariableName = c("ID","Age", "Height", "Sex", "Smoker", "FEV"),
+  Category = c("Numeric","Numeric", "Numeric", "Categorical", "Categorical", "Numeric"),
+  Description = c("Uniquely Identified Row","Age of the child", "Height of the child in inches", "Sex of the child ", "Whether the child is a non-smoker or current smoker", "FEV of the child in litres")
+)
+```
+
+
+```{r output data description, echo=FALSE}
+library(knitr)
+kable(Variable, format = "pandoc",padding = 2)
+```
+
+##### **Background information of the dataset**
+
+The data contains the determinations of FEB on 654 children ages 6 – 22 who are seen in childhood respiratory disease study in 1980 in East Boston, Massachusetts. The data are part of a larger study to follow the change in pulmonary function over time in children
+
+Note: No citation required for this source (http://www.statsci.org/data/general/fev.html)
+
+
+### Why is it interesting
+This dataset has chosen by us because of personal interests, whether we can predict the child’s FEV with the help of the available predictor, rather going for a Pulmonary Function Test, which will identify any pulmonary disease of a child. And secondly, to do statistical analysis on what are the predictors responsible to increase / decrease the pulmonary function of the child and try to find answer on these lines.
+
+### Why are we creating a model of this Data
+In order to **predict the child's Forced Exporatory Volume (FEV)** based on the Child's Age, Height, Sex and whether the child is a smoker or not. This will help for kick-start the treatment of the child based on the FEV reading, rather going throgh the Pulmonary Function test.
+
+
+### Goal of the Model
+The goal of the model is to find the best model after going through the several methods, which predict the child's FEV with minimal error. The best model would be a ballanced choice between accuracy and complexity.
+
+
+# Methods
+
+First we visualy inspect the data for linearity between FEV and other variables. We also inspect for linearity between transformations of FEV and other variables; i.e. $log(FEV)$ and $FEV^2$
+
+### Load FEV data, Observations
+
+```{r import childfev}
+childfev = read.csv("http://www.statsci.org/data/general/fev.txt",
+                    sep = "\t",
+                    quote = "\"",
+                    comment.char = "",
+                    stringsAsFactors = FALSE)
+childfev$Sex = as.factor(childfev$Sex)
+childfev$Smoker = as.factor(childfev$Smoker)
+
+#add log(FEV)
+childfev$logFEV=log(childfev$FEV)
+
+#add FEV^2
+childfev$sqFEV=childfev$FEV^2
+str(childfev)
+dim(childfev)
+head(childfev$FEV,10)
+```
+
+From the dataset, the observered data, Age, Heigh are numerical variables, whereas Sex, and Smoker are categorical variables. The FEV is the numerical **response** variable.
+
+
+##### **Load FEV data:**
+
+Plot variable pairs.
+$
+```{r pairs call, fig.height=10, fig.width=10}
+pairs(childfev[c('Age','FEV','logFEV','sqFEV','Height','Sex','Smoker')], col = "darkgrey")
+```
+$~$
+From the pairs plot, we observe correlation between FEV and Height, as well as FEV and Age. The relationships however are not linear. The 2 categorical variable `Sex` and `Smoker` seems to have 2 distinct data. Linearity improves with the log transformation. 
+
+**Correlation Matrix**
+```{r correlation matrix}
+cor(childfev[c('Age','Height','FEV', 'logFEV', 'sqFEV')])
+```
+The correlation matrix reinforces observations from the plot. The corelation matrix also suggests that `Age` and `Height` are higly corellated with `logFEV` response. We wil also explore the variance inflation factor (VIF) while working on our models.
+
+### Measuring models
+
+The summarize function summarizes metrics of interest for a model. For each model we record:
+
+1. The number of parameters as a measure of model complexity and interpretability
+2. Residuals Square Error as a measure of model accuracy
+3. Root Mean Square Error as a measure of model accuracy
+4. Average Leave One Out Cross Validation Error as a measure of model predictive ability
+5. R squared as a measure of predictor potency
+6. Adjusted R squared as of trade-off between accuracy and model complexity
+7. The p-value of Breusch-Pagan test as a measure of equal noise variance acroos observations
+8. The p-value of Shapiro-Wilk test as a measure of 'normality' of the noise
+9. Max(VIF) as a measure of colinearity between variables
+10. The p-value of the significance of regression test 
+
+```{r model metrics function}
+summarize = function(model, plot_title = '',plot=FALSE) {
+  sm1 = summary(model)
+  sm1
+  RSS1 = sum((resid(model)) ^ 2)
+  RMSE1 = sqrt(mean(sum((resid(
+    model
+  )) ^ 2)))
+  LOOCV1 = sqrt(mean((resid(model) / (
+    1 - hatvalues(model)
+  )) ^ 2))
+  bp1 = bptest(model)
+  st1 = shapiro.test(resid(model))
+  f = sm1$fstatistic
+  p = pf(f[1], f[2], f[3], lower.tail = FALSE)
+ 
+  if (plot) { par(mfrow = c(1, 2))
+  plot(
+    resid(model) ~ fitted(model),
+    ylab = "residuals",
+    xlab = "fitted",
+    cex = 1,
+    pch = 1,
+    col = "darkgrey",
+    main = paste('Fitt. vs. Res. Plot', plot_title)
+  )
+  abline(h = 0, lwd = 2, col = "darkorange")
+  
+  qqnorm(resid(model),
+         cex = 1,
+         pch = 1,
+         col = "darkgrey")
+  qqline(resid(model), lwd = 2, col = "darkorange")}
+  
+  df = data.frame(
+    Metric = c(
+      "# of Parameters",
+      "RSS",
+      "RMSE",
+      "RMSE LOOCV",
+      "R^2",
+      "Adj. R^2",
+      "BP p-value",
+      "Shapiro test p-value",
+      "Colinearity - max(VIF)",
+      "Significance of Reg. p-value"
+    ),
+    Value = c(
+      length(coef(model)),
+      RSS1,
+      RMSE1,
+      LOOCV1,
+      sm1$r.squared,
+      sm1$adj.r.squared,
+      bp1$p.value ,
+      st1$p.value,
+      max(vif(model)),
+      p
+      
+      
+    )
+  )
+  
+}
+```
+
+### Simple MLR model
+
+The Multiple Linear Regression contains all the predictor in the model, which also includes the dummy variable for the categorical predictor (Sex and Smoker)
+
+```{r model1}
+mlr_model = lm(logFEV ~ Age + Height + Sex + Smoker, data = childfev)
+
+simple=lm(FEV ~ Age + Height + Sex + Smoker, data = childfev) 
+
+summary(mlr_model)
+
+df_mlr_model=summarize(mlr_model,plot_title="log(FEV) MLR",plot=TRUE)
+
+kable(df_mlr_model, format = "pandoc", padding = 2)
+
+summary(simple)
+
+df_simple=summarize(simple,plot_title="FEV MLR",plot=TRUE)
+
+kable(df_simple, format = "pandoc", padding = 2)
+```
+
+#### **Significance of predictors**
+
+```{r}
+null=lm(logFEV~1, data = childfev)
+A=lm(logFEV ~ Age, data = childfev)
+AH=lm(logFEV ~ Age + Height, data = childfev)
+AH_Sx=lm(logFEV ~ Age + Height + Sex , data = childfev)
+
+anova(A,null)[2,'Pr(>F)']
+anova(AH,A)[2,'Pr(>F)']
+anova(AH_Sx,AH)[2,'Pr(>F)']
+anova(mlr_model,AH)[2,'Pr(>F)']
+```
+
+
+### Polynomial models
+
+We explore the polynomial transformation of the predictors to see whether we can find a bettrer model
+
+##### **Quadriatic Transformation of the Numerical Predictors:**
+
+```{r polynomials}
+poly2 = lm(logFEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) , data = childfev)
+poly3 = lm(logFEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3) , data = childfev)
+poly4 = lm(logFEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3) + I(Age^4) + I(Height^4), data = childfev)
+poly5 = lm(logFEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3) + I(Age^4) + I(Height^4) + I(Age^5) + I(Height^5), data = childfev)
+poly6 = lm(logFEV ~ Sex + Smoker + Age + Height + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3) + I(Age^4) + I(Height^4) + I(Age^5) + I(Height^5) + I(Age^6) + I(Height^6), data = childfev)
+
+df_poly2=summarize(poly2,plot_title="",plot=FALSE)
+df_poly3=summarize(poly3,plot_title="",plot=FALSE)
+df_poly4=summarize(poly4,plot_title="",plot=FALSE)
+df_poly5=summarize(poly5,plot_title="",plot=FALSE)
+df_poly6=summarize(poly6,plot_title="",plot=FALSE)
+```
+
+
+### Interaction between Predictors
+Following are the exploration of the Interaction between the predictors
+ - Interaction between Numerical Predictor (Age, Height) and Categorical Predictor (Sex, Smoker) - One at a Time
+ - Interaction between Numerical Predictors (Age, Height) it self
+ - Interaction between all of the them 2 way and 3 way.
+ - Carry out Inova F Test and RMSE LOOCV and Average Percentage Error to find out what's the best model
+
+##### **2 way Interactions**
+
+```{r}
+ASx = lm(logFEV ~ (Age + Sex) ^ 2 , data = childfev)
+ASm = lm(logFEV ~ (Age + Smoker) ^ 2 , data = childfev)
+ASxSm = lm(logFEV ~ Age + Sex + Smoker + Age:Sex + Age:Smoker , data = childfev)
+HSx = lm(logFEV ~ (Height + Sex) ^ 2 , data = childfev)
+HSm = lm(logFEV ~ (Height + Smoker) ^ 2 , data = childfev)
+HSxSm = lm(logFEV ~ Height + Sex + Smoker + Height:Sex + Height:Smoker , data = childfev)
+AllbutAH = lm(logFEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker, data = childfev) 
+All = lm(logFEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker + Age:Height, data = childfev) 
+two_way = lm(logFEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev) 
+three_way = lm(logFEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev)
+
+df_ASx=summarize(ASx,plot_title="",plot=FALSE)
+df_ASm=summarize(ASm,plot_title="",plot=FALSE)
+df_ASxSm=summarize(ASm,plot_title="",plot=FALSE)
+df_HSx=summarize(HSx,plot_title="",plot=FALSE)
+df_HSm=summarize(HSm,plot_title="",plot=FALSE)
+df_HSxSm=summarize(HSxSm,plot_title="",plot=FALSE)
+df_AllbutAH=summarize(AllbutAH,plot_title="",plot=FALSE)
+df_All=summarize(All,plot_title="",plot=FALSE)
+two_way=summarize(two_way,plot_title="",plot=FALSE)
+three_way=summarize(three_way,plot_title="",plot=FALSE)
+```
+
+
+##### **Big Model**
+
+Let's create a big model, with Polynomial of degree 3 and 3 way interaction between categorical-to-categorical, categorical-to-numeric, numeric-to-numeric and see it's score. 
+
+Also create few models with combination from the previous model (which treat as good model)
+ - Polynomial degree 2 + Interaction Model 8 
+ - Polynomial degree 2 + Interaction Model 9 (2 way interaction)
+ - Polynomial degree 2 + Interaction Model 10 (3 way interaction)
+ 
+```{r}
+big_model = lm(logFEV ~ (Age + Height + Sex + Smoker) ^ 3 + I(Age^2) + I(Height^2) + I(Age^3) + I(Height^3), data = childfev) # Big Model - Polynomial degree 3 + 3 Way Interaction
+poly2_int_model8 = lm(logFEV ~ Age + Height + Sex + Smoker + Age:Sex + Age:Smoker + Height:Sex + Height:Smoker + Age:Height , data = childfev) # Polynomial degree 2 + All Interaction Except Sex:Smoker
+poly2_int_model9 = lm(logFEV ~ (Age + Height + Sex + Smoker) ^ 2, data = childfev) # Polynomial degree 2 + 2 Way Interaction
+poly2_int_model10 = lm(logFEV ~ (Age + Height + Sex + Smoker) ^ 3, data = childfev) # Polynomial degree 2 + 3 Way Interaction
+
+df_big=summarize(big_model,plot_title="",plot=FALSE)
+df_poly2_int_model8=summarize(poly2_int_model8,plot_title="",plot=FALSE)
+df_poly2_int_model9=summarize(poly2_int_model9,plot_title="",plot=FALSE)
+df_poly2_int_model10=summarize(poly2_int_model10,plot_title="",plot=FALSE)
+```
+
+
+##### **Reduced Big Model via AIC/BIC**
+
+```{r}
+n = length(resid(big_model))
+big_model_aic = step(big_model, direction = "backward", trace = 0)
+big_model_bic = step(big_model, direction = "backward", k = log(n), trace = 0)
+
+summary(big_model_aic)
+summary(big_model_bic)
+df_big_model_aic=summarize(big_model_aic,plot_title="REDUCED",plot=FALSE)
+df_big_model_bic=summarize(big_model_bic,plot_title="REDUCED",plot=FALSE)
+
+```
+
+
+# Results
+
+### Compare all models
+
+
+```{r}
+compare_model= cbind(
+  df_simple,
+df_mlr_model$Value,
+df_poly2$Value,
+df_poly3$Value,
+df_poly4$Value,
+df_poly5$Value,
+df_poly6$Value,
+df_ASx$Value,
+df_ASm$Value,
+df_ASxSm$Value,
+df_HSx$Value,
+df_HSm$Value,
+df_HSxSm$Value,
+df_AllbutAH$Value,
+df_All$Value,
+two_way$Value,
+three_way$Value,
+df_big$Value,
+df_poly2_int_model8$Value,
+df_poly2_int_model9$Value,
+df_poly2_int_model10$Value,
+df_big_model_aic$Value,
+df_big_model_bic$Value
+)
+colnames(compare_model) =   c("Measure", "FEV MLR",
+    "log(FEV) MLR",
+    "QUAD",
+    "CUBE",
+    "Poly 4",
+    "Poly 5",
+    "Poly 6",
+    "Age:Sex",
+    "Age:Smoker",
+    "Age:Sex:Smoker",
+    "Height:Sex",
+    "Height:Smoker",
+    "Height:Sex:Smoker",
+    "All but Age, Height",
+    "All",
+    "2 WAY",
+    "3 WAY",
+    "BIG",
+    "Poly2 + 2 way int",
+    "Poly2 + all 2 way int",
+    "Poly2 + all 3 way int",
+    "REDUCED AIC",
+    "REDUCED BIC"
+  )
+```
+
+
+```{r echo=FALSE}
+kable(t(compare_model[1:5,]), format = "pandoc",padding = 2, caption="Table 1: Model Metrics ")
+kable(t(compare_model[6:10,]), format = "pandoc",padding = 2,caption="Table 2: Model Metrics continued ")
+```
+
+# Discussion
+
+## Response and Predictors
+
+From the pairs plot and correlation matrix, we observe relationships between the response variable FEV and Age & Height variables. Linearity as well as the fitted vs. residuals and QQ plots improve by adding log transformation to FEV. This is also reflected in the improvement in the p-value of the BP-test from `r compare_model[7,2]` to `r compare_model[7,3]`. Hence the response variable becomes $log(FEV)$. 
+
+Next, we test the significance of regression of predictors by testing nested models. 
+
+First, we test that $\beta_1=0$ in the model   $log(FEV)=\beta_0+\beta_1*Age$  , and obtain a p-value of `r anova(A,null)[2,'Pr(>F)']`. 
+
+We also test  $\beta_2=0$  in the model   $log(FEV)=\beta_0+\beta_1*Age + \beta_2*Height$ to obtain p-value of `r anova(AH,A)[2,'Pr(>F)']`. 
+
+The p-value of the test that  $\beta_3=0$  in the model   $log(FEV)=\beta_0+\beta_1*Age + \beta_2*Height + \beta_3*(Sex=='Male')$ is `r anova(AH_Sx,AH)[2,'Pr(>F)']`. 
+
+And the p-value that $\beta_4=0$  in the model   $log(FEV)=\beta_0+\beta_1*Age + \beta_2*Height + \beta_4*(Sex=='Male') + \beta_4*(Smoker=='Y')$ is `r anova(mlr_model,AH)[2,'Pr(>F)']`.
+
+Hence, all predictors are significant.
+
+## Models discussion and selection
+
+Models from several families were built, linear, polynomial, models with interaction terms, and models with a combination of polynomial and interaction terms. The following metrics of the models were tabulated:
+
+
+1. The number of parameters as a measure of model complexity and interpretability
+2. Residuals Square Error as a measure of model accuracy
+3. Root Mean Square Error as a measure of model accuracy
+4. Average Leave One Out Cross Validation Error as a measure of model predictive ability
+5. R squared as a measure of predictor potency
+6. Adjusted R squared as of trade-off between accuracy and model complexity
+7. The p-value of Breusch-Pagan test as a measure of equal noise variance acroos observations
+8. The p-value of Shapiro-Wilk test as a measure of 'normality' of the noise
+9. Max(VIF) as a measure of colinearity between variables
+10. The p-value of the significance of regression test
+
+Table 1 & Table 2 contain model metrics.
+
+
+```{r}
+results = t(compare_model[, 2:24])
+colnames(results) = compare_model[, 1]
+results_df = data.frame(results)
+#colnames(results_df)
+#row.names(results_df)[(which(results_df$RMSE.LOOCV==min(results_df$RMSE.LOOCV)))]
+kable(results_df[c("RSS", "RMSE"  ,
+                   "RMSE.LOOCV" ,
+                   "R.2"                  ,
+                   "Adj..R.2"  ,
+                   "Colinearity...max.VIF.")],
+      format = "pandoc",
+      padding = 2,
+      caption = "Table 3: Model Metrics - subset")
+```
+
+Model `r row.names(results_df)[(which(results_df$RSS==min(results_df$RSS)))]` has the lowest RSS. Model `r row.names(results_df)[(which(results_df$RMSE.LOOCV==min(results_df$RMSE.LOOCV)))]` has the lowest Leave One Out Cross Validation RMSE. However, these models have colinearity issues based on VIF and a large number of parameters, and are dificult to intepret. We see in the next chunk that the simpler models are further down when it comes to LOOCV error.
+
+```{r}
+row.names(results_df[with(results_df, order(RMSE.LOOCV)),])
+```
+
+Since our goal was prediction, we select the 'REDUCED AIC' model. This model has `r length(coef(big_model_aic))` parameters.
+
+We calculate the true RMSE since the model was fit to $log(FEV)$
+
+```{r}
+summary(big_model_aic)
+
+fitted=exp(predict(big_model_aic))
+
+```
+
+We calculate the true RMSE since the model was fit to $log(FEV)$ RMSE = `r sqrt(sum((fitted-childfev$FEV)^2))`. We also caculate the average percent error as `r 100*mean(abs(fitted-childfev$FEV)/childfev$FEV)`%
+
+
