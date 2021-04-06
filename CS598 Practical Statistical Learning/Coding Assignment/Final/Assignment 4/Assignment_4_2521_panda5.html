@@ -13424,6 +13424,9 @@ Size of the Dataset is: (272, 2)
 <span class="n">itmax</span> <span class="o">=</span> <span class="mi">20</span> <span class="c1"># Number of Iterations</span>
 <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">init_weights</span><span class="p">)</span> <span class="c1">#Number of Clusters</span>
 
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Number of Iterations: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">itmax</span><span class="p">))</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Number of Clusters: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">K</span><span class="p">))</span>
+
 <span class="n">out</span> <span class="o">=</span> <span class="n">myEM</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> 
            <span class="n">G</span><span class="o">=</span><span class="n">K</span><span class="p">,</span> 
            <span class="n">init_weights</span> <span class="o">=</span> <span class="n">init_weights</span><span class="p">,</span> 
@@ -13446,7 +13449,9 @@ Size of the Dataset is: (272, 2)
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>--------------------------------------------------------------------
+<pre>Number of Iterations: 20
+Number of Clusters: 2
+--------------------------------------------------------------------
 Iteration : 0
 --------------------------------------------------------------------
 weights: [0.5006526542469939, 0.49934734575300627]
@@ -13694,6 +13699,10 @@ loglikelihood - 2 Cluster  :  -1223.957314616496
 <span class="n">itmax</span> <span class="o">=</span> <span class="mi">20</span> <span class="c1"># Number of Iterations</span>
 <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">init_weights</span><span class="p">)</span> <span class="c1">#Number of Clusters</span>
 
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Number of Iterations: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">itmax</span><span class="p">))</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Number of Clusters: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">K</span><span class="p">))</span>
+
+
 <span class="n">out</span> <span class="o">=</span> <span class="n">myEM</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> 
            <span class="n">G</span><span class="o">=</span><span class="n">K</span><span class="p">,</span> 
            <span class="n">init_weights</span> <span class="o">=</span> <span class="n">init_weights</span><span class="p">,</span> 
@@ -13716,7 +13725,9 @@ loglikelihood - 2 Cluster  :  -1223.957314616496
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>--------------------------------------------------------------------
+<pre>Number of Iterations: 20
+Number of Clusters: 3
+--------------------------------------------------------------------
 Iteration : 0
 --------------------------------------------------------------------
 weights: [0.3051408625243811, 0.34929799829118785, 0.34556113918443054]
