@@ -16,6 +16,7 @@ X_test = Caravan[0:1000,0:85]
 y_train = X_train[,86]
 y_test = Caravan[0:1000,86]
 X_train = Caravan[1001:dim(Caravan)[1],]
+X_train_Only = Caravan[1001:dim(Caravan)[1],0:85]
 yCaravan[1001:dim(Caravan)[1],86]
 
 #Convert the y data into 0, 1 from "Yes" / "No"
@@ -107,17 +108,19 @@ roc(y_test_transformed, glm.probs.testBIC) # 0.7414
 #------------------------------------------------------------------------------------------------------------------------
 # glmnet
 #------------------------------------------------------------------------------------------------------------------------
+X_train = Caravan[1001:dim(Caravan)[1],]
 x = model.matrix(Purchase~.,X_train)[,-1]
 y = X_train$Purchase
 x_test = model.matrix(Purchase~.,X_test1)[,-1]
 y_transformed = ifelse(y=="Yes",1,0)
 glmnet_model = glmnet(x,y_transformed,standardize = TRUE,intercept=TRUE )
+
 summary(glmnet_model)
 
 coef(glmnet_model)
 dim(coef(glmnet_model))
 
-glmnet.probs = predict(glmnet_model, newx=x_test)
+glmnet.probs = predict(glmnet_model, s=0.004,newx=x_test,type="response")
 
 glmnet.pred = rep("No",1000)
 glmnet.pred[glmnet.pred > 0.25] = "Yes"
@@ -125,6 +128,61 @@ glmnet.pred[glmnet.pred > 0.25] = "Yes"
 #Confusion Matrix
 table (glmnet.pred,y_test)
 
-roc(y_test_transformed, glmnet.probs) # 0.7414
+roc(y_test_transformed, glmnet.probs) # 0.7501
 
 
+#------------------------------------------------------------------------------------------------------------------------
+# glmnet (One more time) - **** REVISED *****
+#------------------------------------------------------------------------------------------------------------------------
+X_test = Caravan[0:1000,0:85]
+y_test = Caravan[0:1000,86]
+X_train = Caravan[1001:dim(Caravan)[1],0:85]
+y_train = X_train[,86]
+
+myLasso2 <- glmnet(X_train,y_train,alpha=1,family = 'binomial',standardize = TRUE,intercept = TRUE)
+coef(myLasso2,s=0.004)
+
+glmnet.probs1 = predict(myLasso2, s=0.004,newx=x_test,type="response")
+glmnet.probs1
+glmnet.pred = rep("No",1000)
+glmnet.pred[glmnet.probs1 > 0.25] = "Yes"
+table (glmnet.pred,y_test)
+
+roc(y_test_transformed, glmnet.probs1) # 0.7501
+
+
+
+#------------------------------------------------------------------------------------------------------------------------
+# glmnet (One more time)
+#------------------------------------------------------------------------------------------------------------------------
+X_test = Caravan[0:1000,0:85]
+y_train = X_train[,86]
+y_test = Caravan[0:1000,86]
+X_train = Caravan[1001:dim(Caravan)[1],]
+X_train_Only = Caravan[1001:dim(Caravan)[1],0:85]
+
+y_test_transformed = ifelse(y_test=="Yes",1,0)
+y_train_transformed = ifelse(y_train=="Yes",1,0)
+
+myLasso2 <- glmnet(X_train_Only,y_train_transformed,alpha=1,family = 'binomial')
+coef(myLasso2,s=0.004)
+
+myLasso2 <- glmnet(X_train_Only,y_train,alpha=1,family = 'binomial')
+coef(myLasso2,s=0.004)
+glmnet.pred1 = rep("No",1000)
+glmnet.pred1[glmnet.pred1 > 0.25] = "Yes"
+table (glmnet.pred1,y_test)
+
+
+glmnet_model1 = glmnet(X_train_Only,y_train_transformed,alpha=1,lambda=0.004,standardize = TRUE,intercept=TRUE)
+coef(glmnet_model1)
+glmnet.probs1 = predict(glmnet_model1, s=0.004,newx=x_test)
+
+
+glmnet.pred1 = rep("No",1000)
+glmnet.pred1[glmnet.pred1 > 0.25] = "Yes"
+
+#Confusion Matrix
+table (glmnet.pred1,y_test)
+
+roc(y_test_transformed, glmnet.probs1) # 0.7501
